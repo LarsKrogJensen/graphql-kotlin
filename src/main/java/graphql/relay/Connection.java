@@ -4,16 +4,16 @@ package graphql.relay;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Connection {
-    private List<Edge> edges = new ArrayList<Edge>();
+public class Connection<T> {
+    private List<Edge<T>> edges = new ArrayList<>();
 
     private PageInfo pageInfo;
 
-    public List<Edge> getEdges() {
+    public List<Edge<T>> getEdges() {
         return edges;
     }
 
-    public void setEdges(List<Edge> edges) {
+    public void setEdges(List<Edge<T>> edges) {
         this.edges = edges;
     }
 

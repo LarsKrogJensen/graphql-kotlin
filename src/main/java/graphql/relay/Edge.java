@@ -1,21 +1,21 @@
 package graphql.relay;
 
 
-public class Edge {
+public class Edge<T> {
 
-    public Edge(Object node, ConnectionCursor cursor) {
+    public Edge(T node, ConnectionCursor cursor) {
         this.node = node;
         this.cursor = cursor;
     }
 
-    Object node;
+    T node;
     ConnectionCursor cursor;
 
     public Object getNode() {
         return node;
     }
 
-    public void setNode(Object node) {
+    public void setNode(T node) {
         this.node = node;
     }
 

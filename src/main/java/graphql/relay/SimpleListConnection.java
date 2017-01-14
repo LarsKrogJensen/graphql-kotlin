@@ -8,33 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 
-public class SimpleListConnection implements DataFetcher {
+public class SimpleListConnection<T> implements DataFetcher {
 
     private static final String DUMMY_CURSOR_PREFIX = "simple-cursor";
-    private List<?> data = new ArrayList<Object>();
+    private List<T> data = new ArrayList<>();
 
 
-    public SimpleListConnection(List<?> data) {
+    public SimpleListConnection(List<T> data) {
         this.data = data;
 
     }
 
-    private List<Edge> buildEdges() {
-        List<Edge> edges = new ArrayList<Edge>();
+    private List<Edge<T>> buildEdges() {
+        List<Edge<T>> edges = new ArrayList<>();
         int ix = 0;
-        for (Object object : data) {
-            edges.add(new Edge(object, new ConnectionCursor(createCursor(ix++))));
+        for (T object : data) {
+            edges.add(new Edge<T>(object, new ConnectionCursor(createCursor(ix++))));
         }
         return edges;
     }
 
 
     @Override
-    public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+    public CompletionStage<Connection<T>> get(DataFetchingEnvironment environment) {
 
-        CompletableFuture<Object> promise = new CompletableFuture<>();
-        List<Edge> edges = buildEdges();
+        CompletableFuture<Connection<T>> promise = new CompletableFuture<>();
+        List<Edge<T>> edges = buildEdges();
 
 
         int afterOffset = getOffsetFromCursor(environment.<String>getArgument("after"), -1);
@@ -67,8 +68,8 @@ public class SimpleListConnection implements DataFetcher {
             return promise;
         }
 
-        Edge firstEdge = edges.get(0);
-        Edge lastEdge = edges.get(edges.size() - 1);
+        Edge<T> firstEdge = edges.get(0);
+        Edge<T> lastEdge = edges.get(edges.size() - 1);
 
         PageInfo pageInfo = new PageInfo();
         pageInfo.setStartCursor(firstEdge.getCursor());
@@ -76,7 +77,7 @@ public class SimpleListConnection implements DataFetcher {
         pageInfo.setHasPreviousPage(!firstEdge.getCursor().equals(firstPresliceCursor));
         pageInfo.setHasNextPage(!lastEdge.getCursor().equals(lastPresliceCursor));
 
-        Connection connection = new Connection();
+        Connection<T> connection = new Connection<>();
         connection.setEdges(edges);
         connection.setPageInfo(pageInfo);
 
@@ -84,14 +85,14 @@ public class SimpleListConnection implements DataFetcher {
         return promise;
     }
 
-    private Connection emptyConnection() {
-        Connection connection = new Connection();
+    private Connection<T> emptyConnection() {
+        Connection<T> connection = new Connection<>();
         connection.setPageInfo(new PageInfo());
         return connection;
     }
 
 
-    public ConnectionCursor cursorForObjectInConnection(Object object) {
+    public ConnectionCursor cursorForObjectInConnection(T object) {
         int index = data.indexOf(object);
         String cursor = createCursor(index);
         return new ConnectionCursor(cursor);
@@ -105,8 +106,7 @@ public class SimpleListConnection implements DataFetcher {
     }
 
     private String createCursor(int offset) {
-        String string = Base64.toBase64(DUMMY_CURSOR_PREFIX + Integer.toString(offset));
-        return string;
+        return Base64.toBase64(DUMMY_CURSOR_PREFIX + Integer.toString(offset));
     }
 
 

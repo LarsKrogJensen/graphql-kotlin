@@ -36,7 +36,7 @@ public class RelaySchema
     });
 
     public static GraphQLObjectType StuffEdgeType = relay
-        .edgeType("Stuff", StuffType, NodeInterface, new ArrayList<>());
+        .edgeType("Stuff", StuffType, null, new ArrayList<>());
 
     public static GraphQLObjectType StuffConnectionType = relay
         .connectionType("Stuff", StuffEdgeType, new ArrayList<>());
