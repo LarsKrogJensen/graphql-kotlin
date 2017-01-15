@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ExecutionResultImpl implements ExecutionResult {
 
-    private final List<GraphQLError> errors = new ArrayList<GraphQLError>();
+    private final List<GraphQLError> errors = new ArrayList<>();
     private Object data;
 
     public ExecutionResultImpl(List<? extends GraphQLError> errors) {
@@ -36,8 +36,13 @@ public class ExecutionResultImpl implements ExecutionResult {
 
     @Override
     public List<GraphQLError> getErrors() {
-        return new ArrayList<GraphQLError>(errors);
+        return new ArrayList<>(errors);
     }
 
 
+    @Override
+    public boolean succeeded()
+    {
+        return errors.isEmpty();
+    }
 }
