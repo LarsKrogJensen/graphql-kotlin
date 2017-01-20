@@ -52,7 +52,7 @@ public class Execution {
             OperationDefinition operationDefinition) {
         GraphQLObjectType operationRootType = getOperationRootType(executionContext.getGraphQLSchema(), operationDefinition);
 
-        Map<String, List<Field>> fields = new LinkedHashMap<String, List<Field>>();
+        Map<String, List<Field>> fields = new LinkedHashMap<>();
         fieldCollector.collectFields(executionContext, operationRootType, operationDefinition.getSelectionSet(), new ArrayList<String>(), fields);
 
         if (operationDefinition.getOperation() == OperationDefinition.Operation.MUTATION) {
