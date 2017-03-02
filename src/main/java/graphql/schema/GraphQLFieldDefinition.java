@@ -11,7 +11,6 @@ import static graphql.Assert.assertNotNull;
 
 public class GraphQLFieldDefinition<T>
 {
-
     private final String name;
     private final String description;
     private GraphQLOutputType type;
@@ -71,7 +70,7 @@ public class GraphQLFieldDefinition<T>
 
     public List<GraphQLArgument> getArguments()
     {
-        return new ArrayList<GraphQLArgument>(arguments);
+        return new ArrayList<>(arguments);
     }
 
     public String getDescription()

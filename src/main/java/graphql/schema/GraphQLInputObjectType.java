@@ -43,7 +43,7 @@ public class GraphQLInputObjectType implements GraphQLType, GraphQLInputType, Gr
     }
 
     public List<GraphQLInputObjectField> getFields() {
-        return new ArrayList<GraphQLInputObjectField>(fieldMap.values());
+        return new ArrayList<>(fieldMap.values());
     }
 
     public GraphQLInputObjectField getField(String name) {

@@ -37,9 +37,9 @@ public class SchemaUtil {
         } else if (root instanceof GraphQLList) {
             collectTypes(((GraphQLList) root).getWrappedType(), result);
         } else if (root instanceof GraphQLEnumType) {
-            result.put(((GraphQLEnumType) root).getName(), root);
+            result.put(root.getName(), root);
         } else if (root instanceof GraphQLScalarType) {
-            result.put(((GraphQLScalarType) root).getName(), root);
+            result.put(root.getName(), root);
         } else if (root instanceof GraphQLObjectType) {
             collectTypesForObjects((GraphQLObjectType) root, result);
         } else if (root instanceof GraphQLInterfaceType) {

@@ -14,7 +14,6 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +45,11 @@ public class GraphQL {
     }
 
     public CompletionStage<ExecutionResult> execute(String requestString, Object context) {
-        return execute(requestString, context, Collections.<String, Object>emptyMap());
+        return execute(requestString, context, Collections.emptyMap());
     }
 
     public CompletionStage<ExecutionResult> execute(String requestString, String operationName, Object context) {
-        return execute(requestString, operationName, context, Collections.<String, Object>emptyMap());
+        return execute(requestString, operationName, context, Collections.emptyMap());
     }
 
     public CompletionStage<ExecutionResult> execute(String requestString, Object context, Map<String, Object> arguments) {
@@ -70,7 +69,7 @@ public class GraphQL {
             RecognitionException recognitionException = (RecognitionException) e.getCause();
             SourceLocation sourceLocation = new SourceLocation(recognitionException.getOffendingToken().getLine(), recognitionException.getOffendingToken().getCharPositionInLine());
             InvalidSyntaxError invalidSyntaxError = new InvalidSyntaxError(sourceLocation);
-            promise.complete(new ExecutionResultImpl(Arrays.asList(invalidSyntaxError)));
+            promise.complete(new ExecutionResultImpl(Collections.singletonList(invalidSyntaxError)));
             return promise;
         }
 

@@ -36,7 +36,7 @@ public class Directive extends AbstractNode {
 
     @Override
     public List<Node> getChildren() {
-        return new ArrayList<Node>(arguments);
+        return new ArrayList<>(arguments);
     }
 
     @Override

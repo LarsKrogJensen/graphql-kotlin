@@ -13,7 +13,7 @@ public class OperationDefinition extends AbstractNode implements Definition {
     private String name;
 
     private Operation operation;
-    private List<VariableDefinition> variableDefinitions = new ArrayList<VariableDefinition>();
+    private List<VariableDefinition> variableDefinitions = new ArrayList<>();
     private List<Directive> directives = new ArrayList<Directive>();
     private SelectionSet selectionSet;
 
