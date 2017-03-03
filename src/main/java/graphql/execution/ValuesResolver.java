@@ -155,7 +155,7 @@ public class ValuesResolver {
     private Object coerceValueAstForInputObject(GraphQLInputObjectType type, ObjectValue inputValue, Map<String, Object> variables) {
         Map<String, Object> result = new LinkedHashMap<String, Object>();
 
-        for (ObjectField objectField : inputValue.getObjectFields()) {
+        for (ObjectField objectField : inputValue.objectFields()) {
             GraphQLInputObjectField inputObjectField = type.getField(objectField.getName());
             // illegal field ... no corresponding key in the schema
             if (inputObjectField == null) continue;

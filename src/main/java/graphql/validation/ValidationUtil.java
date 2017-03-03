@@ -56,7 +56,7 @@ public class ValidationUtil {
 
         if (isFieldMissing(type, objectFieldMap)) return false;
 
-        for (ObjectField objectField : objectValue.getObjectFields()) {
+        for (ObjectField objectField : objectValue.objectFields()) {
             GraphQLInputObjectField inputObjectField = type.getField(objectField.getName());
             if (inputObjectField == null) return false;
             if (!isValidLiteralValue(objectField.getValue(), inputObjectField.getType())) return false;
@@ -75,7 +75,7 @@ public class ValidationUtil {
 
     private Map<String, ObjectField> fieldMap(ObjectValue objectValue) {
         Map<String, ObjectField> result = new LinkedHashMap<String, ObjectField>();
-        for (ObjectField objectField : objectValue.getObjectFields()) {
+        for (ObjectField objectField : objectValue.objectFields()) {
             result.put(objectField.getName(), objectField);
         }
         return result;

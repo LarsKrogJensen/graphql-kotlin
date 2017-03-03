@@ -210,7 +210,7 @@ public class OverlappingFieldsCanBeMerged extends AbstractRule {
 
     private void collectFields(Map<String, List<FieldAndType>> fieldMap, SelectionSet selectionSet, GraphQLType parentType, Set<String> visitedFragmentSpreads) {
 
-        for (Selection selection : selectionSet.getSelections()) {
+        for (Selection selection : selectionSet.selections()) {
             if (selection instanceof Field) {
                 collectFieldsForField(fieldMap, parentType, (Field) selection);
 

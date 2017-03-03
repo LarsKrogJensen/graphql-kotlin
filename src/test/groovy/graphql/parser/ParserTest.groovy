@@ -23,7 +23,7 @@ class ParserTest extends Specification {
 
 
     def assertField(OperationDefinition operationDefinition, String fieldName) {
-        Selection selection = operationDefinition.getSelectionSet().getSelections()[0]
+        Selection selection = operationDefinition.getSelectionSet().selections()[0]
         assert selection instanceof Field
         Field field = (Field) selection
         assert field.name == fieldName
@@ -281,11 +281,11 @@ class ParserTest extends Specification {
         and: "expected query"
 
         def objectValue = new ObjectValue()
-        objectValue.getObjectFields().add(new ObjectField("intKey", new IntValue(1)))
-        objectValue.getObjectFields().add(new ObjectField("stringKey", new StringValue("world")))
+        objectValue.objectFields().add(new ObjectField("intKey", new IntValue(1)))
+        objectValue.objectFields().add(new ObjectField("stringKey", new StringValue("world")))
         def subObject = new ObjectValue()
-        subObject.getObjectFields().add(new ObjectField("subKey", new BooleanValue(true)))
-        objectValue.getObjectFields().add(new ObjectField("subObject", subObject))
+        subObject.objectFields().add(new ObjectField("subKey", new BooleanValue(true)))
+        objectValue.objectFields().add(new ObjectField("subObject", subObject))
         def argument = new Argument("arg", objectValue)
         def helloField = new Field("hello", [argument])
         def queryDefinition = new OperationDefinition("myQuery", OperationDefinition.Operation.QUERY,

@@ -26,11 +26,11 @@ public class VariableReference extends AbstractNode implements Value {
     }
 
     @Override
-    public boolean isEqualTo(Node o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean isEqualTo(Node node) {
+        if (this == node) return true;
+        if (node == null || getClass() != node.getClass()) return false;
 
-        VariableReference that = (VariableReference) o;
+        VariableReference that = (VariableReference) node;
 
         return !(name != null ? !name.equals(that.name) : that.name != null);
 

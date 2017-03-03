@@ -23,7 +23,7 @@ public class FieldCollector {
 
     public void collectFields(ExecutionContext executionContext, GraphQLObjectType type, SelectionSet selectionSet, List<String> visitedFragments, Map<String, List<Field>> fields) {
 
-        for (Selection selection : selectionSet.getSelections()) {
+        for (Selection selection : selectionSet.selections()) {
             if (selection instanceof Field) {
                 collectField(executionContext, fields, (Field) selection);
             } else if (selection instanceof InlineFragment) {

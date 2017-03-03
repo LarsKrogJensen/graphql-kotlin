@@ -93,11 +93,11 @@ public class OperationDefinition extends AbstractNode implements Definition {
 
 
     @Override
-    public boolean isEqualTo(Node o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean isEqualTo(Node node) {
+        if (this == node) return true;
+        if (node == null || getClass() != node.getClass()) return false;
 
-        OperationDefinition that = (OperationDefinition) o;
+        OperationDefinition that = (OperationDefinition) node;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         return operation == that.operation;

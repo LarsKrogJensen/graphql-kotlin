@@ -31,9 +31,9 @@ public class ListType extends AbstractNode implements Type {
     }
 
     @Override
-    public boolean isEqualTo(Node o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean isEqualTo(Node node) {
+        if (this == node) return true;
+        if (node == null || getClass() != node.getClass()) return false;
 
         return true;
     }

@@ -121,7 +121,7 @@ class ValidationUtilTest extends Specification {
                 .type(GraphQLString))
                 .build()
         def objectValue = new ObjectValue()
-        objectValue.getObjectFields().add(new ObjectField("hello", new StringValue("world")))
+        objectValue.objectFields().add(new ObjectField("hello", new StringValue("world")))
 
         expect:
         validationUtil.isValidLiteralValue(objectValue, inputObjectType)
@@ -136,7 +136,7 @@ class ValidationUtilTest extends Specification {
                 .type(GraphQLString))
                 .build()
         def objectValue = new ObjectValue()
-        objectValue.getObjectFields().add(new ObjectField("hello", new BooleanValue(false)))
+        objectValue.objectFields().add(new ObjectField("hello", new BooleanValue(false)))
 
         expect:
         !validationUtil.isValidLiteralValue(objectValue, inputObjectType)

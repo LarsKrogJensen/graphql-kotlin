@@ -1,0 +1,158 @@
+import java.text.SimpleDateFormat
+
+buildscript {
+    ext.kotlin_version = '1.1.0'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id "com.jfrog.bintray" version "1.2"
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'antlr'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+def releaseVersion = System.properties.RELEASE_VERSION
+version = "SNAPSHOT"//releaseVersion ? releaseVersion : new SimpleDateFormat('yyyy-MM-dd\'T\'HH-mm-ss').format(new Date())
+group = 'se.lars.graphql-java'
+
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'groovy'
+
+jar {
+    from "LICENSE.md"
+}
+
+dependencies {
+    compile 'org.antlr:antlr4-runtime:4.5.1'
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    antlr "org.antlr:antlr4:4.5.1"
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
+    testCompile 'cglib:cglib-nodep:3.1'
+    testCompile 'org.objenesis:objenesis:2.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+}
+
+compileJava.source file("build/generated-src"), sourceSets.main.java
+
+generateGrammarSource {
+    maxHeapSize = "64m"
+    arguments += ["-visitor"]
+    outputDirectory = file("${project.buildDir}/generated-src/antlr/main/graphql/parser/antlr")
+}
+
+task sourcesJar(type: Jar) {
+    dependsOn classes
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+allprojects {
+    tasks.withType(Javadoc) {
+        exclude('**/antlr/**')
+    }
+
+    tasks.withType(JavaCompile) {
+        doFirst {
+            if (sourceCompatibility == '1.6' && System.env.JDK6_HOME != null) {
+                options.bootClasspath = "$System.env.JDK6_HOME/jre/lib/rt.jar"
+            }
+        }
+    }
+
+}
+
+publishing {
+    publications {
+        graphqlJava(MavenPublication) {
+            version version
+            from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name 'graphql-java'
+                    description 'GraphqL Java'
+                    url "https://github.com/graphql-java/graphql-java"
+                    scm {
+                        url "https://github.com/graphql-java/graphql-java"
+                        connection "https://github.com/graphql-java/graphql-java"
+                        developerConnection "https://github.com/graphql-java/graphql-java"
+                    }
+                    licenses {
+                        license {
+                            name 'MIT'
+                            url 'https://github.com/graphql-java/graphql-java/blob/master/LICENSE.md'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'andimarek'
+                            name 'Andreas Marek'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+bintray {
+    user = System.env.BINTRAY_USER ?: project["bintray.user"]
+    key = System.env.BINTRAY_API_KEY ?: project["bintray.key"]
+    publications = ['graphqlJava']
+    publish = true
+    pkg {
+        repo = 'graphql-java'
+        name = 'graphql-java'
+        desc = 'GraphQL in Java'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/graphql-java/graphql-java'
+    }
+}
+
+// all publish tasks depend on the build task
+tasks.withType(PublishToMavenRepository) {
+    dependsOn build
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+    distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
+}
+
