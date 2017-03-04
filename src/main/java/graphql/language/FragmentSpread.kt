@@ -34,4 +34,8 @@ class FragmentSpread : AbstractNode, Selection {
                 ", directives=" + directives +
                 '}'
     }
+
+    fun add(directive: Directive) {
+        directives += directive
+    }
 }

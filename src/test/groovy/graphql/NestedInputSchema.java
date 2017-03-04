@@ -29,17 +29,17 @@ public class NestedInputSchema {
     }
 
     public static GraphQLObjectType rootType() {
-        return GraphQLObjectType.newObject()
+        return GraphQLObjectType.Companion.newObject()
 
-                .name("Root")
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("value")
-                        .type(GraphQLInt)
-                        .dataFetcher(new DataFetcher() {
+                                          .name("Root")
+                                          .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                 .name("value")
+                                                                                 .type(INSTANCE.getGraphQLInt())
+                                                                                 .dataFetcher(new DataFetcher() {
                             @Override
                             public CompletionStage<Object> get(DataFetchingEnvironment environment) {
-                                Integer initialValue = environment.getArgument("initialValue");
-                                Map<String, Object> filter = environment.getArgument("filter");
+                                Integer initialValue = environment.argument("initialValue");
+                                Map<String, Object> filter = environment.argument("filter");
                                 if (filter != null) {
                                     if (filter.containsKey("even")) {
                                         Boolean even = (Boolean) filter.get("even");
@@ -59,37 +59,37 @@ public class NestedInputSchema {
                                 }
                                 return CompletableFuture.completedFuture(initialValue);
                             }})
-                        .argument(GraphQLArgument.newArgument()
-                                .name("intialValue")
-                                .type(GraphQLInt)
-                                .defaultValue(5))
-                        .argument(GraphQLArgument.newArgument()
-                                .name("filter")
-                                .type(filterType())))
-                .build();
+                                                                                 .argument(GraphQLArgument.Companion.newArgument()
+                                                           .name("intialValue")
+                                                           .type(INSTANCE.getGraphQLInt())
+                                                           .defaultValue(5))
+                                                                                 .argument(GraphQLArgument.Companion.newArgument()
+                                                           .name("filter")
+                                                           .type(filterType())))
+                                          .build();
     }
 
     public static GraphQLInputObjectType filterType() {
-        return GraphQLInputObjectType.newInputObject()
-                .name("Filter")
-                .field(GraphQLInputObjectField.newInputObjectField()
-                        .name("even")
-                        .type(GraphQLBoolean))
-                .field(GraphQLInputObjectField.newInputObjectField()
-                        .name("range")
-                        .type(rangeType()))
-                .build();
+        return GraphQLInputObjectType.Companion.newInputObject()
+                                               .name("Filter")
+                                               .field(GraphQLInputObjectField.Companion.newInputObjectField()
+                                                        .name("even")
+                                                        .type(INSTANCE.getGraphQLBoolean()))
+                                               .field(GraphQLInputObjectField.Companion.newInputObjectField()
+                                                        .name("range")
+                                                        .type(rangeType()))
+                                               .build();
     }
 
     public static GraphQLInputObjectType rangeType() {
-        return GraphQLInputObjectType.newInputObject()
-                .name("Range")
-                .field(GraphQLInputObjectField.newInputObjectField()
-                        .name("lowerBound")
-                        .type(GraphQLInt))
-                .field(GraphQLInputObjectField.newInputObjectField()
-                        .name("upperBound")
-                        .type(GraphQLInt))
-                .build();
+        return GraphQLInputObjectType.Companion.newInputObject()
+                                               .name("Range")
+                                               .field(GraphQLInputObjectField.Companion.newInputObjectField()
+                                                        .name("lowerBound")
+                                                        .type(INSTANCE.getGraphQLInt()))
+                                               .field(GraphQLInputObjectField.Companion.newInputObjectField()
+                                                        .name("upperBound")
+                                                        .type(INSTANCE.getGraphQLInt()))
+                                               .build();
     }
 }

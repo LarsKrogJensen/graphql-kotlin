@@ -1,13 +1,10 @@
 package graphql.relay;
 
 
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 public class SimpleListConnection<T>
 {
@@ -38,9 +35,9 @@ public class SimpleListConnection<T>
         List<Edge<T>> edges = buildEdges();
 
 
-        int afterOffset = getOffsetFromCursor(environment.getArgument("after"), -1);
+        int afterOffset = getOffsetFromCursor(environment.argument("after"), -1);
         int begin = Math.max(afterOffset, -1) + 1;
-        int beforeOffset = getOffsetFromCursor(environment.getArgument("before"), edges.size());
+        int beforeOffset = getOffsetFromCursor(environment.argument("before"), edges.size());
         int end = Math.min(beforeOffset, edges.size());
 
         edges = edges.subList(begin, end);
@@ -49,8 +46,8 @@ public class SimpleListConnection<T>
         }
 
 
-        Integer first = environment.<Integer>getArgument("first");
-        Integer last = environment.<Integer>getArgument("last");
+        Integer first = environment.<Integer>argument("first");
+        Integer last = environment.<Integer>argument("last");
 
         ConnectionCursor firstPresliceCursor = edges.get(0).cursor;
         ConnectionCursor lastPresliceCursor = edges.get(edges.size() - 1).cursor;

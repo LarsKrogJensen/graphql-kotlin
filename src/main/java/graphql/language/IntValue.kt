@@ -4,7 +4,7 @@ package graphql.language
 import java.math.BigInteger
 import java.util.ArrayList
 
-class IntValue(var value: BigInteger?) : AbstractNode(), Value {
+class IntValue(var value: BigInteger) : AbstractNode(), Value {
 
     override val children: List<Node>
         get() = emptyList()
@@ -15,7 +15,7 @@ class IntValue(var value: BigInteger?) : AbstractNode(), Value {
 
         val that = node as IntValue
 
-        return !if (value != null) value != that.value else that.value != null
+        return value == that.value
     }
 
 

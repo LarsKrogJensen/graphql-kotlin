@@ -1,10 +1,7 @@
 package graphql.language
 
-
-import java.util.ArrayList
-
 class Document : AbstractNode {
-    var definitions: List<Definition> = ArrayList()
+    var definitions: List<Definition> = mutableListOf()
 
     constructor()
 
@@ -14,7 +11,7 @@ class Document : AbstractNode {
 
 
     override val children: List<Node>
-        get() = ArrayList<Node>(definitions)
+        get() = definitions
 
 
     override fun isEqualTo(node: Node): Boolean {
@@ -29,4 +26,9 @@ class Document : AbstractNode {
                 "definitions=" + definitions +
                 '}'
     }
+
+    fun add(definition: Definition) {
+        definitions += definition
+    }
+
 }

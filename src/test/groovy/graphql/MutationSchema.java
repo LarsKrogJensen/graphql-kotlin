@@ -54,47 +54,47 @@ public class MutationSchema {
 
     }
 
-    public static GraphQLObjectType numberHolderType = GraphQLObjectType.newObject()
-            .name("NumberHolder")
-            .field(newFieldDefinition()
-                    .name("theNumber")
-                    .type(GraphQLInt))
-            .build();
+    public static GraphQLObjectType numberHolderType = GraphQLObjectType.Companion.newObject()
+                                                                                  .name("NumberHolder")
+                                                                                  .field(Companion.newFieldDefinition()
+                                                                                                  .name("theNumber")
+                                                                                                  .type(INSTANCE.getGraphQLInt()))
+                                                                                  .build();
 
-    public static GraphQLObjectType queryType = GraphQLObjectType.newObject()
-            .name("queryType")
-            .field(newFieldDefinition()
-                    .name("numberHolder")
-                    .type(numberHolderType))
-            .build();
+    public static GraphQLObjectType queryType = GraphQLObjectType.Companion.newObject()
+                                                                           .name("queryType")
+                                                                           .field(Companion.newFieldDefinition()
+                                                                                           .name("numberHolder")
+                                                                                           .type(numberHolderType))
+                                                                           .build();
 
-    public static GraphQLObjectType mutationType = GraphQLObjectType.newObject()
-            .name("mutationType")
-            .field(newFieldDefinition()
-                    .name("changeTheNumber")
-                    .type(numberHolderType)
-                    .argument(newArgument()
-                            .name("newNumber")
-                            .type(GraphQLInt))
-                    .dataFetcher(new DataFetcher() {
+    public static GraphQLObjectType mutationType = GraphQLObjectType.Companion.newObject()
+                                                                              .name("mutationType")
+                                                                              .field(Companion.newFieldDefinition()
+                                                                                              .name("changeTheNumber")
+                                                                                              .type(numberHolderType)
+                                                                                              .argument(Companion.newArgument()
+                                       .name("newNumber")
+                                       .type(INSTANCE.getGraphQLInt()))
+                                                                                              .dataFetcher(new DataFetcher() {
                         @Override
                         public CompletionStage<Object> get(DataFetchingEnvironment environment) {
-                            Integer newNumber = environment.getArgument("newNumber");
-                            Root root = (Root) environment.getSource();
+                            Integer newNumber = environment.argument("newNumber");
+                            Root root = (Root) environment.source();
                             return CompletableFuture.completedFuture(root.changeNumber(newNumber));
                         }
                     }))
-            .field(newFieldDefinition()
-                    .name("failToChangeTheNumber")
-                    .type(numberHolderType)
-                    .argument(newArgument()
-                            .name("newNumber")
-                            .type(GraphQLInt))
-                    .dataFetcher(new DataFetcher() {
+                                                                              .field(Companion.newFieldDefinition()
+                                                                                              .name("failToChangeTheNumber")
+                                                                                              .type(numberHolderType)
+                                                                                              .argument(Companion.newArgument()
+                                       .name("newNumber")
+                                       .type(INSTANCE.getGraphQLInt()))
+                                                                                              .dataFetcher(new DataFetcher() {
                         @Override
                         public CompletionStage<Object> get(DataFetchingEnvironment environment) {
-                            Integer newNumber = environment.getArgument("newNumber");
-                            Root root = (Root) environment.getSource();
+                            Integer newNumber = environment.argument("newNumber");
+                            Root root = (Root) environment.source();
                             CompletableFuture<Object> promise = new CompletableFuture<>();
                             try {
                                 promise.complete(root.failToChangeTheNumber(newNumber));
@@ -104,7 +104,7 @@ public class MutationSchema {
                             return promise;
                         }
                     }))
-            .build();
+                                                                              .build();
 
     public static GraphQLSchema schema = newSchema()
             .query(queryType)

@@ -126,7 +126,7 @@ public class TraversalContext implements QueryLanguageVisitor {
         GraphQLUnmodifiedType objectType = schemaUtil.getUnmodifiedType(getInputType());
         GraphQLInputType inputType = null;
         if (objectType instanceof GraphQLInputObjectType) {
-            GraphQLInputObjectField inputField = ((GraphQLInputObjectType) objectType).getField(objectField.getName());
+            GraphQLInputObjectField inputField = ((GraphQLInputObjectType) objectType).field(objectField.getName());
             if (inputField != null)
                 inputType = inputField.getType();
         }
@@ -236,7 +236,7 @@ public class TraversalContext implements QueryLanguageVisitor {
             return TypeNameMetaFieldDef;
         }
         if (parentType instanceof GraphQLFieldsContainer) {
-            return ((GraphQLFieldsContainer) parentType).getFieldDefinition(field.getName());
+            return ((GraphQLFieldsContainer) parentType).fieldDefinition(field.getName());
         }
         return null;
     }

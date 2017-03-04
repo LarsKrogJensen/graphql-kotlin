@@ -1,7 +1,7 @@
 package graphql.language
 
 
-data class StringValue(var value: String?) : AbstractNode(), Value {
+data class StringValue(var value: String) : AbstractNode(), Value {
 
     override val children: List<Node>
         get() = emptyList()
@@ -12,7 +12,7 @@ data class StringValue(var value: String?) : AbstractNode(), Value {
 
         val that = node as StringValue
 
-        return !if (value != null) value != that.value else that.value != null
+        return value == that.value
     }
 
 }

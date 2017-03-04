@@ -36,16 +36,16 @@ public class KnownDirectives extends AbstractRule {
         if (ancestor instanceof OperationDefinition) {
             Operation operation = ((OperationDefinition) ancestor).getOperation();
             return Operation.QUERY.equals(operation) ?
-                    !(directive.validLocations().contains(DirectiveLocation.QUERY) || directive.isOnOperation()) :
-                    !(directive.validLocations().contains(DirectiveLocation.MUTATION) || directive.isOnOperation());
+                    !(directive.validLocations().contains(DirectiveLocation.QUERY) || directive.getOnOperation()) :
+                    !(directive.validLocations().contains(DirectiveLocation.MUTATION) || directive.getOnOperation());
         } else if (ancestor instanceof Field) {
-            return !(directive.validLocations().contains(DirectiveLocation.FIELD) || directive.isOnField());
+            return !(directive.validLocations().contains(DirectiveLocation.FIELD) || directive.getOnField());
         } else if (ancestor instanceof FragmentSpread) {
-            return  !(directive.validLocations().contains(DirectiveLocation.FRAGMENT_SPREAD) || directive.isOnFragment());
+            return  !(directive.validLocations().contains(DirectiveLocation.FRAGMENT_SPREAD) || directive.getOnFragment());
         } else if (ancestor instanceof FragmentDefinition) {
-            return !(directive.validLocations().contains(DirectiveLocation.FRAGMENT_DEFINITION) || directive.isOnFragment());
+            return !(directive.validLocations().contains(DirectiveLocation.FRAGMENT_DEFINITION) || directive.getOnFragment());
         } else if (ancestor instanceof InlineFragment) {
-            return (!directive.validLocations().contains(DirectiveLocation.INLINE_FRAGMENT) || directive.isOnFragment());
+            return (!directive.validLocations().contains(DirectiveLocation.INLINE_FRAGMENT) || directive.getOnFragment());
         }
         return true;
     }

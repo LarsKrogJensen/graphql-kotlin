@@ -35,7 +35,7 @@ public class FunWithStringsSchemaFactory {
             public CompletionStage<Object> get(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.VALUE);
                 List<String> retVal = new ArrayList<String>();
-                for (String s: (List<String>) environment.getSource()) {
+                for (String s: (List<String>) environment.source()) {
                     retVal.add("null".equals(s) ? null : s);
                 }
                 return CompletableFuture.completedFuture(retVal);
@@ -49,8 +49,8 @@ public class FunWithStringsSchemaFactory {
             public CompletionStage<Object> get(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.APPEND);
                 List<String> retVal = new ArrayList<String>();
-                for (String s: (List<String>) environment.getSource()) {
-                    retVal.add(s + environment.getArgument("text"));
+                for (String s: (List<String>) environment.source()) {
+                    retVal.add(s + environment.argument("text"));
                 }
                 return CompletableFuture.completedFuture(retVal);
             }
@@ -62,7 +62,7 @@ public class FunWithStringsSchemaFactory {
             @SuppressWarnings("unchecked")
             public CompletionStage<Object> get(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.WORDS_AND_LETTERS);
-                List<String> sources = (List<String>) environment.getSource();
+                List<String> sources = (List<String>) environment.source();
                 List<List<List<String>>> retVal = new ArrayList<List<List<String>>>();
                 for (String source : sources) {
                     List<List<String>> sentence = new ArrayList<List<String>>();
@@ -85,8 +85,8 @@ public class FunWithStringsSchemaFactory {
             @SuppressWarnings("unchecked")
             public CompletionStage<Object> get(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.SPLIT);
-                String regex = environment.getArgument("regex");
-                List<String> sources = (List<String>) environment.getSource();
+                String regex = environment.argument("regex");
+                List<String> sources = (List<String>) environment.source();
                 List<List<String>> retVal = new ArrayList<List<String>>();
                 if (regex == null) {
                     for (String source: sources) {
@@ -115,7 +115,7 @@ public class FunWithStringsSchemaFactory {
             @SuppressWarnings("unchecked")
             public CompletionStage<Object> get(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.SHATTER);
-                List<String> sources = (List<String>) environment.getSource();
+                List<String> sources = (List<String>) environment.source();
                 List<List<String>> retVal = new ArrayList<List<String>>();
                 for (String source: sources) {
                     List<String> retItem = new ArrayList<String>();
@@ -136,14 +136,14 @@ public class FunWithStringsSchemaFactory {
     private DataFetcher stringObjectValueFetcher = new DataFetcher() {
         @Override
         public CompletionStage<Object> get(DataFetchingEnvironment e) {
-            return CompletableFuture.completedFuture("null".equals(e.getSource()) ? null : e.getSource());
+            return CompletableFuture.completedFuture("null".equals(e.source()) ? null : e.source());
         }
     };
 
     private DataFetcher shatterFetcher = new DataFetcher() {
         @Override
         public CompletionStage<Object> get(DataFetchingEnvironment e) {
-            String source = (String) e.getSource();
+            String source = (String) e.source();
             if(source.isEmpty()) {
                 return null; // trigger error
             }
@@ -158,7 +158,7 @@ public class FunWithStringsSchemaFactory {
     public DataFetcher wordsAndLettersFetcher = new DataFetcher() {
         @Override
         public CompletionStage<Object> get(DataFetchingEnvironment e) {
-            String source = (String) e.getSource();
+            String source = (String) e.source();
             List<List<String>> retVal = new ArrayList<List<String>>();
             for (String word: source.split(" ")) {
                 List<String> retItem = new ArrayList<String>();
@@ -174,11 +174,11 @@ public class FunWithStringsSchemaFactory {
     public DataFetcher splitFetcher = new DataFetcher() {
         @Override
         public CompletionStage<Object> get(DataFetchingEnvironment e) {
-            String regex = e.getArgument("regex");
+            String regex = e.argument("regex");
             if (regex == null ) {
                 return null;
             }
-            String source = (String) e.getSource();
+            String source = (String) e.source();
             List<String> retVal = new ArrayList<String>();
             for (String str: source.split(regex)) {
                 if (str.isEmpty()) {
@@ -194,7 +194,7 @@ public class FunWithStringsSchemaFactory {
     public DataFetcher appendFetcher = new DataFetcher() {
         @Override
         public CompletionStage<Object> get(DataFetchingEnvironment e) {
-            return CompletableFuture.completedFuture(((String)e.getSource()) + e.getArgument("text"));
+            return CompletableFuture.completedFuture(((String)e.source()) + e.argument("text"));
         }
     };
 
@@ -220,59 +220,59 @@ public class FunWithStringsSchemaFactory {
 
     GraphQLSchema createSchema() {
 
-        GraphQLObjectType stringObjectType = GraphQLObjectType.newObject()
-                .name("StringObject")
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("value")
-                        .type(Scalars.GraphQLString)
-                        .dataFetcher(stringObjectValueFetcher))
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("nonNullValue")
-                        .type(new GraphQLNonNull(Scalars.GraphQLString))
-                        .dataFetcher(stringObjectValueFetcher))
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("veryNonNullValue")
-                        .type(new GraphQLNonNull(new GraphQLNonNull(Scalars.GraphQLString)))
-                        .dataFetcher(stringObjectValueFetcher))
+        GraphQLObjectType stringObjectType = GraphQLObjectType.Companion.newObject()
+                                                                        .name("StringObject")
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("value")
+                                                                                                               .type(Scalars.INSTANCE.getGraphQLString())
+                                                                                                               .dataFetcher(stringObjectValueFetcher))
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("nonNullValue")
+                                                                                                               .type(new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString()))
+                                                                                                               .dataFetcher(stringObjectValueFetcher))
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("veryNonNullValue")
+                                                                                                               .type(new GraphQLNonNull(new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString())))
+                                                                                                               .dataFetcher(stringObjectValueFetcher))
 
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("shatter")
-                        .type(new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(new GraphQLTypeReference("StringObject")))))
-                        .dataFetcher(shatterFetcher))
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("shatter")
+                                                                                                               .type(new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(new GraphQLTypeReference("StringObject")))))
+                                                                                                               .dataFetcher(shatterFetcher))
 
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("wordsAndLetters")
-                        .type(new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(new GraphQLList(new GraphQLNonNull( new GraphQLNonNull(new GraphQLTypeReference("StringObject"))))))))
-                        .dataFetcher(wordsAndLettersFetcher))
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("wordsAndLetters")
+                                                                                                               .type(new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(new GraphQLList(new GraphQLNonNull( new GraphQLNonNull(new GraphQLTypeReference("StringObject"))))))))
+                                                                                                               .dataFetcher(wordsAndLettersFetcher))
 
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("split")
-                        .description("String#split(regex) but replace empty strings with nulls to help us test null behavior in lists")
-                        .type(new GraphQLList(new GraphQLTypeReference("StringObject")))
-                        .argument(GraphQLArgument.newArgument()
-                                .name("regex")
-                                .type(Scalars.GraphQLString))
-                        .dataFetcher(splitFetcher))
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("split")
+                                                                                                               .description("String#split(regex) but replace empty strings with nulls to help us test null behavior in lists")
+                                                                                                               .type(new GraphQLList(new GraphQLTypeReference("StringObject")))
+                                                                                                               .argument(GraphQLArgument.Companion.newArgument()
+                                                           .name("regex")
+                                                           .type(Scalars.INSTANCE.getGraphQLString()))
+                                                                                                               .dataFetcher(splitFetcher))
 
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("splitNotNull")
-                        .description("String#split(regex) but replace empty strings with nulls to help us test null behavior in lists")
-                        .type(new GraphQLList(new GraphQLNonNull(new GraphQLTypeReference("StringObject"))))
-                        .argument(GraphQLArgument.newArgument()
-                                .name("regex")
-                                .type(Scalars.GraphQLString))
-                        .dataFetcher(splitFetcher))
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("splitNotNull")
+                                                                                                               .description("String#split(regex) but replace empty strings with nulls to help us test null behavior in lists")
+                                                                                                               .type(new GraphQLList(new GraphQLNonNull(new GraphQLTypeReference("StringObject"))))
+                                                                                                               .argument(GraphQLArgument.Companion.newArgument()
+                                                           .name("regex")
+                                                           .type(Scalars.INSTANCE.getGraphQLString()))
+                                                                                                               .dataFetcher(splitFetcher))
 
 
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("append")
-                        .type(new GraphQLTypeReference("StringObject"))
-                        .argument(GraphQLArgument.newArgument()
-                                .name("text")
-                                .type(Scalars.GraphQLString))
-                        .dataFetcher(appendFetcher))
+                                                                        .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                               .name("append")
+                                                                                                               .type(new GraphQLTypeReference("StringObject"))
+                                                                                                               .argument(GraphQLArgument.Companion.newArgument()
+                                                           .name("text")
+                                                           .type(Scalars.INSTANCE.getGraphQLString()))
+                                                                                                               .dataFetcher(appendFetcher))
 
-                .build();
+                                                                        .build();
 
 
         GraphQLEnumType enumDayType = GraphQLEnumType.newEnum()
@@ -282,33 +282,33 @@ public class FunWithStringsSchemaFactory {
                 .description("Day of the week")
                 .build();
 
-        GraphQLObjectType queryType = GraphQLObjectType.newObject()
-                .name("StringQuery")
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("string")
-                        .type(stringObjectType)
-                        .argument(GraphQLArgument.newArgument()
-                                .name("value")
-                                .type(Scalars.GraphQLString))
-                        .dataFetcher(new DataFetcher() {
+        GraphQLObjectType queryType = GraphQLObjectType.Companion.newObject()
+                                                                 .name("StringQuery")
+                                                                 .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                        .name("string")
+                                                                                                        .type(stringObjectType)
+                                                                                                        .argument(GraphQLArgument.Companion.newArgument()
+                                                           .name("value")
+                                                           .type(Scalars.INSTANCE.getGraphQLString()))
+                                                                                                        .dataFetcher(new DataFetcher() {
                             @Override
                             public CompletionStage<Object> get(DataFetchingEnvironment env) {
                                 CompletableFuture<Object> promise = new CompletableFuture<>();
-                                promise.complete(env.getArgument("value"));
+                                promise.complete(env.argument("value"));
                                 return promise;
                             }
                         }))
-                .name("EnumQuery")
-                .field(GraphQLFieldDefinition.newFieldDefinition()
-                        .name("nullEnum")
-                        .type(enumDayType)
-                        .dataFetcher(new DataFetcher() {
+                                                                 .name("EnumQuery")
+                                                                 .field(GraphQLFieldDefinition.Companion.newFieldDefinition()
+                                                                                                        .name("nullEnum")
+                                                                                                        .type(enumDayType)
+                                                                                                        .dataFetcher(new DataFetcher() {
                            @Override
                            public CompletionStage<Object> get(DataFetchingEnvironment env) {
                                return CompletableFuture.completedFuture(null);
                            }
                         }))
-                .build();
+                                                                 .build();
         return GraphQLSchema.newSchema()
                 .query(queryType)
                 .build();

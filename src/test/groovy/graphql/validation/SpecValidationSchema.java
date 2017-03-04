@@ -41,137 +41,137 @@ public class SpecValidationSchema {
             .value("JUMP")
             .build();
             
-    public static final GraphQLInterfaceType sentient = GraphQLInterfaceType.newInterface()
-            .name("Sentient")
-            .field(new GraphQLFieldDefinition(
-                    "name", null, new GraphQLNonNull(Scalars.GraphQLString), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
-            .typeResolver(new TypeResolver() {
+    public static final GraphQLInterfaceType sentient = GraphQLInterfaceType.Companion.newInterface()
+                                                                                      .name("Sentient")
+                                                                                      .field(new GraphQLFieldDefinition(
+                    "name", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString()), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                                      .typeResolver(new TypeResolver() {
             @Override
             public GraphQLObjectType getType(Object object) {
                 if (object instanceof Human) return human;
                 if (object instanceof Alien) return alien;
                 return null;
             }})
-            .build();
+                                                                                      .build();
             
-    public static final GraphQLInterfaceType pet = GraphQLInterfaceType.newInterface()
-            .name("Pet")
-            .field(new GraphQLFieldDefinition(
-                    "name", null, new GraphQLNonNull(Scalars.GraphQLString), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
-            .typeResolver(new TypeResolver() {
+    public static final GraphQLInterfaceType pet = GraphQLInterfaceType.Companion.newInterface()
+                                                                                 .name("Pet")
+                                                                                 .field(new GraphQLFieldDefinition(
+                    "name", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString()), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                                 .typeResolver(new TypeResolver() {
             @Override
             public GraphQLObjectType getType(Object object) {
                 if (object instanceof Dog) return dog;
                 if (object instanceof Cat) return cat;
                 return null;
             }})
-            .build();
+                                                                                 .build();
             
-    public static final GraphQLObjectType human = GraphQLObjectType.newObject()
-            .name("Human")
-            .field(new GraphQLFieldDefinition(
-                    "name", null, new GraphQLNonNull(Scalars.GraphQLString), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
-            .withInterface(SpecValidationSchema.sentient)
-            .build();
+    public static final GraphQLObjectType human = GraphQLObjectType.Companion.newObject()
+                                                                             .name("Human")
+                                                                             .field(new GraphQLFieldDefinition(
+                    "name", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString()), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                             .withInterface(SpecValidationSchema.sentient)
+                                                                             .build();
             
-    public static final GraphQLObjectType alien = GraphQLObjectType.newObject()
-            .name("Alien")
-            .field(new GraphQLFieldDefinition(
-                    "name", null, new GraphQLNonNull(Scalars.GraphQLString), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
-            .field(new GraphQLFieldDefinition(
-                    "homePlanet", null, Scalars.GraphQLString, new FieldDataFetcher("homePlanet"), Collections.<GraphQLArgument>emptyList(), null))
-            .withInterface(SpecValidationSchema.sentient)
-            .build();
+    public static final GraphQLObjectType alien = GraphQLObjectType.Companion.newObject()
+                                                                             .name("Alien")
+                                                                             .field(new GraphQLFieldDefinition(
+                    "name", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString()), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                             .field(new GraphQLFieldDefinition(
+                    "homePlanet", null, Scalars.INSTANCE.getGraphQLString(), new FieldDataFetcher("homePlanet"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                             .withInterface(SpecValidationSchema.sentient)
+                                                                             .build();
             
-    public static final GraphQLArgument dogCommandArg = GraphQLArgument.newArgument()
-            .name("dogCommand")
-            .type(new GraphQLNonNull(dogCommand))
-            .build();
+    public static final GraphQLArgument dogCommandArg = GraphQLArgument.Companion.newArgument()
+                                                                                 .name("dogCommand")
+                                                                                 .type(new GraphQLNonNull(dogCommand))
+                                                                                 .build();
             
-    public static final GraphQLArgument atOtherHomesArg = GraphQLArgument.newArgument()
-            .name("atOtherHomes")
-            .type(Scalars.GraphQLBoolean)
-            .build();
+    public static final GraphQLArgument atOtherHomesArg = GraphQLArgument.Companion.newArgument()
+                                                                                   .name("atOtherHomes")
+                                                                                   .type(Scalars.INSTANCE.getGraphQLBoolean())
+                                                                                   .build();
             
-    public static final GraphQLArgument catCommandArg = GraphQLArgument.newArgument()
-            .name("catCommand")
-            .type(new GraphQLNonNull(catCommand))
-            .build();
+    public static final GraphQLArgument catCommandArg = GraphQLArgument.Companion.newArgument()
+                                                                                 .name("catCommand")
+                                                                                 .type(new GraphQLNonNull(catCommand))
+                                                                                 .build();
             
-    public static final GraphQLObjectType dog = GraphQLObjectType.newObject()
-            .name("Dog")
-            .field(new GraphQLFieldDefinition(
-                    "name", null, new GraphQLNonNull(Scalars.GraphQLString), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
-            .field(new GraphQLFieldDefinition(
-                    "nickname", null, Scalars.GraphQLString, new FieldDataFetcher("nickname"), Collections.<GraphQLArgument>emptyList(), null))
-            .field(new GraphQLFieldDefinition(
-                    "barkVolume", null, Scalars.GraphQLInt, new FieldDataFetcher("barkVolume"), Collections.<GraphQLArgument>emptyList(), null))
-            .field(new GraphQLFieldDefinition(
-                    "doesKnowCommand", null, new GraphQLNonNull(Scalars.GraphQLBoolean), new FieldDataFetcher("doesKnowCommand"),
+    public static final GraphQLObjectType dog = GraphQLObjectType.Companion.newObject()
+                                                                           .name("Dog")
+                                                                           .field(new GraphQLFieldDefinition(
+                    "name", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString()), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                           .field(new GraphQLFieldDefinition(
+                    "nickname", null, Scalars.INSTANCE.getGraphQLString(), new FieldDataFetcher("nickname"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                           .field(new GraphQLFieldDefinition(
+                    "barkVolume", null, Scalars.INSTANCE.getGraphQLInt(), new FieldDataFetcher("barkVolume"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                           .field(new GraphQLFieldDefinition(
+                    "doesKnowCommand", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLBoolean()), new FieldDataFetcher("doesKnowCommand"),
                     Arrays.asList(dogCommandArg), null))
-            .field(new GraphQLFieldDefinition(
-                    "isHousetrained", null, Scalars.GraphQLBoolean, new FieldDataFetcher("isHousetrained"),
+                                                                           .field(new GraphQLFieldDefinition(
+                    "isHousetrained", null, Scalars.INSTANCE.getGraphQLBoolean(), new FieldDataFetcher("isHousetrained"),
                     Arrays.asList(atOtherHomesArg), null))
-            .field(new GraphQLFieldDefinition(
+                                                                           .field(new GraphQLFieldDefinition(
                     "owner", null, human, new FieldDataFetcher("owner"), Collections.<GraphQLArgument>emptyList(), null))
-            .withInterface(SpecValidationSchema.pet)
-            .build();
+                                                                           .withInterface(SpecValidationSchema.pet)
+                                                                           .build();
             
-    public static final GraphQLObjectType cat = GraphQLObjectType.newObject()
-            .name("Cat")
-            .field(new GraphQLFieldDefinition(
-                    "name", null, new GraphQLNonNull(Scalars.GraphQLString), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
-            .field(new GraphQLFieldDefinition(
-                    "nickname", null, Scalars.GraphQLString, new FieldDataFetcher("nickname"), Collections.<GraphQLArgument>emptyList(), null))
-            .field(new GraphQLFieldDefinition(
-                    "meowVolume", null, Scalars.GraphQLInt, new FieldDataFetcher("meowVolume"), Collections.<GraphQLArgument>emptyList(), null))
-            .field(new GraphQLFieldDefinition(
-                    "doesKnowCommand", null, new GraphQLNonNull(Scalars.GraphQLBoolean), new FieldDataFetcher("doesKnowCommand"),
+    public static final GraphQLObjectType cat = GraphQLObjectType.Companion.newObject()
+                                                                           .name("Cat")
+                                                                           .field(new GraphQLFieldDefinition(
+                    "name", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLString()), new FieldDataFetcher("name"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                           .field(new GraphQLFieldDefinition(
+                    "nickname", null, Scalars.INSTANCE.getGraphQLString(), new FieldDataFetcher("nickname"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                           .field(new GraphQLFieldDefinition(
+                    "meowVolume", null, Scalars.INSTANCE.getGraphQLInt(), new FieldDataFetcher("meowVolume"), Collections.<GraphQLArgument>emptyList(), null))
+                                                                           .field(new GraphQLFieldDefinition(
+                    "doesKnowCommand", null, new GraphQLNonNull(Scalars.INSTANCE.getGraphQLBoolean()), new FieldDataFetcher("doesKnowCommand"),
                     Arrays.asList(catCommandArg), null))
-            .withInterface(SpecValidationSchema.pet)
-            .build();
+                                                                           .withInterface(SpecValidationSchema.pet)
+                                                                           .build();
             
-    public static final GraphQLUnionType catOrDog = GraphQLUnionType.newUnionType()
-            .name("CatOrDog")
-            .possibleTypes(cat, dog)
-            .typeResolver(new TypeResolver() {
+    public static final GraphQLUnionType catOrDog = GraphQLUnionType.Companion.newUnionType()
+                                                                              .name("CatOrDog")
+                                                                              .possibleTypes(cat, dog)
+                                                                              .typeResolver(new TypeResolver() {
             @Override
             public GraphQLObjectType getType(Object object) {
                 if (object instanceof Cat) return cat;
                 if (object instanceof Dog) return dog;
                 return null;
             }})
-            .build();
+                                                                              .build();
             
-    public static final GraphQLUnionType dogOrHuman = GraphQLUnionType.newUnionType()
-            .name("DogOrHuman")
-            .possibleTypes(dog, human)
-            .typeResolver(new TypeResolver() {
+    public static final GraphQLUnionType dogOrHuman = GraphQLUnionType.Companion.newUnionType()
+                                                                                .name("DogOrHuman")
+                                                                                .possibleTypes(dog, human)
+                                                                                .typeResolver(new TypeResolver() {
             @Override
             public GraphQLObjectType getType(Object object) {
                 if (object instanceof Human) return human;
                 if (object instanceof Dog) return dog;
                 return null;
             }})
-            .build();
+                                                                                .build();
             
-    public static final GraphQLUnionType humanOrAlien = GraphQLUnionType.newUnionType()
-            .name("HumanOrAlien")
-            .possibleTypes(human, alien)
-            .typeResolver(new TypeResolver() {
+    public static final GraphQLUnionType humanOrAlien = GraphQLUnionType.Companion.newUnionType()
+                                                                                  .name("HumanOrAlien")
+                                                                                  .possibleTypes(human, alien)
+                                                                                  .typeResolver(new TypeResolver() {
             @Override
             public GraphQLObjectType getType(Object object) {
                 if (object instanceof Human) return human;
                 if (object instanceof Alien) return alien;
                 return null;
             }})
-            .build();
+                                                                                  .build();
     
-    public static final GraphQLObjectType queryRoot = GraphQLObjectType.newObject()
-            .name("QueryRoot")
-            .field(new GraphQLFieldDefinition(
+    public static final GraphQLObjectType queryRoot = GraphQLObjectType.Companion.newObject()
+                                                                                 .name("QueryRoot")
+                                                                                 .field(new GraphQLFieldDefinition(
                     "dog", null, dog, new FieldDataFetcher("dog"), Collections.<GraphQLArgument>emptyList(), null))
-            .build();
+                                                                                 .build();
             
     @SuppressWarnings("serial")
     public static final Set<GraphQLType> specValidationDictionary = new HashSet<GraphQLType>() {{

@@ -10,6 +10,10 @@ class ArrayValue() : AbstractNode(), Value {
     override val children: List<Node>
         get() = values
 
+    fun add(value: Value) {
+        values += value
+    }
+
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true
         if (javaClass != node.javaClass) return false

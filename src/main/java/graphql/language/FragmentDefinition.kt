@@ -44,4 +44,8 @@ class FragmentDefinition : AbstractNode, Definition {
                 ", selectionSet=" + selectionSet +
                 '}'
     }
+
+    fun add(directive: Directive) {
+        directives += directive
+    }
 }

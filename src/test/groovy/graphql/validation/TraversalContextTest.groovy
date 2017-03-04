@@ -63,8 +63,8 @@ class TraversalContextTest extends Specification {
         traversalContext.enter(field,[])
 
         then:
-        traversalContext.getOutputType() == droidType.getFieldDefinition("id").getType()
-        traversalContext.getFieldDef() == droidType.getFieldDefinition("id")
+        traversalContext.getOutputType() == droidType.fieldDefinition("id").getType()
+        traversalContext.getFieldDef() == droidType.fieldDefinition("id")
 
         when:
         traversalContext.leave(field,[])
@@ -146,14 +146,14 @@ class TraversalContextTest extends Specification {
     def "field argument saves argument and input type"() {
         given:
         Argument argument = new Argument("id", new StringValue("string"))
-        traversalContext.fieldDefStack.add(queryType.getFieldDefinition("droid"))
+        traversalContext.fieldDefStack.add(queryType.fieldDefinition("droid"))
 
         when:
         traversalContext.enter(argument,[])
 
         then:
-        traversalContext.getArgument() == queryType.getFieldDefinition("droid").getArgument("id")
-        traversalContext.getInputType() == queryType.getFieldDefinition("droid").getArgument("id").getType()
+        traversalContext.getArgument() == queryType.fieldDefinition("droid").getArgument("id")
+        traversalContext.getInputType() == queryType.fieldDefinition("droid").getArgument("id").getType()
 
         when:
         traversalContext.leave(argument,[])
@@ -173,8 +173,8 @@ class TraversalContextTest extends Specification {
         traversalContext.enter(argument,[])
 
         then:
-        traversalContext.getArgument() == IncludeDirective.getArgument("if")
-        traversalContext.getInputType() == IncludeDirective.getArgument("if").getType()
+        traversalContext.getArgument() == IncludeDirective.argument("if")
+        traversalContext.getInputType() == IncludeDirective.argument("if").getType()
 
         when:
         traversalContext.leave(argument,[])

@@ -58,7 +58,7 @@ public class PossibleFragmentSpreads extends AbstractRule {
         } else if (parent instanceof GraphQLInterfaceType) {
             possibleParentTypes = new SchemaUtil().findImplementations(getValidationContext().getSchema(), (GraphQLInterfaceType) parent);
         } else if (parent instanceof GraphQLUnionType) {
-            possibleParentTypes = ((GraphQLUnionType) parent).getTypes();
+            possibleParentTypes = ((GraphQLUnionType) parent).types();
         } else {
             throw new ShouldNotHappenException();
         }
@@ -68,7 +68,7 @@ public class PossibleFragmentSpreads extends AbstractRule {
         } else if (type instanceof GraphQLInterfaceType) {
             possibleConditionTypes = new SchemaUtil().findImplementations(getValidationContext().getSchema(), (GraphQLInterfaceType) type);
         } else if (type instanceof GraphQLUnionType) {
-            possibleConditionTypes = ((GraphQLUnionType) type).getTypes();
+            possibleConditionTypes = ((GraphQLUnionType) type).types();
         } else {
             throw new ShouldNotHappenException();
         }

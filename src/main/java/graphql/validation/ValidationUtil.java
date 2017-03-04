@@ -57,7 +57,7 @@ public class ValidationUtil {
         if (isFieldMissing(type, objectFieldMap)) return false;
 
         for (ObjectField objectField : objectValue.objectFields()) {
-            GraphQLInputObjectField inputObjectField = type.getField(objectField.getName());
+            GraphQLInputObjectField inputObjectField = type.field(objectField.getName());
             if (inputObjectField == null) return false;
             if (!isValidLiteralValue(objectField.getValue(), inputObjectField.getType())) return false;
 

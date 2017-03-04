@@ -199,7 +199,7 @@ public abstract class ExecutionStrategy {
             return TypeNameMetaFieldDef;
         }
 
-        GraphQLFieldDefinition fieldDefinition = parentType.getFieldDefinition(field.getName());
+        GraphQLFieldDefinition fieldDefinition = parentType.fieldDefinition(field.getName());
         if (fieldDefinition == null) {
             throw new GraphQLException("unknown field " + field.getName());
         }

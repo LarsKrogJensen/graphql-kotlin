@@ -101,12 +101,12 @@ public class GarfieldSchema {
     public static Person liz = new Person("Liz");
     public static Person john = new Person("John", Arrays.asList(garfield), Arrays.asList(odie), Arrays.asList(liz, odie));
 
-    public static GraphQLInterfaceType NamedType = newInterface()
-            .name("Named")
-            .field(newFieldDefinition()
-                    .name("name")
-                    .type(GraphQLString))
-            .typeResolver(new TypeResolver() {
+    public static GraphQLInterfaceType NamedType = Companion.newInterface()
+                                                            .name("Named")
+                                                            .field(Companion.newFieldDefinition()
+                                                                            .name("name")
+                                                                            .type(INSTANCE.getGraphQLString()))
+                                                            .typeResolver(new TypeResolver() {
                 @Override
                 public GraphQLObjectType getType(Object object) {
                     if (object instanceof Dog) {
@@ -121,35 +121,35 @@ public class GarfieldSchema {
                     return null;
                 }
             })
-            .build();
+                                                            .build();
 
-    public static GraphQLObjectType DogType = newObject()
-            .name("Dog")
-            .field(newFieldDefinition()
-                    .name("name")
-                    .type(GraphQLString))
-            .field(newFieldDefinition()
-                    .name("barks")
-                    .type(GraphQLBoolean))
-            .withInterface(NamedType)
-            .build();
+    public static GraphQLObjectType DogType = Companion.newObject()
+                                                       .name("Dog")
+                                                       .field(Companion.newFieldDefinition()
+                                                                       .name("name")
+                                                                       .type(INSTANCE.getGraphQLString()))
+                                                       .field(Companion.newFieldDefinition()
+                                                                       .name("barks")
+                                                                       .type(INSTANCE.getGraphQLBoolean()))
+                                                       .withInterface(NamedType)
+                                                       .build();
 
-    public static GraphQLObjectType CatType = newObject()
-            .name("Cat")
-            .field(newFieldDefinition()
-                    .name("name")
-                    .type(GraphQLString))
-            .field(newFieldDefinition()
-                    .name("meows")
-                    .type(GraphQLBoolean))
-            .withInterface(NamedType)
-            .build();
+    public static GraphQLObjectType CatType = Companion.newObject()
+                                                       .name("Cat")
+                                                       .field(Companion.newFieldDefinition()
+                                                                       .name("name")
+                                                                       .type(INSTANCE.getGraphQLString()))
+                                                       .field(Companion.newFieldDefinition()
+                                                                       .name("meows")
+                                                                       .type(INSTANCE.getGraphQLBoolean()))
+                                                       .withInterface(NamedType)
+                                                       .build();
 
-    public static GraphQLUnionType PetType = newUnionType()
-            .name("Pet")
-            .possibleType(CatType)
-            .possibleType(DogType)
-            .typeResolver(new TypeResolver() {
+    public static GraphQLUnionType PetType = Companion.newUnionType()
+                                                      .name("Pet")
+                                                      .possibleType(CatType)
+                                                      .possibleType(DogType)
+                                                      .typeResolver(new TypeResolver() {
                 @Override
                 public GraphQLObjectType getType(Object object) {
                     if (object instanceof Cat) {
@@ -161,21 +161,21 @@ public class GarfieldSchema {
                     return null;
                 }
             })
-            .build();
+                                                      .build();
 
-    public static GraphQLObjectType PersonType = newObject()
-            .name("Person")
-            .field(newFieldDefinition()
-                    .name("name")
-                    .type(GraphQLString))
-            .field(newFieldDefinition()
-                    .name("pets")
-                    .type(new GraphQLList(PetType)))
-            .field(newFieldDefinition()
-                    .name("friends")
-                    .type(new GraphQLList(NamedType)))
-            .withInterface(NamedType)
-            .build();
+    public static GraphQLObjectType PersonType = Companion.newObject()
+                                                          .name("Person")
+                                                          .field(Companion.newFieldDefinition()
+                                                                          .name("name")
+                                                                          .type(INSTANCE.getGraphQLString()))
+                                                          .field(Companion.newFieldDefinition()
+                                                                          .name("pets")
+                                                                          .type(new GraphQLList(PetType)))
+                                                          .field(Companion.newFieldDefinition()
+                                                                          .name("friends")
+                                                                          .type(new GraphQLList(NamedType)))
+                                                          .withInterface(NamedType)
+                                                          .build();
 
     public static GraphQLSchema GarfieldSchema = GraphQLSchema.newSchema()
             .query(PersonType)

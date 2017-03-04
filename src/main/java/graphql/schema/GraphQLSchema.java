@@ -50,7 +50,7 @@ public class GraphQLSchema {
     }
 
     public List<GraphQLDirective> getDirectives() {
-        return Arrays.asList(Directives.IncludeDirective, Directives.SkipDirective);
+        return Arrays.asList(Directives.INSTANCE.getIncludeDirective(), Directives.INSTANCE.getSkipDirective());
     }
 
     public GraphQLDirective getDirective(String name) {
@@ -99,6 +99,10 @@ public class GraphQLSchema {
             Assert.assertNotNull(dictionary, "dictionary can't be null");
             GraphQLSchema graphQLSchema = new GraphQLSchema(queryType, mutationType, dictionary);
             new SchemaUtil().replaceTypeReferences(graphQLSchema);
+            Collection<ValidationError> errors = new Validator().validateSchema(graphQLSchema);
+            if (errors.size() > 0) {
+                throw new InvalidSchemaException(errors);
+            }
             return graphQLSchema;
         }
 

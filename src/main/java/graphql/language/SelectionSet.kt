@@ -4,7 +4,7 @@ class SelectionSet : AbstractNode {
 
     private val selections = mutableListOf<Selection>()
 
-    fun selections(): List<Selection> {
+    fun selections(): MutableList<Selection> {
         return selections
     }
 

@@ -16,13 +16,13 @@ public class RelaySchema
 {
 
     public static Relay relay = new Relay();
-    public static GraphQLObjectType StuffType = newObject()
-        .name("Stuff")
-        .field(newFieldDefinition()
-                   .name("id")
-                   .type(GraphQLString)
-                   .fetchField())
-        .build();
+    public static GraphQLObjectType StuffType = Companion.newObject()
+                                                         .name("Stuff")
+                                                         .field(Companion.newFieldDefinition()
+                                                                         .name("id")
+                                                                         .type(INSTANCE.getGraphQLString())
+                                                                         .fetchField())
+                                                         .build();
 
     public static GraphQLInterfaceType NodeInterface = relay.nodeInterface(new TypeResolver()
     {
@@ -41,32 +41,32 @@ public class RelaySchema
     public static GraphQLObjectType StuffConnectionType = relay
         .connectionType("Stuff", StuffEdgeType, new ArrayList<>());
 
-    public static GraphQLObjectType ThingType = newObject()
-        .name("Thing")
-        .field(newFieldDefinition()
-                   .name("id")
-                   .type(GraphQLString)
-                   .fetchField())
-        .field(newFieldDefinition()
-                   .name("stuffs")
-                   .type(StuffConnectionType))
-        .build();
+    public static GraphQLObjectType ThingType = Companion.newObject()
+                                                         .name("Thing")
+                                                         .field(Companion.newFieldDefinition()
+                                                                         .name("id")
+                                                                         .type(INSTANCE.getGraphQLString())
+                                                                         .fetchField())
+                                                         .field(Companion.newFieldDefinition()
+                                                                         .name("stuffs")
+                                                                         .type(StuffConnectionType))
+                                                         .build();
 
 
-    public static GraphQLObjectType RelayQueryType = newObject()
-        .name("RelayQuery")
-        .field(relay.nodeField(NodeInterface, environment -> {
+    public static GraphQLObjectType RelayQueryType = Companion.newObject()
+                                                              .name("RelayQuery")
+                                                              .field(relay.nodeField(NodeInterface, environment -> {
             //TODO: implement
             return CompletableFuture.completedFuture((String)null);
         }))
-        .field(newFieldDefinition()
-                   .name("thing")
-                   .type(ThingType)
-                   .argument(newArgument()
-                                 .name("id")
-                                 .description("id of the thing")
-                                 .type(new GraphQLNonNull(GraphQLString)))
-                   .dataFetcher(new DataFetcher()
+                                                              .field(Companion.newFieldDefinition()
+                                                                              .name("thing")
+                                                                              .type(ThingType)
+                                                                              .argument(Companion.newArgument()
+                                      .name("id")
+                                      .description("id of the thing")
+                                      .type(new GraphQLNonNull(INSTANCE.getGraphQLString())))
+                                                                              .dataFetcher(new DataFetcher()
                    {
                        @Override
                        public CompletionStage<Object> get(DataFetchingEnvironment environment)
@@ -75,7 +75,7 @@ public class RelaySchema
                            return CompletableFuture.completedFuture(null);
                        }
                    }))
-        .build();
+                                                              .build();
 
 
     public static GraphQLSchema Schema = GraphQLSchema.newSchema()

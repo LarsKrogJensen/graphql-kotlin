@@ -1,6 +1,6 @@
 package graphql.language
 
-class BooleanValue(var isValue: Boolean) : AbstractNode(), Value {
+class BooleanValue(var value: Boolean) : AbstractNode(), Value {
     override val children: List<Node>
         get() = emptyList()
 
@@ -10,6 +10,6 @@ class BooleanValue(var isValue: Boolean) : AbstractNode(), Value {
 
         val that = node as BooleanValue
 
-        return isValue == that.isValue
+        return value == that.value
     }
 }

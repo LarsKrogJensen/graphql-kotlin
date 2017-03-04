@@ -59,4 +59,12 @@ class Field() : AbstractNode(), Selection {
                 ", selectionSet=" + selectionSet +
                 '}'
     }
+
+    fun add(directive: Directive) {
+        directives += directive
+    }
+
+    fun add(argument: Argument) {
+        arguments += argument
+    }
 }

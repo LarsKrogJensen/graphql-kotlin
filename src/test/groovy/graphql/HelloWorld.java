@@ -22,19 +22,19 @@ public class HelloWorld
     public static void main(String[] args)
         throws ExecutionException, InterruptedException
     {
-        GraphQLObjectType queryType = newObject()
-            .name("helloWorldQuery")
-            //.field(new GraphQLFieldDefinition.Builder<String>()
-            //           .type(GraphQLString)
-            //           .name("hello")
-            //           .dataFetcher(env -> sayHello()))
+        GraphQLObjectType queryType = Companion.newObject()
+                                               .name("helloWorldQuery")
+                                               //.field(new GraphQLFieldDefinition.Builder<String>()
+                                               //           .type(GraphQLString)
+                                               //           .name("hello")
+                                               //           .dataFetcher(env -> sayHello()))
 
-            .field(GraphQLFieldDefinition.<String>newFieldDefinition()
-                       .type(GraphQLString)
+                                               .field(GraphQLFieldDefinition.Companion.<String>newFieldDefinition()
+                       .type(INSTANCE.getGraphQLString())
                        .name("hello")
                        .dataFetcher((env) -> sayHello()))
-            //.staticValue("world"))
-            .build();
+                                               //.staticValue("world"))
+                                               .build();
 
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(queryType)
@@ -48,13 +48,13 @@ public class HelloWorld
     public void helloWorldTest()
         throws ExecutionException, InterruptedException
     {
-        GraphQLObjectType queryType = newObject()
-            .name("helloWorldQuery")
-            .field(newFieldDefinition()
-                       .type(GraphQLString)
-                       .name("hello")
-                       .staticValue("world"))
-            .build();
+        GraphQLObjectType queryType = Companion.newObject()
+                                               .name("helloWorldQuery")
+                                               .field(Companion.newFieldDefinition()
+                                                               .type(INSTANCE.getGraphQLString())
+                                                               .name("hello")
+                                                               .staticValue("world"))
+                                               .build();
 
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(queryType)

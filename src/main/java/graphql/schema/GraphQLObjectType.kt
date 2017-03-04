@@ -1,0 +1,163 @@
+package graphql.schema
+
+import graphql.AssertException
+
+import java.util.*
+
+import graphql.Assert.assertNotNull
+import kotlin.properties.Delegates.notNull
+
+open class GraphQLObjectType(override val name: String,
+                             val description: String?,
+                             fieldDefinitions: List<GraphQLFieldDefinition<*>>,
+                             interfaces: List<GraphQLInterfaceType>) : GraphQLType, GraphQLOutputType, GraphQLFieldsContainer, GraphQLCompositeType, GraphQLUnmodifiedType, GraphQLNullableType {
+    private val fieldDefinitionsByName = linkedMapOf<String, GraphQLFieldDefinition<*>>()
+    private val interfaces = mutableListOf<GraphQLInterfaceType>()
+
+    init {
+        this.interfaces.addAll(interfaces)
+        buildDefinitionMap(fieldDefinitions)
+    }
+
+    internal fun replaceTypeReferences(typeMap: Map<String, GraphQLType>) {
+        for (i in interfaces.indices) {
+            val inter = interfaces[i]
+            if (inter is TypeReference) {
+                this.interfaces[i] = SchemaUtil().resolveTypeReference(inter, typeMap) as GraphQLInterfaceType
+            }
+        }
+    }
+
+    private fun buildDefinitionMap(fieldDefinitions: List<GraphQLFieldDefinition<*>>) {
+        for (fieldDefinition in fieldDefinitions) {
+            val name = fieldDefinition.name
+            if (fieldDefinitionsByName.containsKey(name))
+                throw AssertException("field $name redefined")
+            fieldDefinitionsByName.put(name, fieldDefinition)
+        }
+    }
+
+
+    fun fieldDefinition(name: String): GraphQLFieldDefinition<*>? {
+        return fieldDefinitionsByName[name]
+    }
+
+
+    override val fieldDefinitions: List<GraphQLFieldDefinition<*>>
+        get() = ArrayList(fieldDefinitionsByName.values)
+
+
+    fun interfaces(): List<GraphQLInterfaceType> {
+        return interfaces
+    }
+
+
+    override fun toString(): String {
+        return "GraphQLObjectType{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", fieldDefinitionsByName=" + fieldDefinitionsByName +
+                ", interfaces=" + interfaces +
+                '}'
+    }
+
+    class Builder {
+        private var name: String by notNull<String>()
+        private var description: String? = null
+        private val fieldDefinitions = mutableListOf<GraphQLFieldDefinition<*>>()
+        private val interfaces = mutableListOf<GraphQLInterfaceType>()
+
+        fun name(name: String): Builder {
+            this.name = name
+            return this
+        }
+
+        fun description(description: String): Builder {
+            this.description = description
+            return this
+        }
+
+        fun <T> field(fieldDefinition: GraphQLFieldDefinition<T>): Builder {
+            assertNotNull(fieldDefinition, "fieldDefinition can't be null")
+            this.fieldDefinitions.add(fieldDefinition)
+            return this
+        }
+
+        /**
+         * Take a field builder in a function definition and apply. Can be used in a jdk8 lambda
+         * e.g.:
+         * <pre>
+         * `field(f -> f.name("fieldName"))
+        ` *
+        </pre> *
+
+         * @param builderFunction a supplier for the builder impl
+         * *
+         * @param <T>             field outputtype
+         * *
+         * @return this
+        </T> */
+        fun <T> field(builderFunction: BuilderFunction<GraphQLFieldDefinition.Builder<T>>): Builder {
+            assertNotNull(builderFunction, "builderFunction can't be null")
+            var builder: GraphQLFieldDefinition.Builder<T> = GraphQLFieldDefinition.newFieldDefinition<T>()
+            builder = builderFunction.apply(builder)
+            return field<T>(builder.build())
+        }
+
+        /**
+         * Same effect as the field(GraphQLFieldDefinition). Builder.build() is called
+         * from within
+
+         * @param builder an un-built/incomplete GraphQLFieldDefinition
+         * *
+         * @param <T>     field outputtype
+         * *
+         * @return this
+        </T> */
+        fun <T> field(builder: GraphQLFieldDefinition.Builder<T>): Builder {
+            this.fieldDefinitions.add(builder.build())
+            return this
+        }
+
+        fun fields(fieldDefinitions: List<GraphQLFieldDefinition<*>>): Builder {
+            assertNotNull(fieldDefinitions, "fieldDefinitions can't be null")
+            this.fieldDefinitions.addAll(fieldDefinitions)
+            return this
+        }
+
+        fun withInterface(interfaceType: GraphQLInterfaceType): Builder {
+            assertNotNull(interfaceType, "interfaceType can't be null")
+            this.interfaces.add(interfaceType)
+            return this
+        }
+
+        fun withInterfaces(vararg interfaceType: GraphQLInterfaceType): Builder {
+            for (type in interfaceType) {
+                withInterface(type)
+            }
+            return this
+        }
+
+        fun build(): GraphQLObjectType {
+            return GraphQLObjectType(name, description, fieldDefinitions, interfaces)
+        }
+    }
+
+    class Reference constructor(name: String) :
+            GraphQLObjectType(name,
+                              "",
+                              emptyList<GraphQLFieldDefinition<*>>(),
+                              emptyList<GraphQLInterfaceType>()), TypeReference
+
+
+    companion object {
+
+        fun newObject(): Builder {
+            return Builder()
+        }
+
+        fun reference(name: String): Reference {
+            return Reference(name)
+        }
+    }
+}

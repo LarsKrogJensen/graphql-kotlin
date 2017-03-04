@@ -49,4 +49,8 @@ class InlineFragment : AbstractNode, Selection {
                 ", selectionSet=" + selectionSet +
                 '}'
     }
+
+    fun add(directive: Directive) {
+        directives += directive
+    }
 }

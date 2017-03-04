@@ -127,7 +127,7 @@ class StarWarsData {
     static DataFetcher heroDataFetcher = new DataFetcher() {
         @Override
         public CompletionStage<Object> get(DataFetchingEnvironment environment) {
-            if (environment.containsArgument("episode") && 5 == environment.getArgument("episode")) {
+            if (environment.containsArgument("episode") && 5 == environment.argument("episode")) {
                 return CompletableFuture.completedFuture(luke)
             };
             return CompletableFuture.completedFuture(artoo)

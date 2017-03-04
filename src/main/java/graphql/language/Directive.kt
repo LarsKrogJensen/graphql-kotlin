@@ -24,4 +24,8 @@ data class Directive(var name: String) : AbstractNode() {
         return name == directive.name
     }
 
+    fun add(argument: Argument) {
+        arguments += argument
+    }
+
 }

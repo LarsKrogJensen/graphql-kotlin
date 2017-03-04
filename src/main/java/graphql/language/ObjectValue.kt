@@ -3,14 +3,9 @@ package graphql.language
 
 import java.util.ArrayList
 
-class ObjectValue : AbstractNode, Value {
+class ObjectValue() : AbstractNode(), Value {
     private val objectFields = ArrayList<ObjectField>()
 
-    constructor()
-
-    constructor(objectFields: List<ObjectField>) {
-        this.objectFields.addAll(objectFields)
-    }
 
     fun objectFields(): List<ObjectField> {
         return objectFields
@@ -30,5 +25,9 @@ class ObjectValue : AbstractNode, Value {
         return "ObjectValue{" +
                 "objectFields=" + objectFields +
                 '}'
+    }
+
+    fun add(objectField: ObjectField) {
+        objectFields += objectField
     }
 }
