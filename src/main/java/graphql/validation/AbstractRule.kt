@@ -15,7 +15,7 @@ open class AbstractRule(val validationContext: ValidationContext,
     }
 
     val errors: List<ValidationError>
-        get() = validationErrorCollector.errors
+        get() = validationErrorCollector.errors()
 
     open fun checkArgument(argument: Argument) {
 

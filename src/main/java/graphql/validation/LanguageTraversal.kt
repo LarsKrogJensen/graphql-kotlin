@@ -7,33 +7,27 @@ import java.util.ArrayList
 
 class LanguageTraversal {
 
-    private val path: MutableList<Node>
+    private val _path: List<Node>
 
     constructor() {
-        path = ArrayList<Node>()
+        _path = listOf<Node>()
     }
 
-    constructor(basePath: MutableList<Node>?) {
-        if (basePath != null) {
-            path = basePath
-        } else {
-            path = ArrayList<Node>()
-        }
+    constructor(basePath:List<Node>) {
+        _path = basePath
     }
 
     fun traverse(root: Node, queryLanguageVisitor: QueryLanguageVisitor) {
-        traverseImpl(root, queryLanguageVisitor, path)
+        traverseImpl(root, queryLanguageVisitor, _path)
     }
 
     private fun traverseImpl(root: Node,
                              queryLanguageVisitor: QueryLanguageVisitor,
-                             path: MutableList<Node>) {
+                             path: List<Node>) {
         queryLanguageVisitor.enter(root, path)
-        path.add(root)
-        for (child in root.children) {
+        for (child in root.children.asSequence().plus(root)) {
             traverseImpl(child, queryLanguageVisitor, path)
         }
-        path.removeAt(path.size - 1)
         queryLanguageVisitor.leave(root, path)
     }
 }

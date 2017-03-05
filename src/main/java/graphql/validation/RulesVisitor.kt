@@ -30,8 +30,8 @@ class RulesVisitor(private val validationContext: ValidationContext,
         }
     }
 
-    override fun enter(node: Node, ancestors: MutableList<Node>) {
-        validationContext.traversalContext.enter(node, ancestors)
+    override fun enter(node: Node, path: List<Node>) {
+        validationContext.traversalContext.enter(node, path)
         val tmpRulesSet = LinkedHashSet(this._rules)
         tmpRulesSet.removeAll(_rulesToSkip)
         val rulesToConsider = ArrayList(tmpRulesSet)
@@ -41,8 +41,8 @@ class RulesVisitor(private val validationContext: ValidationContext,
             is VariableDefinition  -> checkVariableDefinition(node, rulesToConsider)
             is Field               -> checkField(node, rulesToConsider)
             is InlineFragment      -> checkInlineFragment(node, rulesToConsider)
-            is Directive           -> checkDirective(node, ancestors, rulesToConsider)
-            is FragmentSpread      -> checkFragmentSpread(node, rulesToConsider, ancestors)
+            is Directive           -> checkDirective(node, path, rulesToConsider)
+            is FragmentSpread      -> checkFragmentSpread(node, rulesToConsider, path)
             is FragmentDefinition  -> checkFragmentDefinition(node, rulesToConsider)
             is OperationDefinition -> checkOperationDefinition(node, rulesToConsider)
             is VariableReference   -> checkVariable(node, rulesToConsider)
@@ -85,15 +85,17 @@ class RulesVisitor(private val validationContext: ValidationContext,
         }
     }
 
-    private fun checkFragmentSpread(fragmentSpread: FragmentSpread, rules: List<AbstractRule>, ancestors: MutableList<Node>) {
+    private fun checkFragmentSpread(fragmentSpread: FragmentSpread,
+                                    rules: List<AbstractRule>,
+                                    path: List<Node>) {
         for (rule in rules) {
             rule.checkFragmentSpread(fragmentSpread)
         }
         val rulesVisitingFragmentSpreads = getRulesVisitingFragmentSpreads(rules)
         if (rulesVisitingFragmentSpreads.isNotEmpty()) {
             val fragment = validationContext.getFragment(fragmentSpread.name)
-            if (!ancestors.contains(fragment)) {
-                LanguageTraversal(ancestors).traverse(fragment, RulesVisitor(validationContext, rulesVisitingFragmentSpreads, true))
+            if (!path.contains(fragment as Node)) {
+                LanguageTraversal(path).traverse(fragment, RulesVisitor(validationContext, rulesVisitingFragmentSpreads, true))
             }
         }
     }
@@ -131,8 +133,8 @@ class RulesVisitor(private val validationContext: ValidationContext,
     }
 
 
-    override fun leave(node: Node, ancestors: List<Node>) {
-        validationContext.traversalContext.leave(node, ancestors)
+    override fun leave(node: Node, path: List<Node>) {
+        validationContext.traversalContext.leave(node, path)
 
         when (node) {
             is Document            -> documentFinished(node)

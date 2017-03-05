@@ -3,12 +3,14 @@ package graphql.validation
 
 import graphql.ShouldNotHappenException
 import graphql.execution.TypeFromAST
+import graphql.introspection.Introspection.SchemaMetaFieldDef
+import graphql.introspection.Introspection.TypeMetaFieldDef
+import graphql.introspection.Introspection.TypeNameMetaFieldDef
 import graphql.language.*
 import graphql.schema.*
 
 import java.util.ArrayList
 
-import graphql.introspection.Introspection.*
 
 class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisitor {
     internal var outputTypeStack: MutableList<GraphQLOutputType> = ArrayList()
@@ -136,29 +138,24 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
     }
 
 
-    override fun leave(node: Node, ancestors: List<Node>) {
-        if (node is OperationDefinition) {
-            outputTypeStack.removeAt(outputTypeStack.size - 1)
-        } else if (node is SelectionSet) {
-            parentTypeStack.removeAt(parentTypeStack.size - 1)
-        } else if (node is Field) {
-            fieldDefStack.removeAt(fieldDefStack.size - 1)
-            outputTypeStack.removeAt(outputTypeStack.size - 1)
-        } else if (node is Directive) {
-            directive = null
-        } else if (node is InlineFragment) {
-            outputTypeStack.removeAt(outputTypeStack.size - 1)
-        } else if (node is FragmentDefinition) {
-            outputTypeStack.removeAt(outputTypeStack.size - 1)
-        } else if (node is VariableDefinition) {
-            inputTypeStack.removeAt(inputTypeStack.size - 1)
-        } else if (node is Argument) {
-            argument = null
-            inputTypeStack.removeAt(inputTypeStack.size - 1)
-        } else if (node is ArrayValue) {
-            inputTypeStack.removeAt(inputTypeStack.size - 1)
-        } else if (node is ObjectField) {
-            inputTypeStack.removeAt(inputTypeStack.size - 1)
+    override fun leave(node: Node, path: List<Node>) {
+        when (node) {
+            is OperationDefinition -> outputTypeStack.removeAt(outputTypeStack.size - 1)
+            is SelectionSet        -> parentTypeStack.removeAt(parentTypeStack.size - 1)
+            is Field               -> {
+                fieldDefStack.removeAt(fieldDefStack.size - 1)
+                outputTypeStack.removeAt(outputTypeStack.size - 1)
+            }
+            is Directive           -> directive = null
+            is InlineFragment      -> outputTypeStack.removeAt(outputTypeStack.size - 1)
+            is FragmentDefinition  -> outputTypeStack.removeAt(outputTypeStack.size - 1)
+            is VariableDefinition  -> inputTypeStack.removeAt(inputTypeStack.size - 1)
+            is Argument            -> {
+                argument = null
+                inputTypeStack.removeAt(inputTypeStack.size - 1)
+            }
+            is ArrayValue          -> inputTypeStack.removeAt(inputTypeStack.size - 1)
+            is ObjectField         -> inputTypeStack.removeAt(inputTypeStack.size - 1)
         }
     }
 
@@ -227,7 +224,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
             return TypeNameMetaFieldDef
         }
         if (parentType is GraphQLFieldsContainer) {
-            return parentType.fieldDefinitions.firstOrNull{ it.name ==field.name}
+            return parentType.fieldDefinitions.firstOrNull { it.name == field.name }
         }
         return null
     }

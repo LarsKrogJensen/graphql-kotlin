@@ -54,7 +54,7 @@ class ValidationUtil {
         if (isFieldMissing(type, objectFieldMap)) return false
 
         for ((name, value1) in objectValue.objectFields()) {
-            val inputObjectField = type.field(name!!) ?: return false
+            val inputObjectField = type.field(name) ?: return false
             if (!isValidLiteralValue(value1, inputObjectField.type)) return false
 
         }

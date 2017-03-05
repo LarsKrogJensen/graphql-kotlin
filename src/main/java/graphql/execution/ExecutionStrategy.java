@@ -188,15 +188,15 @@ public abstract class ExecutionStrategy {
 
     protected GraphQLFieldDefinition getFieldDef(GraphQLSchema schema, GraphQLObjectType parentType, Field field) {
         if (schema.getQueryType() == parentType) {
-            if (field.getName().equals(SchemaMetaFieldDef.getName())) {
-                return SchemaMetaFieldDef;
+            if (field.getName().equals(INSTANCE.getSchemaMetaFieldDef().getName())) {
+                return INSTANCE.getSchemaMetaFieldDef();
             }
-            if (field.getName().equals(TypeMetaFieldDef.getName())) {
-                return TypeMetaFieldDef;
+            if (field.getName().equals(INSTANCE.getTypeMetaFieldDef().getName())) {
+                return INSTANCE.getTypeMetaFieldDef();
             }
         }
-        if (field.getName().equals(TypeNameMetaFieldDef.getName())) {
-            return TypeNameMetaFieldDef;
+        if (field.getName().equals(INSTANCE.getTypeNameMetaFieldDef().getName())) {
+            return INSTANCE.getTypeNameMetaFieldDef();
         }
 
         GraphQLFieldDefinition fieldDefinition = parentType.fieldDefinition(field.getName());

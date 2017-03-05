@@ -21,7 +21,7 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
     private val alreadyChecked = ArrayList<FieldPair>()
 
     override fun leaveSelectionSet(selectionSet: SelectionSet) {
-        val fieldMap = LinkedHashMap<String, List<FieldAndType>>()
+        val fieldMap = LinkedHashMap<String, MutableList<FieldAndType>>()
         val visitedFragmentSpreads = LinkedHashSet<String>()
         collectFields(fieldMap, selectionSet, validationContext.outputType, visitedFragmentSpreads)
         val conflicts = findConflicts(fieldMap)
@@ -43,7 +43,6 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
                     }
                 }
             }
-
         }
         return result
     }
@@ -97,8 +96,8 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
         }
 
         if (!sameType(type1, type2)) {
-            val name1 = type1.name
-            val name2 = type2.name
+            val name1 = type1?.name
+            val name2 = type2?.name
             val reason = String.format("%s: they return differing types %s and %s", responseName, name1, name2)
             return Conflict(responseName, reason, field1, field2)
         }
@@ -116,7 +115,7 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
         val selectionSet2 = field2.selectionSet
         if (selectionSet1 != null && selectionSet2 != null) {
             val visitedFragmentSpreads = LinkedHashSet<String>()
-            val subFieldMap = LinkedHashMap<String, List<FieldAndType>>()
+            val subFieldMap = LinkedHashMap<String, MutableList<FieldAndType>>()
             collectFields(subFieldMap, selectionSet1, type1, visitedFragmentSpreads)
             collectFields(subFieldMap, selectionSet2, type2, visitedFragmentSpreads)
             val subConflicts = findConflicts(subFieldMap)
@@ -194,25 +193,27 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
 
 
     private fun collectFields(fieldMap: MutableMap<String, MutableList<FieldAndType>>,
-                              selectionSet: SelectionSet,
-                              parentType: GraphQLType,
+                              selectionSet: SelectionSet?,
+                              parentType: GraphQLType?,
                               visitedFragmentSpreads: MutableSet<String>) {
 
-        for (selection in selectionSet.selections()) {
-            if (selection is Field) {
-                collectFieldsForField(fieldMap, parentType, selection)
+        if (selectionSet != null) {
+            for (selection in selectionSet.selections()) {
+                if (selection is Field) {
+                    collectFieldsForField(fieldMap, parentType, selection)
+                } else if (selection is InlineFragment) {
+                    collectFieldsForInlineFragment(fieldMap, visitedFragmentSpreads, parentType, selection)
 
-            } else if (selection is InlineFragment) {
-                collectFieldsForInlineFragment(fieldMap, visitedFragmentSpreads, parentType, selection)
-
-            } else if (selection is FragmentSpread) {
-                collectFieldsForFragmentSpread(fieldMap, visitedFragmentSpreads, selection)
+                } else if (selection is FragmentSpread) {
+                    collectFieldsForFragmentSpread(fieldMap, visitedFragmentSpreads, selection)
+                }
             }
         }
-
     }
 
-    private fun collectFieldsForFragmentSpread(fieldMap: Map<String, List<FieldAndType>>, visitedFragmentSpreads: MutableSet<String>, selection: FragmentSpread) {
+    private fun collectFieldsForFragmentSpread(fieldMap: MutableMap<String, MutableList<FieldAndType>>,
+                                               visitedFragmentSpreads: MutableSet<String>,
+                                               selection: FragmentSpread) {
         val fragmentSpread = selection
         val fragment = validationContext.getFragment(fragmentSpread.name) ?: return
         if (visitedFragmentSpreads.contains(fragment.name)) {
@@ -224,7 +225,10 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
         collectFields(fieldMap, fragment.selectionSet, graphQLType, visitedFragmentSpreads)
     }
 
-    private fun collectFieldsForInlineFragment(fieldMap: Map<String, List<FieldAndType>>, visitedFragmentSpreads: Set<String>, parentType: GraphQLType, selection: InlineFragment) {
+    private fun collectFieldsForInlineFragment(fieldMap: MutableMap<String, MutableList<FieldAndType>>,
+                                               visitedFragmentSpreads: MutableSet<String>,
+                                               parentType: GraphQLType?,
+                                               selection: InlineFragment) {
         val inlineFragment = selection
         val graphQLType = if (inlineFragment.typeCondition != null)
             TypeFromAST.getTypeFromAST(validationContext.schema, inlineFragment.typeCondition) as GraphQLOutputType
@@ -234,7 +238,7 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
     }
 
     private fun collectFieldsForField(fieldMap: MutableMap<String, MutableList<FieldAndType>>,
-                                      parentType: GraphQLType,
+                                      parentType: GraphQLType?,
                                       selection: Field) {
         val field = selection
         val responseName = field.alias ?: field.name
@@ -244,8 +248,8 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
         var fieldType: GraphQLOutputType? = null
         if (parentType is GraphQLFieldsContainer) {
             val fieldsContainer = parentType
-            val fieldDefinition = fieldsContainer.fieldDefinition(field.name)
-            fieldType = if (fieldDefinition != null) fieldDefinition!!.type else null
+            val fieldDefinition = fieldsContainer.fieldDefinitions.find { it.name == field.name }
+            fieldType = if (fieldDefinition != null) fieldDefinition.type else null
         }
         fieldMap.get(responseName)?.add(FieldAndType(field, fieldType, parentType))
     }
@@ -274,6 +278,6 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
 
 
     private class FieldAndType(internal var field: Field,
-                               internal var graphQLType: GraphQLType,
-                               internal var parentType: GraphQLType)
+                               internal var graphQLType: GraphQLType?,
+                               internal var parentType: GraphQLType?)
 }

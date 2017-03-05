@@ -2,16 +2,13 @@ package graphql.validation
 
 
 import graphql.language.Node
-import graphql.language.SourceLocation
-
-import java.util.ArrayList
 
 class ErrorFactory {
 
     fun newError(validationErrorType: ValidationErrorType,
                  locations: List<Node>,
                  description: String): ValidationError {
-        val locationList = locations.map { it.sourceLocation }
+        val locationList = locations.map { it.sourceLocation }.filterNotNull()
         return ValidationError(validationErrorType, locationList, description)
     }
 

@@ -28,6 +28,11 @@ interface GraphQLError {
             if (dis === dat) {
                 return true
             }
+//            if (dis == null)
+//                return false
+//            if (dat == null)
+//                return false
+
             if (if (dis.message() != null) dis.message() != dat.message() else dat.message() != null)
                 return false
             if (if (dis.locations() != null) dis.locations() != dat.locations() else dat.locations() != null)

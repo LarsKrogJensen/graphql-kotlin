@@ -1,9 +1,7 @@
 package graphql.validation.rules
 
 
-import graphql.language.TypeName
 import graphql.language.VariableDefinition
-import graphql.schema.GraphQLType
 import graphql.schema.SchemaUtil
 import graphql.validation.*
 

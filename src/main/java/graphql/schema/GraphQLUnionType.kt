@@ -3,7 +3,6 @@ package graphql.schema
 
 import java.util.ArrayList
 
-import graphql.Assert.*
 import kotlin.properties.Delegates.notNull
 
 class GraphQLUnionType(override val name: String,
@@ -53,7 +52,6 @@ class GraphQLUnionType(override val name: String,
 
 
         fun possibleType(type: GraphQLObjectType): Builder {
-            assertNotNull(type, "possible type can't be null")
             types.add(type)
             return this
         }
