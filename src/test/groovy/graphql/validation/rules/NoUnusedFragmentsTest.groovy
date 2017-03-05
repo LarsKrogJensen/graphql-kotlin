@@ -46,7 +46,7 @@ class NoUnusedFragmentsTest extends Specification {
         languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedFragments]));
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def "all fragment names are used by multiple operations"() {
@@ -80,7 +80,7 @@ class NoUnusedFragmentsTest extends Specification {
         languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedFragments]));
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
 
@@ -122,7 +122,7 @@ class NoUnusedFragmentsTest extends Specification {
 
         then:
         errorCollector.containsValidationError(ValidationErrorType.UnusedFragment)
-        errorCollector.getErrors().size() == 2
+        errorCollector.errors().size() == 2
 
     }
 
@@ -167,6 +167,6 @@ class NoUnusedFragmentsTest extends Specification {
 
         then:
         errorCollector.containsValidationError(ValidationErrorType.UnusedFragment)
-        errorCollector.getErrors().size() == 2
+        errorCollector.errors().size() == 2
     }
 }

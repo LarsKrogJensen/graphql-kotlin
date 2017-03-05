@@ -5,8 +5,14 @@ import kotlin.properties.Delegates.notNull
 
 class GraphQLArgument(val name: String,
                       val description: String,
-                      var type: GraphQLInputType,
+                      type: GraphQLInputType,
                       val defaultValue: Any?) {
+
+    var type: GraphQLInputType = type
+        get() = field
+        private set(value) {
+            field = value
+        }
 
     internal fun replaceTypeReferences(typeMap: Map<String, GraphQLType>) {
         type = SchemaUtil().resolveTypeReference(type, typeMap) as GraphQLInputType
@@ -43,10 +49,8 @@ class GraphQLArgument(val name: String,
             return GraphQLArgument(name, description, type, defaultValue)
         }
     }
+}
 
-    companion object {
-        fun newArgument(): Builder {
-            return Builder()
-        }
-    }
+fun newArgument(): GraphQLArgument.Builder {
+    return GraphQLArgument.Builder()
 }

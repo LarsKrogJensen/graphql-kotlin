@@ -29,17 +29,17 @@ import graphql.validation.SpecValidationSchemaPojos.Human;
  *        
  */
 public class SpecValidationSchema {
-    public static final GraphQLEnumType dogCommand = GraphQLEnumType.newEnum()
-            .name("DogCommand")
-            .value("SIT")
-            .value("DOWN")
-            .value("HEEL")
-            .build();
+    public static final GraphQLEnumType dogCommand = GraphQLEnumType.Companion.newEnum()
+                                                                              .name("DogCommand")
+                                                                              .value("SIT")
+                                                                              .value("DOWN")
+                                                                              .value("HEEL")
+                                                                              .build();
             
-    public static final GraphQLEnumType catCommand = GraphQLEnumType.newEnum()
-            .name("CatCommand")
-            .value("JUMP")
-            .build();
+    public static final GraphQLEnumType catCommand = GraphQLEnumType.Companion.newEnum()
+                                                                              .name("CatCommand")
+                                                                              .value("JUMP")
+                                                                              .build();
             
     public static final GraphQLInterfaceType sentient = GraphQLInterfaceType.Companion.newInterface()
                                                                                       .name("Sentient")
@@ -187,9 +187,9 @@ public class SpecValidationSchema {
         add(dogOrHuman);
         add(humanOrAlien);
     }};
-    public static final GraphQLSchema specValidationSchema = GraphQLSchema.newSchema()
-            .query(queryRoot)
-            .build(specValidationDictionary);
+    public static final GraphQLSchema specValidationSchema = GraphQLSchema.Companion.newSchema()
+                                                                                    .query(queryRoot)
+                                                                                    .build(specValidationDictionary);
     
     
 }

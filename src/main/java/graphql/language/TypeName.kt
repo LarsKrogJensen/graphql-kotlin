@@ -3,7 +3,7 @@ package graphql.language
 
 import java.util.ArrayList
 
-data class TypeName(var name: String?) : AbstractNode(), Type {
+data class TypeName(var name: String) : AbstractNode(), Type {
 
     override val children: List<Node>
         get() = ArrayList()

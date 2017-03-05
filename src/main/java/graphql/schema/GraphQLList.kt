@@ -1,22 +1,27 @@
 package graphql.schema
 
+import kotlin.properties.Delegates
 
 
-class GraphQLList(override var wrappedType: GraphQLType) : GraphQLType, GraphQLInputType, GraphQLOutputType, GraphQLModifiedType, GraphQLNullableType {
+class GraphQLList(wrappedType: GraphQLType) : GraphQLType, GraphQLInputType, GraphQLOutputType, GraphQLModifiedType, GraphQLNullableType {
+    private var _wrappedType: GraphQLType by Delegates.notNull<GraphQLType>()
+
+    override val wrappedType = _wrappedType
+
+    init {
+        _wrappedType = wrappedType
+    }
 
     internal fun replaceTypeReferences(typeMap: Map<String, GraphQLType>) {
-        wrappedType = SchemaUtil().resolveTypeReference(wrappedType, typeMap)
+        _wrappedType = SchemaUtil().resolveTypeReference(wrappedType, typeMap)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-
-        val that = other as GraphQLList?
-
-        return wrappedType == other.wrappedType
-
-    }
+    override fun equals(other: Any?) =
+            when (other) {
+                null            -> false
+                !is GraphQLList -> false
+                else            -> wrappedType == other.wrappedType
+            }
 
     override fun hashCode(): Int {
         return wrappedType.hashCode()

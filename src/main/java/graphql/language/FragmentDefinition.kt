@@ -2,12 +2,10 @@ package graphql.language
 
 class FragmentDefinition : AbstractNode, Definition {
 
-    var name: String? = null
-    var typeCondition: TypeName? = null
+    val name: String
+    val typeCondition: TypeName
     var directives: List<Directive> = mutableListOf()
     var selectionSet: SelectionSet? = null
-
-    constructor()
 
     constructor(name: String, typeCondition: TypeName) {
         this.name = name
@@ -33,7 +31,7 @@ class FragmentDefinition : AbstractNode, Definition {
 
         val that = node as FragmentDefinition
 
-        return !if (name != null) name != that.name else that.name != null
+        return name == that.name
     }
 
     override fun toString(): String {

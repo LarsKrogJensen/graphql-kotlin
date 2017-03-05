@@ -36,9 +36,9 @@ public class HelloWorld
                                                //.staticValue("world"))
                                                .build();
 
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(queryType)
-                                            .build();
+        GraphQLSchema schema = GraphQLSchema.Companion.newSchema()
+                                                      .query(queryType)
+                                                      .build();
         Map<String, Object> result = (Map<String, Object>)((CompletableFuture<ExecutionResult>)new GraphQL(schema).execute("{hello}")).get()
                                                                                                                                       .getData();
         System.out.println(result);
@@ -56,9 +56,9 @@ public class HelloWorld
                                                                .staticValue("world"))
                                                .build();
 
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(queryType)
-                                            .build();
+        GraphQLSchema schema = GraphQLSchema.Companion.newSchema()
+                                                      .query(queryType)
+                                                      .build();
         Map<String, Object> result = (Map<String, Object>)((CompletableFuture<ExecutionResult>)new GraphQL(schema).execute("{hello}")).get()
                                                                                                                                       .getData();
         assertEquals("world", result.get("hello"));

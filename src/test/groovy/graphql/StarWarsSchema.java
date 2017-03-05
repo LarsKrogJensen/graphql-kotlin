@@ -13,13 +13,13 @@ import static graphql.schema.GraphQLObjectType.newObject;
 public class StarWarsSchema {
 
 
-    public static GraphQLEnumType episodeEnum = newEnum()
-            .name("Episode")
-            .description("One of the films in the Star Wars Trilogy")
-            .value("NEWHOPE", 4, "Released in 1977.")
-            .value("EMPIRE", 5, "Released in 1980.")
-            .value("JEDI", 6, "Released in 1983.")
-            .build();
+    public static GraphQLEnumType episodeEnum = Companion.newEnum()
+                                                         .name("Episode")
+                                                         .description("One of the films in the Star Wars Trilogy")
+                                                         .value("NEWHOPE", 4, "Released in 1977.")
+                                                         .value("EMPIRE", 5, "Released in 1980.")
+                                                         .value("JEDI", 6, "Released in 1983.")
+                                                         .build();
 
 
     public static GraphQLInterfaceType characterInterface = Companion.newInterface()
@@ -128,7 +128,7 @@ public class StarWarsSchema {
                                                          .build();
 
 
-    public static GraphQLSchema starWarsSchema = GraphQLSchema.newSchema()
-            .query(queryType)
-            .build();
+    public static GraphQLSchema starWarsSchema = GraphQLSchema.Companion.newSchema()
+                                                                        .query(queryType)
+                                                                        .build();
 }

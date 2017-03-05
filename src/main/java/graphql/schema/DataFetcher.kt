@@ -1,9 +1,10 @@
 package graphql.schema
 
 
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
-interface DataFetcher<T> {
+typealias DataFetcher<T> = (environment: DataFetchingEnvironment) -> CompletionStage<T>
 
-    operator fun get(environment: DataFetchingEnvironment): CompletionStage<T>
-}
+
+fun <T> staticDataFetcher(value: T) = { _: DataFetchingEnvironment ->CompletableFuture.completedFuture(value)}

@@ -25,7 +25,7 @@ public class UnbatchedDataFetcher implements BatchedDataFetcher {
 
 
     @Override
-    public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+    public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
         @SuppressWarnings("unchecked")
         List<Object> sources = (List<Object>) environment.source();
         List<Object> results = new ArrayList<Object>();
@@ -39,11 +39,11 @@ public class UnbatchedDataFetcher implements BatchedDataFetcher {
                     environment.getFieldType(),
                     environment.getParentType(),
                     environment.getGraphQLSchema());
-            if (delegate.get(singleEnv) == null) {
+            if (delegate.fetch(singleEnv) == null) {
                 results.add(null);
                 continue;
             }
-            sourcePromises.add((CompletableFuture) delegate.get(singleEnv).thenAccept(result -> results.add(result)));
+            sourcePromises.add((CompletableFuture) delegate.fetch(singleEnv).thenAccept(result -> results.add(result)));
         }
 
         CompletableFuture[] sourcePromisesArray = new CompletableFuture[sourcePromises.size()];

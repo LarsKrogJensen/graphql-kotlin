@@ -9,6 +9,13 @@ class GraphQLDirective(val name: String,
                        val locations: Set<DirectiveLocation>,
                        val arguments: List<GraphQLArgument>) {
 
+    fun argument(name: String): GraphQLArgument? {
+        for (argument in arguments) {
+            if (argument.name == name) return argument
+        }
+        return null
+    }
+
     class Builder {
         private var name: String by notNull<String>()
         private val locations = mutableSetOf<DirectiveLocation>()
@@ -38,7 +45,7 @@ class GraphQLDirective(val name: String,
         }
 
         fun argument(builderFunction: BuilderFunction<GraphQLArgument.Builder>): Builder {
-            var builder: GraphQLArgument.Builder = GraphQLArgument.newArgument()
+            var builder: GraphQLArgument.Builder = newArgument()
             builder = builderFunction.apply(builder)
             return argument(builder)
         }

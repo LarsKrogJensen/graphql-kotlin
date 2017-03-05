@@ -26,8 +26,8 @@ public class BatchedDataFetcherFactory {
             if (batched != null) {
                 return new BatchedDataFetcher() {
                     @Override
-                    public CompletionStage<Object> get(DataFetchingEnvironment environment) {
-                        return supplied.get(environment);
+                    public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
+                        return supplied.fetch(environment);
                     }
                 };
             }

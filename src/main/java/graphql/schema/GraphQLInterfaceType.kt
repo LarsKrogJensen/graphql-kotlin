@@ -1,11 +1,8 @@
 package graphql.schema
 
-import graphql.AssertException
-
-import java.util.ArrayList
-import java.util.LinkedHashMap
-
 import graphql.Assert.assertNotNull
+import graphql.AssertException
+import java.util.*
 import kotlin.properties.Delegates.notNull
 
 open class GraphQLInterfaceType(override val name: String,

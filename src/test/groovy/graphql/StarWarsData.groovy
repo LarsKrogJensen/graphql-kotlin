@@ -86,7 +86,7 @@ class StarWarsData {
 
     static DataFetcher humanDataFetcher = new DataFetcher() {
         @Override
-        CompletionStage<Object> get(DataFetchingEnvironment environment) {
+        CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
             def id = environment.arguments.id
             return CompletableFuture.completedFuture(humanData[id])
         }
@@ -95,7 +95,7 @@ class StarWarsData {
 
     static DataFetcher droidDataFetcher = new DataFetcher() {
         @Override
-        CompletionStage<Object> get(DataFetchingEnvironment environment) {
+        CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
             def id = environment.arguments.id
             return CompletableFuture.completedFuture(droidData[id])
         }
@@ -115,7 +115,7 @@ class StarWarsData {
 
     static DataFetcher friendsDataFetcher = new DataFetcher() {
         @Override
-        CompletionStage<Object> get(DataFetchingEnvironment environment) {
+        CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
             List<Object> result = []
             for (String id : environment.source.friends) {
                 result.add(getCharacter(id))
@@ -126,7 +126,7 @@ class StarWarsData {
 
     static DataFetcher heroDataFetcher = new DataFetcher() {
         @Override
-        public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+        public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
             if (environment.containsArgument("episode") && 5 == environment.argument("episode")) {
                 return CompletableFuture.completedFuture(luke)
             };

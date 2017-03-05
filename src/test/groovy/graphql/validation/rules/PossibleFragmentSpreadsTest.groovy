@@ -32,7 +32,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'of the same object with inline fragment'() {
@@ -43,7 +43,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
 
@@ -56,7 +56,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'object into containing union'() {
@@ -68,7 +68,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'union into contained object'() {
@@ -80,7 +80,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'union into overlapping interface'() {
@@ -92,7 +92,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'union into overlapping union'() {
@@ -104,7 +104,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'interface into implemented object'() {
@@ -116,7 +116,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'interface into overlapping interface'() {
@@ -128,7 +128,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'interface into overlapping interface in inline fragment'() {
@@ -139,7 +139,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
 
@@ -152,7 +152,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
 
@@ -165,7 +165,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'different object into object in inline fragment'() {
@@ -178,7 +178,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'object into not implementing interface'() {
@@ -190,7 +190,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'object into not containing union'() {
@@ -202,7 +202,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'union into not contained object'() {
@@ -214,7 +214,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'union into non overlapping interface'() {
@@ -226,7 +226,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'union into non overlapping union'() {
@@ -238,7 +238,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'interface into non implementing object'() {
@@ -250,7 +250,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
 
     }
 
@@ -265,7 +265,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
     }
 
     def 'interface into non overlapping interface in inline fragment'() {
@@ -278,7 +278,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
 
     }
 
@@ -291,7 +291,7 @@ class PossibleFragmentSpreadsTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.getErrors().size() == 1
+        errorCollector.errors().size() == 1
 
     }
 

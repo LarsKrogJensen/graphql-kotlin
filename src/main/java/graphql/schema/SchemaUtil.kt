@@ -1,11 +1,9 @@
 package graphql.schema
 
 
-import java.util.ArrayList
-import java.util.LinkedHashMap
-
 import graphql.GraphQLException
 import graphql.introspection.Introspection
+import java.util.*
 
 class SchemaUtil {
 
@@ -103,7 +101,7 @@ class SchemaUtil {
         val typesByName = LinkedHashMap<String, GraphQLType>()
         collectTypes(schema.queryType, typesByName)
         if (schema.isSupportingMutations) {
-            collectTypes(schema.mutationType, typesByName)
+            collectTypes(schema.mutationType!!, typesByName)
         }
         if (dictionary != null) {
             for (type in dictionary) {
@@ -115,16 +113,10 @@ class SchemaUtil {
     }
 
     fun findImplementations(schema: GraphQLSchema, interfaceType: GraphQLInterfaceType): List<GraphQLObjectType> {
-        val allTypes = allTypes(schema, schema.dictionary)
-        val result = ArrayList<GraphQLObjectType>()
-        for (type in allTypes.values) {
-            if (type !is GraphQLObjectType) {
-                continue
-            }
-            val objectType = type
-            if (objectType.interfaces.contains(interfaceType)) result.add(objectType)
-        }
-        return result
+        return allTypes(schema, schema.dictionary).values
+                .filterIsInstance<GraphQLObjectType>()
+                .map { it }
+                .filter { it.interfaces.contains(interfaceType) }
     }
 
 
@@ -171,10 +163,6 @@ class SchemaUtil {
     }
 
     internal fun resolveTypeReferences(types: List<GraphQLType>, typeMap: Map<String, GraphQLType>): List<GraphQLType> {
-        val resolvedTypes = ArrayList<GraphQLType>()
-        for (type in types) {
-            resolvedTypes.add(resolveTypeReference(type, typeMap))
-        }
-        return resolvedTypes
+        return types.map { resolveTypeReference(it, typeMap) }
     }
 }

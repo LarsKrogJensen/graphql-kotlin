@@ -187,9 +187,9 @@
                     <execution>
                         <id>enforce</id>
                         <configuration>
-                            <rules>
+                            <_rules>
                                 <dependencyConvergence/>
-                            </rules>
+                            </_rules>
                         </configuration>
                         <goals>
                             <goal>enforce</goal>

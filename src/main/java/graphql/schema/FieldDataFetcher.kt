@@ -1,22 +1,28 @@
 package graphql.schema
 
 
-import java.lang.reflect.Field
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
+
+fun <T> fieldDataFetcher(propertyName: String): DataFetcher<T> {
+    val fetcher = FieldDataFetcher<T>(propertyName)
+    return fetcher::fetch
+}
+
 
 /**
  * Fetches data directly from a field.
  */
-class FieldDataFetcher<T>(private val fieldName: String) : DataFetcher<T> {
+private class FieldDataFetcher<T>(private val fieldName: String) {
 
-    override fun get(environment: DataFetchingEnvironment): CompletionStage<T> {
+    fun fetch(environment: DataFetchingEnvironment): CompletionStage<T> {
         val promise = CompletableFuture<T>()
 
-        when (environment.source) {
+        val source = environment.source<Any?>()
+        when (source) {
             null         -> promise.complete(null)
-            is Map<*, *> -> promise.complete(environment.source[fieldName] as T)
-            else         -> promise.complete(fieldValue(environment.source))
+            is Map<*, *> -> promise.complete(source[fieldName] as T)
+            else         -> promise.complete(fieldValue(source))
         }
 
         return promise

@@ -29,7 +29,7 @@ class NoFragmentCyclesTest extends Specification {
         when:
         traverse(query)
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'spreading twice is not circular'() {
@@ -41,7 +41,7 @@ class NoFragmentCyclesTest extends Specification {
         when:
         traverse(query)
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
 
     }
 
@@ -55,7 +55,7 @@ class NoFragmentCyclesTest extends Specification {
         when:
         traverse(query)
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'double spread within abstract types'() {
@@ -74,7 +74,7 @@ class NoFragmentCyclesTest extends Specification {
         when:
         traverse(query)
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
 

@@ -20,7 +20,7 @@ import static java.util.Collections.singletonList;
 
 /**
  * Execution Strategy that minimizes calls to the data fetcher when used in conjunction with {@link DataFetcher}s that have
- * {@link DataFetcher#get(DataFetchingEnvironment)} methods annotated with {@link Batched}. See the javadoc comment on
+ * {@link DataFetcher#fetch(DataFetchingEnvironment)} methods annotated with {@link Batched}. See the javadoc comment on
  * {@link Batched} for a more detailed description of batched data fetchers.
  * <p>
  * The strategy runs a BFS over terms of the query and passes a list of all the relevant sources to the batched data fetcher.
@@ -311,7 +311,7 @@ public class BatchedExecutionStrategy
         CompletableFuture<List<GraphQLExecutionNodeValue>> promise = new CompletableFuture<>();
         BatchedDataFetcher<List<Object>> dataFetcher = getDataFetcher(fieldDef);
 
-        dataFetcher.get(environment)
+        dataFetcher.fetch(environment)
                    .thenApply(Function.identity())
                    //.thenApply(data -> data)
                    .exceptionally(e -> {

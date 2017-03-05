@@ -16,7 +16,7 @@ public class ScalarsQuerySchema {
 
     public static final DataFetcher inputDF = new DataFetcher() {
         @Override
-        public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+        public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
             return CompletableFuture.completedFuture(environment.argument("input"));
         }
     };
@@ -128,7 +128,7 @@ public class ScalarsQuerySchema {
                                                                .build();
 
 
-    public static final GraphQLSchema scalarsQuerySchema = GraphQLSchema.newSchema()
-            .query(queryType)
-            .build();
+    public static final GraphQLSchema scalarsQuerySchema = GraphQLSchema.Companion.newSchema()
+                                                                                  .query(queryType)
+                                                                                  .build();
 }

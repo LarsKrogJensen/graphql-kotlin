@@ -3,16 +3,9 @@ package graphql.language
 
 import java.util.ArrayList
 
-class FragmentSpread : AbstractNode, Selection {
+class FragmentSpread(val name: String) : AbstractNode(), Selection {
 
-    var name: String? = null
     var directives: List<Directive> = emptyList()
-
-    constructor() {}
-
-    constructor(name: String) {
-        this.name = name
-    }
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true
@@ -20,10 +13,8 @@ class FragmentSpread : AbstractNode, Selection {
 
         val that = node as FragmentSpread
 
-        return !if (name != null) name != that.name else that.name != null
-
+        return name == that.name
     }
-
 
     override val children: List<Node>
         get() = directives

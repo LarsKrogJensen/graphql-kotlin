@@ -122,9 +122,8 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     }
 
     override fun visitVariableDefinition(ctx: GraphqlParser.VariableDefinitionContext): Void? {
-        val variableDefinition = VariableDefinition()
-        newNode(variableDefinition, ctx)
-        variableDefinition.name = ctx.variable().NAME().text
+        val variableDefinition = VariableDefinition(ctx.variable().NAME().text)
+
         if (ctx.defaultValue() != null) {
             val value = getValue(ctx.defaultValue().value())
             variableDefinition.defaultValue = value
@@ -139,10 +138,8 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     }
 
     override fun visitFragmentDefinition(ctx: GraphqlParser.FragmentDefinitionContext): Void? {
-        val fragmentDefinition = FragmentDefinition()
+        val fragmentDefinition = FragmentDefinition(ctx.fragmentName().text, TypeName(ctx.typeCondition().text))
         newNode(fragmentDefinition, ctx)
-        fragmentDefinition.name = ctx.fragmentName().text
-        fragmentDefinition.typeCondition = TypeName(ctx.typeCondition().text)
         addContextProperty(ContextProperty.FragmentDefinition, fragmentDefinition)
         result.add(fragmentDefinition)
         super.visitFragmentDefinition(ctx)
@@ -162,9 +159,8 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
 
 
     override fun visitField(ctx: GraphqlParser.FieldContext): Void? {
-        val newField = Field()
+        val newField = Field(ctx.NAME().text)
         newNode(newField, ctx)
-        newField.name = ctx.NAME().text
         if (ctx.alias() != null) {
             newField.alias = ctx.alias().NAME().text
         }

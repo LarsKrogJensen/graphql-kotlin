@@ -1,14 +1,16 @@
 package graphql.language
 
 class VariableDefinition : AbstractNode {
-    var name: String? = null
+    val name: String
     var type: Type? = null
     var defaultValue: Value? = null
 
-    constructor()
 
-    constructor(name: String, type: Type) {
+    constructor(name: String) {
         this.name = name
+    }
+
+    constructor(name: String, type: Type) : this(name){
         this.type = type
     }
 
@@ -30,7 +32,7 @@ class VariableDefinition : AbstractNode {
 
         val that = node as VariableDefinition
 
-        return !if (name != null) name != that.name else that.name != null
+        return name == that.name
     }
 
 

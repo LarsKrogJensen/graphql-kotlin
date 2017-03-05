@@ -23,9 +23,9 @@ public class NestedInputSchema {
 
         GraphQLObjectType root = rootType();
 
-        return GraphQLSchema.newSchema()
-                .query(root)
-                .build();
+        return GraphQLSchema.Companion.newSchema()
+                                      .query(root)
+                                      .build();
     }
 
     public static GraphQLObjectType rootType() {
@@ -37,7 +37,7 @@ public class NestedInputSchema {
                                                                                  .type(INSTANCE.getGraphQLInt())
                                                                                  .dataFetcher(new DataFetcher() {
                             @Override
-                            public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+                            public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                                 Integer initialValue = environment.argument("initialValue");
                                 Map<String, Object> filter = environment.argument("filter");
                                 if (filter != null) {

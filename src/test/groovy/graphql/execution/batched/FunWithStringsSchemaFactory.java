@@ -32,7 +32,7 @@ public class FunWithStringsSchemaFactory {
             @Override
             @Batched
             @SuppressWarnings("unchecked")
-            public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+            public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.VALUE);
                 List<String> retVal = new ArrayList<String>();
                 for (String s: (List<String>) environment.source()) {
@@ -46,7 +46,7 @@ public class FunWithStringsSchemaFactory {
             @Override
             @Batched
             @SuppressWarnings("unchecked")
-            public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+            public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.APPEND);
                 List<String> retVal = new ArrayList<String>();
                 for (String s: (List<String>) environment.source()) {
@@ -60,7 +60,7 @@ public class FunWithStringsSchemaFactory {
             @Batched
             @Override
             @SuppressWarnings("unchecked")
-            public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+            public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.WORDS_AND_LETTERS);
                 List<String> sources = (List<String>) environment.source();
                 List<List<List<String>>> retVal = new ArrayList<List<List<String>>>();
@@ -83,7 +83,7 @@ public class FunWithStringsSchemaFactory {
             @Batched
             @Override
             @SuppressWarnings("unchecked")
-            public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+            public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.SPLIT);
                 String regex = environment.argument("regex");
                 List<String> sources = (List<String>) environment.source();
@@ -113,7 +113,7 @@ public class FunWithStringsSchemaFactory {
             @Batched
             @Override
             @SuppressWarnings("unchecked")
-            public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+            public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                 increment(callCounts, CallType.SHATTER);
                 List<String> sources = (List<String>) environment.source();
                 List<List<String>> retVal = new ArrayList<List<String>>();
@@ -135,14 +135,14 @@ public class FunWithStringsSchemaFactory {
 
     private DataFetcher stringObjectValueFetcher = new DataFetcher() {
         @Override
-        public CompletionStage<Object> get(DataFetchingEnvironment e) {
+        public CompletionStage<Object> fetch(DataFetchingEnvironment e) {
             return CompletableFuture.completedFuture("null".equals(e.source()) ? null : e.source());
         }
     };
 
     private DataFetcher shatterFetcher = new DataFetcher() {
         @Override
-        public CompletionStage<Object> get(DataFetchingEnvironment e) {
+        public CompletionStage<Object> fetch(DataFetchingEnvironment e) {
             String source = (String) e.source();
             if(source.isEmpty()) {
                 return null; // trigger error
@@ -157,7 +157,7 @@ public class FunWithStringsSchemaFactory {
 
     public DataFetcher wordsAndLettersFetcher = new DataFetcher() {
         @Override
-        public CompletionStage<Object> get(DataFetchingEnvironment e) {
+        public CompletionStage<Object> fetch(DataFetchingEnvironment e) {
             String source = (String) e.source();
             List<List<String>> retVal = new ArrayList<List<String>>();
             for (String word: source.split(" ")) {
@@ -173,7 +173,7 @@ public class FunWithStringsSchemaFactory {
 
     public DataFetcher splitFetcher = new DataFetcher() {
         @Override
-        public CompletionStage<Object> get(DataFetchingEnvironment e) {
+        public CompletionStage<Object> fetch(DataFetchingEnvironment e) {
             String regex = e.argument("regex");
             if (regex == null ) {
                 return null;
@@ -193,7 +193,7 @@ public class FunWithStringsSchemaFactory {
 
     public DataFetcher appendFetcher = new DataFetcher() {
         @Override
-        public CompletionStage<Object> get(DataFetchingEnvironment e) {
+        public CompletionStage<Object> fetch(DataFetchingEnvironment e) {
             return CompletableFuture.completedFuture(((String)e.source()) + e.argument("text"));
         }
     };
@@ -275,12 +275,12 @@ public class FunWithStringsSchemaFactory {
                                                                         .build();
 
 
-        GraphQLEnumType enumDayType = GraphQLEnumType.newEnum()
-                .name("Day")
-                .value("MONDAY")
-                .value("TUESDAY")
-                .description("Day of the week")
-                .build();
+        GraphQLEnumType enumDayType = GraphQLEnumType.Companion.newEnum()
+                                                               .name("Day")
+                                                               .value("MONDAY")
+                                                               .value("TUESDAY")
+                                                               .description("Day of the week")
+                                                               .build();
 
         GraphQLObjectType queryType = GraphQLObjectType.Companion.newObject()
                                                                  .name("StringQuery")
@@ -292,7 +292,7 @@ public class FunWithStringsSchemaFactory {
                                                            .type(Scalars.INSTANCE.getGraphQLString()))
                                                                                                         .dataFetcher(new DataFetcher() {
                             @Override
-                            public CompletionStage<Object> get(DataFetchingEnvironment env) {
+                            public CompletionStage<Object> fetch(DataFetchingEnvironment env) {
                                 CompletableFuture<Object> promise = new CompletableFuture<>();
                                 promise.complete(env.argument("value"));
                                 return promise;
@@ -304,14 +304,14 @@ public class FunWithStringsSchemaFactory {
                                                                                                         .type(enumDayType)
                                                                                                         .dataFetcher(new DataFetcher() {
                            @Override
-                           public CompletionStage<Object> get(DataFetchingEnvironment env) {
+                           public CompletionStage<Object> fetch(DataFetchingEnvironment env) {
                                return CompletableFuture.completedFuture(null);
                            }
                         }))
                                                                  .build();
-        return GraphQLSchema.newSchema()
-                .query(queryType)
-                .build();
+        return GraphQLSchema.Companion.newSchema()
+                                      .query(queryType)
+                                      .build();
 
     }
 }

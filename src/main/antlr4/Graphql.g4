@@ -14,11 +14,11 @@ fragmentDefinition
 
 operationDefinition:
 selectionSet |
-operationType  NAME? variableDefinitions? directives? selectionSet;
+operationType  NAME? _variableDefinitions? directives? selectionSet;
 
 operationType : 'query' | 'mutation';
 
-variableDefinitions : '(' variableDefinition+ ')';
+_variableDefinitions : '(' variableDefinition+ ')';
 
 variableDefinition : variable ':' type defaultValue?;
 
@@ -35,11 +35,11 @@ field |
 fragmentSpread |
 inlineFragment;
 
-field : alias? NAME arguments? directives? selectionSet?;
+field : alias? NAME _arguments? directives? selectionSet?;
 
 alias : NAME ':';
 
-arguments : '(' argument+ ')';
+_arguments : '(' argument+ ')';
 
 argument : NAME ':' valueWithVariable;
 
@@ -98,7 +98,7 @@ objectFieldWithVariable : NAME ':' valueWithVariable;
 
 directives : directive+;
 
-directive :'@' NAME arguments?;
+directive :'@' NAME _arguments?;
 
 // Types
 

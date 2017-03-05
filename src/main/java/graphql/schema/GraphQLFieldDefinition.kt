@@ -1,11 +1,9 @@
 package graphql.schema
 
 
-import java.util.ArrayList
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionStage
-
 import graphql.Assert.assertNotNull
+import java.util.*
+import kotlin.properties.Delegates
 
 class GraphQLFieldDefinition<T>(val name: String,
                                 val description: String?,
@@ -13,7 +11,7 @@ class GraphQLFieldDefinition<T>(val name: String,
                                 val dataFetcher: DataFetcher<T>,
                                 val arguments: List<GraphQLArgument>,
                                 val deprecationReason: String?) {
-    var type: GraphQLOutputType? = null
+    var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
         private set
 
 
@@ -38,9 +36,9 @@ class GraphQLFieldDefinition<T>(val name: String,
         get() = deprecationReason != null
 
     class Builder<T> {
-        private var name: String? = null
+        private var name: String by Delegates.notNull<String>()
         private var description: String? = null
-        private var type: GraphQLOutputType? = null
+        private var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
         private var dataFetcher: DataFetcher<T>? = null
         private val arguments = ArrayList<GraphQLArgument>()
         private var deprecationReason: String? = null
@@ -80,7 +78,8 @@ class GraphQLFieldDefinition<T>(val name: String,
         }
 
         fun staticValue(value: T): Builder<T> {
-            this.dataFetcher = { environment -> CompletableFuture.completedFuture(value) }
+            this.dataFetcher = staticDataFetcher(value)
+
             return this
         }
 
@@ -112,7 +111,7 @@ class GraphQLFieldDefinition<T>(val name: String,
          * @return this
          */
         fun argument(builderFunction: BuilderFunction<GraphQLArgument.Builder>): Builder<T> {
-            var builder: GraphQLArgument.Builder = GraphQLArgument.newArgument()
+            var builder: GraphQLArgument.Builder = newArgument()
             builder = builderFunction.apply(builder)
             return argument(builder)
         }
@@ -141,21 +140,18 @@ class GraphQLFieldDefinition<T>(val name: String,
         }
 
         fun build(): GraphQLFieldDefinition<T> {
-            if (dataFetcher == null) {
+            val fetcher: DataFetcher<T> = dataFetcher ?:
                 if (isField) {
-                    dataFetcher = FieldDataFetcher<T>(name!!)
+                    fieldDataFetcher<T>(name)
                 } else {
-                    dataFetcher = PropertyDataFetcher<T>(name!!)
+                    propertyDataFetcher<T>(name)
                 }
-            }
-            return GraphQLFieldDefinition(name, description, type, dataFetcher, arguments, deprecationReason)
+
+            return GraphQLFieldDefinition(name, description, type, fetcher, arguments, deprecationReason)
         }
-
-
     }
 
     companion object {
-
         fun <T> newFieldDefinition(): Builder<T> {
             return Builder()
         }

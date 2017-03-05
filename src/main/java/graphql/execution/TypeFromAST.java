@@ -19,6 +19,6 @@ public class TypeFromAST {
         } else if (type instanceof NonNullType) {
             return new GraphQLNonNull(getTypeFromAST(schema, ((NonNullType) type).getType()));
         }
-        return schema.getType(((TypeName) type).getName());
+        return schema.type(((TypeName) type).getName());
     }
 }

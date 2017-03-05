@@ -11,19 +11,19 @@ open class GraphQLObjectType(override val name: String,
                              val description: String?,
                              fieldDefinitions: List<GraphQLFieldDefinition<*>>,
                              interfaces: List<GraphQLInterfaceType>) : GraphQLType, GraphQLOutputType, GraphQLFieldsContainer, GraphQLCompositeType, GraphQLUnmodifiedType, GraphQLNullableType {
-    private val fieldDefinitionsByName = linkedMapOf<String, GraphQLFieldDefinition<*>>()
-    private val interfaces = mutableListOf<GraphQLInterfaceType>()
+    private val _fieldDefinitionsByName = linkedMapOf<String, GraphQLFieldDefinition<*>>()
+    private val _interfaces = mutableListOf<GraphQLInterfaceType>()
 
     init {
-        this.interfaces.addAll(interfaces)
+        _interfaces.addAll(interfaces)
         buildDefinitionMap(fieldDefinitions)
     }
 
     internal fun replaceTypeReferences(typeMap: Map<String, GraphQLType>) {
-        for (i in interfaces.indices) {
-            val inter = interfaces[i]
+        for (i in _interfaces.indices) {
+            val inter = _interfaces[i]
             if (inter is TypeReference) {
-                this.interfaces[i] = SchemaUtil().resolveTypeReference(inter, typeMap) as GraphQLInterfaceType
+                this._interfaces[i] = SchemaUtil().resolveTypeReference(inter, typeMap) as GraphQLInterfaceType
             }
         }
     }
@@ -31,33 +31,32 @@ open class GraphQLObjectType(override val name: String,
     private fun buildDefinitionMap(fieldDefinitions: List<GraphQLFieldDefinition<*>>) {
         for (fieldDefinition in fieldDefinitions) {
             val name = fieldDefinition.name
-            if (fieldDefinitionsByName.containsKey(name))
+            if (_fieldDefinitionsByName.containsKey(name))
                 throw AssertException("field $name redefined")
-            fieldDefinitionsByName.put(name, fieldDefinition)
+            _fieldDefinitionsByName.put(name, fieldDefinition)
         }
     }
 
 
     fun fieldDefinition(name: String): GraphQLFieldDefinition<*>? {
-        return fieldDefinitionsByName[name]
+        return _fieldDefinitionsByName[name]
     }
 
 
     override val fieldDefinitions: List<GraphQLFieldDefinition<*>>
-        get() = ArrayList(fieldDefinitionsByName.values)
+        get() = ArrayList(_fieldDefinitionsByName.values)
 
 
-    fun interfaces(): List<GraphQLInterfaceType> {
-        return interfaces
-    }
+    val  interfaces: List<GraphQLInterfaceType>
+        get() = _interfaces
 
 
     override fun toString(): String {
         return "GraphQLObjectType{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", fieldDefinitionsByName=" + fieldDefinitionsByName +
-                ", interfaces=" + interfaces +
+                ", fieldDefinitionsByName=" + _fieldDefinitionsByName +
+                ", interfaces=" + _interfaces +
                 '}'
     }
 
@@ -101,7 +100,7 @@ open class GraphQLObjectType(override val name: String,
             assertNotNull(builderFunction, "builderFunction can't be null")
             var builder: GraphQLFieldDefinition.Builder<T> = GraphQLFieldDefinition.newFieldDefinition<T>()
             builder = builderFunction.apply(builder)
-            return field<T>(builder.build())
+            return field(builder.build())
         }
 
         /**

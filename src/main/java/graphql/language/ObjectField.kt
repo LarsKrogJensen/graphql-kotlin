@@ -1,7 +1,7 @@
 package graphql.language
 
 
-data class ObjectField(val name: String?, val value: Value) : AbstractNode() {
+data class ObjectField(val name: String, val value: Value) : AbstractNode() {
 
     override val children: List<Node>
         get() = listOf(value)
@@ -12,6 +12,6 @@ data class ObjectField(val name: String?, val value: Value) : AbstractNode() {
 
         val that = node as ObjectField
 
-        return !if (name != null) name != that.name else that.name != null
+        return name == that.name
     }
 }

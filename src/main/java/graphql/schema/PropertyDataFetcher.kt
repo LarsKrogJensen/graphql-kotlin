@@ -1,19 +1,22 @@
 package graphql.schema
 
 
+import graphql.GraphQLBoolean
 import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
-import java.lang.reflect.Field
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
-import graphql.Scalars.GraphQLBoolean
+fun <T> propertyDataFetcher(propertyName: String) : DataFetcher<T> {
+    val fetcher = PropertyDataFetcher<T>(propertyName)
+    return fetcher::fetch
+}
 
-class PropertyDataFetcher<T>(private val propertyName: String) : DataFetcher<T> {
+private class PropertyDataFetcher<T>(private val propertyName: String)  {
 
-    override fun get(environment: DataFetchingEnvironment): CompletionStage<T> {
+    fun fetch(environment: DataFetchingEnvironment): CompletionStage<T> {
         val promise = CompletableFuture<T>()
-        val source = environment.source
+        val source = environment.source<Any?>() ?: return CompletableFuture.completedFuture(null)
+
         if (source is Map<*, *>) {
             promise.complete(source[propertyName] as T)
             return promise
@@ -23,7 +26,7 @@ class PropertyDataFetcher<T>(private val propertyName: String) : DataFetcher<T> 
     }
 
 
-    private fun getPropertyViaGetter(obj: Any, outputType: GraphQLOutputType): Any {
+    private fun getPropertyViaGetter(obj: Any, outputType: GraphQLOutputType): Any? {
         try {
             if (isBooleanProperty(outputType)) {
                 try {
@@ -57,19 +60,19 @@ class PropertyDataFetcher<T>(private val propertyName: String) : DataFetcher<T> 
     }
 
     private fun isBooleanProperty(outputType: GraphQLOutputType): Boolean {
-        if (outputType === INSTANCE.getGraphQLBoolean()) return true
+        if (outputType === GraphQLBoolean) return true
         if (outputType is GraphQLNonNull) {
-            return outputType.wrappedType === INSTANCE.getGraphQLBoolean()
+            return outputType.wrappedType === GraphQLBoolean
         }
         return false
     }
 
-    private fun getPropertyViaFieldAccess(`object`: Any): Any? {
+    private fun getPropertyViaFieldAccess(obj: Any): Any? {
         try {
-            val field = `object`.javaClass.getField(propertyName)
-            return field.get(`object`)
+            val field = obj.javaClass.getField(propertyName)
+            return field.get(obj)
         } catch (e: NoSuchFieldException) {
-            return null
+            throw RuntimeException(e)
         } catch (e: IllegalAccessException) {
             throw RuntimeException(e)
         }

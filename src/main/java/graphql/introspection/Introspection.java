@@ -27,18 +27,18 @@ public class Introspection {
     }
 
     public static GraphQLEnumType __TypeKind =
-            GraphQLEnumType.newEnum()
-                           .name("__TypeKind")
-                           .description("An enum describing what kind of type a given __Type is")
-                           .value("SCALAR", TypeKind.SCALAR, "Indicates this type is a scalar.")
-                           .value("OBJECT", TypeKind.OBJECT, "Indicates this type is an object. `fields` and `interfaces` are valid fields.")
-                           .value("INTERFACE", TypeKind.INTERFACE, "Indicates this type is an interface. `fields` and `possibleTypes` are valid fields.")
-                           .value("UNION", TypeKind.UNION, "Indicates this type is a union. `possibleTypes` is a valid field.")
-                           .value("ENUM", TypeKind.ENUM, "Indicates this type is an enum. `enumValues` is a valid field.")
-                           .value("INPUT_OBJECT", TypeKind.INPUT_OBJECT, "Indicates this type is an input object. `inputFields` is a valid field.")
-                           .value("LIST", TypeKind.LIST, "Indicates this type is a list. `ofType` is a valid field.")
-                           .value("NON_NULL", TypeKind.NON_NULL, "Indicates this type is a non-null. `ofType` is a valid field.")
-                           .build();
+            GraphQLEnumType.Companion.newEnum()
+                                     .name("__TypeKind")
+                                     .description("An enum describing what kind of type a given __Type is")
+                                     .value("SCALAR", TypeKind.SCALAR, "Indicates this type is a scalar.")
+                                     .value("OBJECT", TypeKind.OBJECT, "Indicates this type is an object. `fields` and `interfaces` are valid fields.")
+                                     .value("INTERFACE", TypeKind.INTERFACE, "Indicates this type is an interface. `fields` and `possibleTypes` are valid fields.")
+                                     .value("UNION", TypeKind.UNION, "Indicates this type is a union. `possibleTypes` is a valid field.")
+                                     .value("ENUM", TypeKind.ENUM, "Indicates this type is an enum. `enumValues` is a valid field.")
+                                     .value("INPUT_OBJECT", TypeKind.INPUT_OBJECT, "Indicates this type is an input object. `inputFields` is a valid field.")
+                                     .value("LIST", TypeKind.LIST, "Indicates this type is a list. `ofType` is a valid field.")
+                                     .value("NON_NULL", TypeKind.NON_NULL, "Indicates this type is a non-null. `ofType` is a valid field.")
+                                     .build();
 
     private static DataFetcher<TypeKind> kindDataFetcher = environment -> {
         CompletableFuture<TypeKind> promise = new CompletableFuture<>();
@@ -304,16 +304,16 @@ public class Introspection {
     }
 
     public static GraphQLEnumType __DirectiveLocation =
-            GraphQLEnumType.newEnum()
-                           .name("__DirectiveLocation")
-                           .description("An enum describing valid locations where a directive can be placed")
-                           .value("QUERY", DirectiveLocation.QUERY, "Indicates the directive is valid on queries.")
-                           .value("MUTATION", DirectiveLocation.MUTATION, "Indicates the directive is valid on mutations.")
-                           .value("FIELD", DirectiveLocation.FIELD, "Indicates the directive is valid on fields.")
-                           .value("FRAGMENT_DEFINITION", DirectiveLocation.FRAGMENT_DEFINITION, "Indicates the directive is valid on fragment definitions.")
-                           .value("FRAGMENT_SPREAD", DirectiveLocation.FRAGMENT_SPREAD, "Indicates the directive is valid on fragment spreads.")
-                           .value("INLINE_FRAGMENT", DirectiveLocation.INLINE_FRAGMENT, "Indicates the directive is valid on inline fragments.")
-                           .build();
+            GraphQLEnumType.Companion.newEnum()
+                                     .name("__DirectiveLocation")
+                                     .description("An enum describing valid locations where a directive can be placed")
+                                     .value("QUERY", DirectiveLocation.QUERY, "Indicates the directive is valid on queries.")
+                                     .value("MUTATION", DirectiveLocation.MUTATION, "Indicates the directive is valid on mutations.")
+                                     .value("FIELD", DirectiveLocation.FIELD, "Indicates the directive is valid on fields.")
+                                     .value("FRAGMENT_DEFINITION", DirectiveLocation.FRAGMENT_DEFINITION, "Indicates the directive is valid on fragment definitions.")
+                                     .value("FRAGMENT_SPREAD", DirectiveLocation.FRAGMENT_SPREAD, "Indicates the directive is valid on fragment spreads.")
+                                     .value("INLINE_FRAGMENT", DirectiveLocation.INLINE_FRAGMENT, "Indicates the directive is valid on inline fragments.")
+                                     .build();
 
     public static GraphQLObjectType __Directive = Companion.newObject()
                                                            .name("__Directive")
@@ -409,7 +409,7 @@ public class Introspection {
                                        .type(new GraphQLNonNull(INSTANCE.getGraphQLString())))
                     .dataFetcher(environment -> {
                         String name = environment.argument("name");
-                        return CompletableFuture.completedFuture(environment.getGraphQLSchema().getType(name));
+                        return CompletableFuture.completedFuture(environment.getGraphQLSchema().type(name));
                     }).build();
 
     public static GraphQLFieldDefinition<String> TypeNameMetaFieldDef =
@@ -423,13 +423,13 @@ public class Introspection {
 
     static {
         // make sure all TypeReferences are resolved
-        GraphQLSchema.newSchema()
-                     .query(GraphQLObjectType.Companion.newObject()
+        GraphQLSchema.Companion.newSchema()
+                               .query(GraphQLObjectType.Companion.newObject()
                                                        .name("dummySchema")
                                                        .field(SchemaMetaFieldDef)
                                                        .field(TypeMetaFieldDef)
                                                        .field(TypeNameMetaFieldDef)
                                                        .build())
-                     .build();
+                               .build();
     }
 }

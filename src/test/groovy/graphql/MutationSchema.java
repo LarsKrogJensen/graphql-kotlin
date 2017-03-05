@@ -78,7 +78,7 @@ public class MutationSchema {
                                        .type(INSTANCE.getGraphQLInt()))
                                                                                               .dataFetcher(new DataFetcher() {
                         @Override
-                        public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+                        public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                             Integer newNumber = environment.argument("newNumber");
                             Root root = (Root) environment.source();
                             return CompletableFuture.completedFuture(root.changeNumber(newNumber));
@@ -92,7 +92,7 @@ public class MutationSchema {
                                        .type(INSTANCE.getGraphQLInt()))
                                                                                               .dataFetcher(new DataFetcher() {
                         @Override
-                        public CompletionStage<Object> get(DataFetchingEnvironment environment) {
+                        public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
                             Integer newNumber = environment.argument("newNumber");
                             Root root = (Root) environment.source();
                             CompletableFuture<Object> promise = new CompletableFuture<>();
@@ -106,9 +106,9 @@ public class MutationSchema {
                     }))
                                                                               .build();
 
-    public static GraphQLSchema schema = newSchema()
-            .query(queryType)
-            .mutation(mutationType)
-            .build();
+    public static GraphQLSchema schema = Companion.newSchema()
+                                                  .query(queryType)
+                                                  .mutation(mutationType)
+                                                  .build();
 
 }

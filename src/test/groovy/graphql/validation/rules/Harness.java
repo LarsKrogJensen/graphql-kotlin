@@ -38,12 +38,12 @@ public class Harness {
                                                       .typeResolver(dummyTypeResolve)
                                                       .build();
 
-    public static GraphQLEnumType DogCommand = newEnum()
-            .name("DogCommand")
-            .value("SIT")
-            .value("HEEL")
-            .value("DOWN")
-            .build();
+    public static GraphQLEnumType DogCommand = Companion.newEnum()
+                                                        .name("DogCommand")
+                                                        .value("SIT")
+                                                        .value("HEEL")
+                                                        .value("DOWN")
+                                                        .build();
 
     public static GraphQLObjectType Dog = Companion.newObject()
                                                    .name("Dog")
@@ -85,13 +85,13 @@ public class Harness {
                                                    .withInterface(Pet)
                                                    .build();
 
-    public static GraphQLEnumType FurColor = newEnum()
-            .name("FurColor")
-            .value("BROWN")
-            .value("BLACK")
-            .value("TAN")
-            .value("SPOTTED")
-            .build();
+    public static GraphQLEnumType FurColor = Companion.newEnum()
+                                                      .name("FurColor")
+                                                      .value("BROWN")
+                                                      .value("BLACK")
+                                                      .value("TAN")
+                                                      .value("SPOTTED")
+                                                      .build();
 
 
     public static GraphQLObjectType Cat = Companion.newObject()
@@ -225,9 +225,9 @@ public class Harness {
                                                                          .type(HumanOrAlien))
                                                          .build();
 
-    public static GraphQLSchema Schema = newSchema()
-            .query(QueryRoot)
-            .build();
+    public static GraphQLSchema Schema = Companion.newSchema()
+                                                  .query(QueryRoot)
+                                                  .build();
 
 
 }

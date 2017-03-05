@@ -69,7 +69,7 @@ public class RelaySchema
                                                                               .dataFetcher(new DataFetcher()
                    {
                        @Override
-                       public CompletionStage<Object> get(DataFetchingEnvironment environment)
+                       public CompletionStage<Object> fetch(DataFetchingEnvironment environment)
                        {
                            //TODO: implement
                            return CompletableFuture.completedFuture(null);
@@ -78,7 +78,7 @@ public class RelaySchema
                                                               .build();
 
 
-    public static GraphQLSchema Schema = GraphQLSchema.newSchema()
-                                                      .query(RelayQueryType)
-                                                      .build();
+    public static GraphQLSchema Schema = GraphQLSchema.Companion.newSchema()
+                                                                .query(RelayQueryType)
+                                                                .build();
 }

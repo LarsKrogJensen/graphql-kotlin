@@ -46,7 +46,7 @@ public abstract class ExecutionStrategy {
                 executionContext.getGraphQLSchema()
         );
 
-        CompletionStage completionStage = fieldDef.getDataFetcher().get(environment);
+        CompletionStage completionStage = fieldDef.getDataFetcher().fetch(environment);
         if (completionStage == null) {
             return completeValue(executionContext, fieldDef.getType(), fields, null);
         }

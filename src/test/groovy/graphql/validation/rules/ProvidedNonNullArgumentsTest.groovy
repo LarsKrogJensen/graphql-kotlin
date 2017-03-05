@@ -57,7 +57,7 @@ class ProvidedNonNullArgumentsTest extends Specification {
         providedNonNullArguments.checkField(field)
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def "not provided directive argument"() {
@@ -95,6 +95,6 @@ class ProvidedNonNullArgumentsTest extends Specification {
         providedNonNullArguments.checkDirective(directive,[])
 
         then:
-        errorCollector.getErrors().isEmpty()
+        errorCollector.errors().isEmpty()
     }
 }

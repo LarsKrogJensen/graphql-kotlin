@@ -7,7 +7,8 @@ import kotlin.properties.Delegates.notNull
 
 open class GraphQLInputObjectType(override val name: String,
                                   val description: String?,
-                                  val fields: List<GraphQLInputObjectField>) : GraphQLType, GraphQLInputType, GraphQLUnmodifiedType, GraphQLNullableType {
+                                  val fields: List<GraphQLInputObjectField>)
+    : GraphQLType, GraphQLInputType, GraphQLUnmodifiedType, GraphQLNullableType {
 
 
     private val fieldMap = LinkedHashMap<String, GraphQLInputObjectField>()

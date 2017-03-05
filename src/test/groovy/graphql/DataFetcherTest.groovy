@@ -55,7 +55,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLString, null, null)
         when:
-        def result = new FieldDataFetcher("publicField").get(environment).get()
+        def result = new FieldDataFetcher("publicField").fetch(environment).get()
         then:
         result == "publicValue"
     }
@@ -64,7 +64,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLString, null, null)
         when:
-        def result = new PropertyDataFetcher("property").get(environment).get()
+        def result = new PropertyDataFetcher("property").fetch(environment).get()
         then:
         result == "propertyValue"
     }
@@ -73,7 +73,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLBoolean, null, null)
         when:
-        def result = new PropertyDataFetcher("booleanField").get(environment).get()
+        def result = new PropertyDataFetcher("booleanField").fetch(environment).get()
         then:
         result == true
     }
@@ -82,7 +82,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLBoolean, null, null)
         when:
-        def result = new PropertyDataFetcher("booleanFieldWithGet").get(environment).get()
+        def result = new PropertyDataFetcher("booleanFieldWithGet").fetch(environment).get()
         then:
         result == false
     }
@@ -91,7 +91,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLString, null, null)
         when:
-        def result = new PropertyDataFetcher("publicField").get(environment).get()
+        def result = new PropertyDataFetcher("publicField").fetch(environment).get()
         then:
         result == "publicValue"
     }

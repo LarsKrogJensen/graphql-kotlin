@@ -1,7 +1,6 @@
 package graphql.language
 
 
-import java.util.ArrayList
 
 class NonNullType : AbstractNode, Type {
 

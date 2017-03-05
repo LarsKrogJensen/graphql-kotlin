@@ -1,14 +1,14 @@
 package graphql.language
 
 
-class Field() : AbstractNode(), Selection {
-    var name: String? = null
+class Field : AbstractNode, Selection {
+    val name: String
     var alias: String? = null
     var arguments: List<Argument> = mutableListOf()
     var directives: List<Directive> = mutableListOf()
     var selectionSet: SelectionSet? = null
 
-    constructor(name: String) : this() {
+    constructor(name: String) {
         this.name = name
     }
 
@@ -46,7 +46,7 @@ class Field() : AbstractNode(), Selection {
 
         val field = node as Field
 
-        if (if (name != null) name != field.name else field.name != null) return false
+        if (name != field.name) return false
         return !if (alias != null) alias != field.alias else field.alias != null
     }
 

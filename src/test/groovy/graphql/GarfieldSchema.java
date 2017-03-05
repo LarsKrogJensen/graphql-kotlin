@@ -145,11 +145,11 @@ public class GarfieldSchema {
                                                        .withInterface(NamedType)
                                                        .build();
 
-    public static GraphQLUnionType PetType = Companion.newUnionType()
-                                                      .name("Pet")
-                                                      .possibleType(CatType)
-                                                      .possibleType(DogType)
-                                                      .typeResolver(new TypeResolver() {
+    public static GraphQLUnionType PetType = GraphQLUnionType.Companion.newUnionType()
+                                                                       .name("Pet")
+                                                                       .possibleType(CatType)
+                                                                       .possibleType(DogType)
+                                                                       .typeResolver(new TypeResolver() {
                 @Override
                 public GraphQLObjectType getType(Object object) {
                     if (object instanceof Cat) {
@@ -161,7 +161,7 @@ public class GarfieldSchema {
                     return null;
                 }
             })
-                                                      .build();
+                                                                       .build();
 
     public static GraphQLObjectType PersonType = Companion.newObject()
                                                           .name("Person")
@@ -177,9 +177,9 @@ public class GarfieldSchema {
                                                           .withInterface(NamedType)
                                                           .build();
 
-    public static GraphQLSchema GarfieldSchema = GraphQLSchema.newSchema()
-            .query(PersonType)
-            .build();
+    public static GraphQLSchema GarfieldSchema = GraphQLSchema.Companion.newSchema()
+                                                                        .query(PersonType)
+                                                                        .build();
 
 
 }

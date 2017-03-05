@@ -3,7 +3,7 @@ package graphql.language
 
 import java.util.ArrayList
 
-data class VariableReference(var name: String?) : AbstractNode(), Value {
+data class VariableReference(var name: String) : AbstractNode(), Value {
 
     override val children: List<Node>
         get() = ArrayList()
@@ -14,7 +14,7 @@ data class VariableReference(var name: String?) : AbstractNode(), Value {
 
         val that = node as VariableReference
 
-        return !if (name != null) name != that.name else that.name != null
+        return name == that.name
 
     }
 }

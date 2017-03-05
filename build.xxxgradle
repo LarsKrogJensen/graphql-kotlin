@@ -53,7 +53,7 @@ compileJava.source file("build/generated-src"), sourceSets.main.java
 
 generateGrammarSource {
     maxHeapSize = "64m"
-    arguments += ["-visitor"]
+    _arguments += ["-visitor"]
     outputDirectory = file("${project.buildDir}/generated-src/antlr/main/graphql/parser/antlr")
 }
 
@@ -104,7 +104,7 @@ publishing {
                 asNode().children().last() + {
                     resolveStrategy = Closure.DELEGATE_FIRST
                     name 'graphql-java'
-                    description 'GraphqL Java'
+                    _description 'GraphqL Java'
                     url "https://github.com/graphql-java/graphql-java"
                     scm {
                         url "https://github.com/graphql-java/graphql-java"
