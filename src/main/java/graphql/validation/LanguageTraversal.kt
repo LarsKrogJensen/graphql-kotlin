@@ -5,16 +5,12 @@ import graphql.language.Node
 
 import java.util.ArrayList
 
-class LanguageTraversal {
+class LanguageTraversal() {
 
-    private val _path: List<Node>
+    private val _path: MutableList<Node> = mutableListOf<Node>()
 
-    constructor() {
-        _path = listOf<Node>()
-    }
-
-    constructor(basePath:List<Node>) {
-        _path = basePath
+    constructor(basePath:List<Node>) : this() {
+        _path.addAll(basePath)
     }
 
     fun traverse(root: Node, queryLanguageVisitor: QueryLanguageVisitor) {
@@ -23,11 +19,14 @@ class LanguageTraversal {
 
     private fun traverseImpl(root: Node,
                              queryLanguageVisitor: QueryLanguageVisitor,
-                             path: List<Node>) {
+                             path: MutableList<Node>) {
         queryLanguageVisitor.enter(root, path)
-        for (child in root.children.asSequence().plus(root)) {
+        path.add(root)
+        for (child in root.children) {
             traverseImpl(child, queryLanguageVisitor, path)
         }
+
+        path.removeAt(path.size-1)
         queryLanguageVisitor.leave(root, path)
     }
 }

@@ -1,6 +1,5 @@
 package graphql.schema
 
 
-interface TypeResolver {
-    fun getType(obj: Any): GraphQLObjectType?
-}
+typealias TypeResolver = (obj: Any) -> GraphQLObjectType?
+

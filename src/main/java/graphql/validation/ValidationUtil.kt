@@ -53,7 +53,7 @@ class ValidationUtil {
 
         if (isFieldMissing(type, objectFieldMap)) return false
 
-        for ((name, value1) in objectValue.objectFields()) {
+        for ((name, value1) in objectValue.objectFields) {
             val inputObjectField = type.field(name) ?: return false
             if (!isValidLiteralValue(value1, inputObjectField.type)) return false
 
@@ -71,7 +71,7 @@ class ValidationUtil {
 
     private fun fieldMap(objectValue: ObjectValue): Map<String, ObjectField> {
         val result = LinkedHashMap<String, ObjectField>()
-        for (objectField in objectValue.objectFields()) {
+        for (objectField in objectValue.objectFields) {
             result.put(objectField.name, objectField)
         }
         return result

@@ -1,6 +1,6 @@
 package graphql.validation
 
-import graphql.Directives
+import graphql.DirectivesKt
 import graphql.language.*
 import graphql.schema.GraphQLInputObjectField
 import graphql.schema.GraphQLInputObjectType
@@ -8,8 +8,8 @@ import graphql.schema.GraphQLList
 import graphql.schema.GraphQLNonNull
 import spock.lang.Specification
 
-import static graphql.Directives.IncludeDirective
-import static graphql.Scalars.GraphQLString
+import static graphql.DirectivesKt.IncludeDirective
+import static graphql.ScalarsKt.GraphQLString
 import static graphql.StarWarsSchema.*
 import static graphql.language.OperationDefinition.Operation.QUERY
 

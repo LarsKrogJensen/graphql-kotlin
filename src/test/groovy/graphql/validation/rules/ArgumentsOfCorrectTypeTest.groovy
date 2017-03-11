@@ -2,13 +2,15 @@ package graphql.validation.rules
 
 import graphql.language.Argument
 import graphql.language.StringValue
+import graphql.language.VariableReference
 import graphql.schema.GraphQLArgument
 import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
 
-import static graphql.Scalars.GraphQLBoolean
+import static graphql.ScalarsKt.GraphQLBigDecimal
+import static graphql.ScalarsKt.GraphQLBoolean
 
 class ArgumentsOfCorrectTypeTest extends Specification {
 
@@ -18,6 +20,18 @@ class ArgumentsOfCorrectTypeTest extends Specification {
 
     def setup() {
         argumentsOfCorrectType = new ArgumentsOfCorrectType(validationContext, errorCollector)
+    }
+
+    def "valid type results in no error"() {
+        given:
+        def variableReference = new VariableReference("ref")
+        def argumentLiteral = new Argument("arg", variableReference)
+        def graphQLArgument = new GraphQLArgument("arg", GraphQLBigDecimal)
+        argumentsOfCorrectType.validationContext.getArgument() >> graphQLArgument
+        when:
+        argumentsOfCorrectType.checkArgument(argumentLiteral)
+        then:
+        errorCollector.errors.isEmpty()
     }
 
     def "invalid type results in error"() {
@@ -30,6 +44,8 @@ class ArgumentsOfCorrectTypeTest extends Specification {
         argumentsOfCorrectType.checkArgument(argumentLiteral)
         then:
         errorCollector.containsValidationError(ValidationErrorType.WrongType)
+        errorCollector.errors.size() == 1
+        errorCollector.errors[0].message == "Validation error of type WrongType: argument value StringValue{value='string'} has wrong type"
     }
 
     def "current null argument from context is no error"(){

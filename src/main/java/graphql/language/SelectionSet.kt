@@ -14,6 +14,8 @@ class SelectionSet : AbstractNode {
         this.selections.addAll(selections)
     }
 
+    fun isEmpty() = selections.isEmpty()
+
     override val children: List<Node>
         get() = selections
 

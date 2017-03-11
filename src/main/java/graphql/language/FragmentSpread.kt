@@ -1,11 +1,10 @@
 package graphql.language
 
 
-import java.util.ArrayList
 
 class FragmentSpread(val name: String) : AbstractNode(), Selection {
 
-    var directives: List<Directive> = emptyList()
+    val directives: MutableList<Directive> = mutableListOf()
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true

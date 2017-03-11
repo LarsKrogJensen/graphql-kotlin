@@ -8,7 +8,7 @@ class Fixtures {
 
 
     static GraphQLSchema simpsonsSchema() {
-        GraphQLFieldDefinition nameField = new GraphQLFieldDefinition("name", Scalars.GraphQLString)
+        GraphQLFieldDefinition nameField = new GraphQLFieldDefinition("name", ScalarsKt.GraphQLString)
 
         GraphQLObjectType simpsonCharacter = new GraphQLObjectType("simpsonCharacter", [nameField])
         GraphQLFieldDefinition simpsons = new GraphQLFieldDefinition("simpson", simpsonCharacter)

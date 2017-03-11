@@ -5,8 +5,8 @@ class Field : AbstractNode, Selection {
     val name: String
     var alias: String? = null
     var arguments: List<Argument> = mutableListOf()
-    var directives: List<Directive> = mutableListOf()
-    var selectionSet: SelectionSet? = null
+    var directives: MutableList<Directive> = mutableListOf()
+    var selectionSet: SelectionSet = SelectionSet()
 
     constructor(name: String) {
         this.name = name
@@ -21,7 +21,7 @@ class Field : AbstractNode, Selection {
     }
 
     constructor(name: String, arguments: List<Argument>, directives: List<Directive>) : this(name, arguments) {
-        this.directives = directives
+        this.directives.addAll(directives)
     }
 
     constructor(name: String, arguments: List<Argument>, selectionSet: SelectionSet) : this(name, arguments) {
@@ -33,9 +33,8 @@ class Field : AbstractNode, Selection {
             val result: MutableList<Node> = mutableListOf()
             result.addAll(arguments)
             result.addAll(directives)
-
-            if (selectionSet != null)
-                result.add(selectionSet!!)
+            if (!selectionSet.isEmpty())
+                result.add(selectionSet)
 
             return result
         }
@@ -61,7 +60,7 @@ class Field : AbstractNode, Selection {
     }
 
     fun add(directive: Directive) {
-        directives += directive
+        directives.add(directive)
     }
 
     fun add(argument: Argument) {

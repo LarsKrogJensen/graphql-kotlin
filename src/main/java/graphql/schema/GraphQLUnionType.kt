@@ -69,6 +69,7 @@ class GraphQLUnionType(override val name: String,
     }
 
     companion object {
+        @JvmStatic
         fun newUnionType(): Builder {
             return Builder()
         }

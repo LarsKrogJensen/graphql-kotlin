@@ -7,7 +7,7 @@ import graphql.AssertException
 import static graphql.schema.GraphQLObjectType.newObject
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
 
-import static graphql.Scalars.GraphQLString
+import static graphql.ScalarsKt.GraphQLString
 
 
 class GraphQLObjectTypeTest extends Specification {

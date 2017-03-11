@@ -4,7 +4,7 @@ package graphql.schema
 import graphql.language.Field
 
 class DataFetchingEnvironmentImpl(private val source: Any,
-                                  override val arguments: Map<String, Any>,
+                                  override val arguments: Map<String, Any?>,
                                   private val context: Any,
                                   override val fields: List<Field>,
                                   override val fieldType: GraphQLOutputType,

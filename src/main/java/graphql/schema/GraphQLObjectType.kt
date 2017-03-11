@@ -151,6 +151,7 @@ open class GraphQLObjectType(override val name: String,
 
     companion object {
 
+        @JvmStatic
         fun newObject(): Builder {
             return Builder()
         }

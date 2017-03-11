@@ -13,10 +13,10 @@ import java.util.ArrayList
 
 
 class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisitor {
-    internal var outputTypeStack: MutableList<GraphQLOutputType> = ArrayList()
-    internal var parentTypeStack: MutableList<GraphQLCompositeType> = ArrayList()
-    internal var inputTypeStack: MutableList<GraphQLInputType> = ArrayList()
-    internal var fieldDefStack: MutableList<GraphQLFieldDefinition<*>> = ArrayList()
+    internal var outputTypeStack: MutableList<GraphQLOutputType> = mutableListOf()
+    internal var parentTypeStack: MutableList<GraphQLCompositeType> = mutableListOf()
+    internal var inputTypeStack: MutableList<GraphQLInputType> = mutableListOf()
+    internal var fieldDefStack: MutableList<GraphQLFieldDefinition<*>> = mutableListOf()
     var directive: GraphQLDirective? = null
         internal set
     var argument: GraphQLArgument? = null

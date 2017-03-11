@@ -28,13 +28,11 @@ class VariableTypesMatchRule(validationContext: ValidationContext, validationErr
 
     override fun checkVariable(variableReference: VariableReference) {
         val variableDefinition = variableDefinitionMap!![variableReference.name] ?: return
-        val variableType = TypeFromAST.getTypeFromAST(validationContext.schema, variableDefinition.type) ?: return
+        val variableType = TypeFromAST.getTypeFromAST(validationContext.schema, variableDefinition.type)
         val inputType = validationContext.inputType
         if (!variablesTypesMatcher.doesVariableTypesMatch(variableType, variableDefinition.defaultValue!!, inputType)) {
             val message = "Variable type doesn't match"
             addError(ValidationError(ValidationErrorType.VariableTypeMismatch, variableReference.sourceLocation, message))
         }
     }
-
-
 }

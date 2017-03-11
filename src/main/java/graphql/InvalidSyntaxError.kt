@@ -14,6 +14,10 @@ class InvalidSyntaxError(sourceLocation: SourceLocation?) : GraphQLError {
             this._sourceLocations.add(sourceLocation)
     }
 
+    constructor(sourceLocations: List<SourceLocation>) : this(null) {
+        _sourceLocations.addAll(sourceLocations)
+    }
+
     override fun message(): String? {
         return "Invalid Syntax"
     }

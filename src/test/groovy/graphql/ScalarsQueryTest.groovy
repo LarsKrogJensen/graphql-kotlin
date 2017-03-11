@@ -1,10 +1,7 @@
 package graphql
 
-import graphql.execution.batched.BatchedExecutionStrategy
 import spock.lang.Specification
-import spock.lang.Unroll
-
-import java.util.concurrent.ExecutionException;
+import spock.lang.Unroll;
 
 class ScalarsQueryTest extends Specification {
 
@@ -26,7 +23,7 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = new GraphQL(ScalarsQuerySchema.scalarsQuerySchema).execute(query).get()
+        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
 
         then:
         result.data == expected
@@ -51,7 +48,7 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = new GraphQL(ScalarsQuerySchema.scalarsQuerySchema).execute(query).get()
+        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
 
         then:
         result.data == expected
@@ -70,8 +67,11 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = new GraphQL(ScalarsQuerySchema.scalarsQuerySchema).execute(query).get()
-        def resultBatched = new GraphQL(ScalarsQuerySchema.scalarsQuerySchema, new BatchedExecutionStrategy()).execute(query).get()
+        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema)
+                .build().execute(query)
+        def resultBatched = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema)
+                //.queryExecutionStrategy(new BatchedExecutionStrategy())
+                .build().execute(query)
 
         then:
         result.data == expected
@@ -92,7 +92,7 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = new GraphQL(ScalarsQuerySchema.scalarsQuerySchema).execute(query).get()
+        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
 
         then:
         result.data == expected
@@ -105,12 +105,11 @@ class ScalarsQueryTest extends Specification {
         def query = "{ " + number + "String(input: \"foobar\") }"
         
         when:
-        def result = new GraphQL(ScalarsQuerySchema.scalarsQuerySchema).execute(query).get()
+        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
         
         then:
         //FIXME do not propagate exception, but instead raise an error.
-        // TODO Check ExecutionException contains NumberFormatException
-        thrown(ExecutionException)
+        thrown(NumberFormatException)
         //TODO result.errors.empty == false
         //TODO result.errors == xyz
         

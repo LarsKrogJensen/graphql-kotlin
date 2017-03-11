@@ -1,11 +1,18 @@
 package graphql.schema
 
 import graphql.NestedInputSchema
+import graphql.TypeReferenceSchema
 import graphql.introspection.Introspection
 import spock.lang.Specification
 
-import static graphql.Scalars.*
+import static TypeReferenceSchema.SchemaWithReferences
+import static graphql.ScalarsKt.*
 import static graphql.StarWarsSchema.*
+import static graphql.schema.GraphQLArgument.newArgument
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
+import static graphql.schema.GraphQLInputObjectField.newInputObjectField
+import static graphql.schema.GraphQLInputObjectType.newInputObject
+import static graphql.schema.GraphQLObjectType.newObject
 
 class SchemaUtilTest extends Specification {
 
@@ -33,7 +40,7 @@ class SchemaUtilTest extends Specification {
 
     def "collectAllTypesNestedInput"() {
         when:
-        Map<String, GraphQLType> types = new SchemaUtil().allTypes(NestedInputSchema.createSchema(), Collections.emptySet());
+        Map<String, GraphQLType> types = new SchemaUtil().allTypes(NestedInputSchema.createSchema(), Collections.emptySet())
         Map<String, GraphQLType> expected =
 
          [(NestedInputSchema.rootType().name)                 : NestedInputSchema.rootType(),
@@ -49,9 +56,43 @@ class SchemaUtilTest extends Specification {
                   (Introspection.__EnumValue.name) : Introspection.__EnumValue,
           (Introspection.__Directive.name) : Introspection.__Directive,
           (Introspection.__DirectiveLocation.name) : Introspection.__DirectiveLocation,
-          (GraphQLBoolean.name)            : GraphQLBoolean];
+          (GraphQLBoolean.name)            : GraphQLBoolean]
         then:
         types.keySet() == expected.keySet()
     }
 
+    def "using reference to input as output results in error"() {
+        given:
+        GraphQLInputObjectType PersonInputType = newInputObject()
+                .name("Person")
+                .field(newInputObjectField()
+                .name("name")
+                .type(GraphQLString))
+                .build()
+
+        GraphQLFieldDefinition field = newFieldDefinition()
+                .name("find")
+                .type(new GraphQLTypeReference("Person"))
+                .argument(newArgument()
+                .name("ssn")
+                .type(GraphQLString))
+                .build()
+
+        GraphQLObjectType PersonService = newObject()
+                .name("PersonService")
+                .field(field)
+                .build()
+        def schema = new GraphQLSchema(PersonService, null, Collections.singleton(PersonInputType))
+        when:
+        new SchemaUtil().replaceTypeReferences(schema)
+        then:
+        thrown(ClassCastException)
+    }
+    
+    def "all references are replaced"() {
+        when:
+        new SchemaUtil().replaceTypeReferences(SchemaWithReferences)
+        then:
+        SchemaWithReferences.allTypesAsList.findIndexOf{it instanceof TypeReference} == -1
+    }
 }

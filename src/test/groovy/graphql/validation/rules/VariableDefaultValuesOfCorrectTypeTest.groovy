@@ -10,7 +10,7 @@ import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
 
-import static graphql.Scalars.GraphQLString
+import static graphql.ScalarsKt.GraphQLString
 
 class VariableDefaultValuesOfCorrectTypeTest extends Specification {
 

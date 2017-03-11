@@ -101,6 +101,7 @@ open class GraphQLInputObjectType(override val name: String,
 
     companion object {
 
+        @JvmStatic
         fun newInputObject(): Builder {
             return Builder()
         }

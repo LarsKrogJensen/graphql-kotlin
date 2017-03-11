@@ -15,12 +15,12 @@ class ScalarLeafs(validationContext: ValidationContext,
     override fun checkField(field: Field) {
         val type = validationContext.outputType ?: return
         if (schemaUtil.isLeafType(type)) {
-            if (field.selectionSet != null) {
+            if (!field.selectionSet.isEmpty()) {
                 val message = String.format("Sub selection not allowed on leaf type %s", type.name)
                 addError(ValidationError(ValidationErrorType.SubSelectionNotAllowed, field.sourceLocation, message))
             }
         } else {
-            if (field.selectionSet == null) {
+            if (field.selectionSet.isEmpty()) {
                 val message = String.format("Sub selection required for type %s", type.name)
                 addError(ValidationError(ValidationErrorType.SubSelectionRequired, field.sourceLocation, message))
             }

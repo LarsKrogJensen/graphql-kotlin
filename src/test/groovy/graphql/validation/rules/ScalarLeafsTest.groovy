@@ -1,6 +1,6 @@
 package graphql.validation.rules
 
-import graphql.Scalars
+import graphql.ScalarsKt
 import graphql.language.Field
 import graphql.language.SelectionSet
 import graphql.schema.GraphQLObjectType

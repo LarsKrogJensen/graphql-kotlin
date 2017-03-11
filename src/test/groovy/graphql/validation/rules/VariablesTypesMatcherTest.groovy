@@ -6,8 +6,8 @@ import graphql.schema.GraphQLNonNull
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static graphql.Scalars.GraphQLBoolean
-import static graphql.Scalars.GraphQLString
+import static graphql.ScalarsKt.GraphQLBoolean
+import static graphql.ScalarsKt.GraphQLString
 
 
 class VariablesTypesMatcherTest extends Specification {

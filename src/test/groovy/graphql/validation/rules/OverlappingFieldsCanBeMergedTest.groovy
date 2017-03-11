@@ -6,15 +6,14 @@ import graphql.parser.Parser
 import graphql.schema.GraphQLNonNull
 import graphql.schema.GraphQLObjectType
 import graphql.schema.GraphQLSchema
-import graphql.schema.TypeResolver
 import graphql.validation.LanguageTraversal
 import graphql.validation.RulesVisitor
 import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import spock.lang.Specification
 
-import static graphql.Scalars.GraphQLInt
-import static graphql.Scalars.GraphQLString
+import static graphql.ScalarsKt.GraphQLInt
+import static graphql.ScalarsKt.GraphQLString
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
 import static graphql.schema.GraphQLObjectType.newObject
 import static graphql.schema.GraphQLUnionType.newUnionType
@@ -93,12 +92,14 @@ class OverlappingFieldsCanBeMergedTest extends Specification {
         def BoxUnion = newUnionType()
                 .name("BoxUnion")
                 .possibleTypes(StringBox, IntBox, NonNullStringBox1, NonNullStringBox2)
-                .typeResolver(new TypeResolver() {
-            @Override
-            GraphQLObjectType getType(Object object) {
-                return null
-            }
-        })
+//                .typeResolver((obj -> {}))
+//
+//        (new TypeResolver() {
+//            @Override
+//            GraphQLObjectType getType(Object object) {
+//                return null
+//            }
+//        })
                 .build()
         def QueryRoot = newObject()
                 .name("QueryRoot")

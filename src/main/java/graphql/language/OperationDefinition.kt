@@ -11,29 +11,40 @@ class OperationDefinition : AbstractNode, Definition {
 
     var name: String? = null
 
-    var operation: Operation? = null
+    val operation: Operation
     var variableDefinitions: List<VariableDefinition> = mutableListOf()
-    var directives: List<Directive> = mutableListOf()
-    var selectionSet: SelectionSet? = null
+    var directives: MutableList<Directive> = mutableListOf()
+    var selectionSet: SelectionSet = SelectionSet()
 
-    constructor()
+    constructor(operation: Operation) {
+        this.operation = operation
+    }
 
-    constructor(name: String, operation: Operation, variableDefinitions: List<VariableDefinition>, directives: List<Directive>, selectionSet: SelectionSet) {
+    constructor(name: String,
+                operation: Operation,
+                variableDefinitions: List<VariableDefinition>,
+                directives: List<Directive>,
+                selectionSet: SelectionSet) {
         this.name = name
         this.operation = operation
         this.variableDefinitions = variableDefinitions
-        this.directives = directives
+        this.directives.addAll(directives)
         this.selectionSet = selectionSet
     }
 
-    constructor(name: String, operation: Operation, variableDefinitions: List<VariableDefinition>, selectionSet: SelectionSet) {
+    constructor(name: String,
+                operation: Operation,
+                variableDefinitions: List<VariableDefinition>,
+                selectionSet: SelectionSet) {
         this.name = name
         this.operation = operation
         this.variableDefinitions = variableDefinitions
         this.selectionSet = selectionSet
     }
 
-    constructor(name: String, operation: Operation, selectionSet: SelectionSet) {
+    constructor(name: String,
+                operation: Operation,
+                selectionSet: SelectionSet) {
         this.name = name
         this.operation = operation
         this.selectionSet = selectionSet
@@ -44,7 +55,8 @@ class OperationDefinition : AbstractNode, Definition {
             val result = ArrayList<Node>()
             result.addAll(variableDefinitions)
             result.addAll(directives)
-            selectionSet?.let { result.add(it) }
+            if (!selectionSet.isEmpty())
+                result.add(selectionSet)
             return result
         }
 
@@ -71,7 +83,7 @@ class OperationDefinition : AbstractNode, Definition {
     }
 
     fun add(directive: Directive) {
-        directives += directive
+        directives.add(directive)
     }
 
     fun add(variable: VariableDefinition) {

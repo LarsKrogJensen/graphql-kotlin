@@ -1,16 +1,7 @@
 package graphql
 
-import graphql.schema.DataFetcher
-import graphql.schema.DataFetchingEnvironment
-import graphql.schema.GraphQLObjectType
-import graphql.schema.TypeResolver
-
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionStage
 
 class StarWarsData {
-
-
     static def luke = [
             id        : '1000',
             name      : 'Luke Skywalker',
@@ -84,54 +75,38 @@ class StarWarsData {
         return null
     }
 
-    static DataFetcher humanDataFetcher = new DataFetcher() {
-        @Override
-        CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
-            def id = environment.arguments.id
-            return CompletableFuture.completedFuture(humanData[id])
-        }
+    static humanDataFetcher = { environment ->
+        def id = environment.arguments.id
+        humanData[id]
     }
 
 
-    static DataFetcher droidDataFetcher = new DataFetcher() {
-        @Override
-        CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
-            def id = environment.arguments.id
-            return CompletableFuture.completedFuture(droidData[id])
-        }
+    static droidDataFetcher = { environment ->
+        def id = environment.arguments.id
+        droidData[id]
     }
 
-    static TypeResolver characterTypeResolver = new TypeResolver() {
-        @Override
-        GraphQLObjectType getType(Object object) {
-            def id = object.id
-            if (humanData[id] != null)
-                return StarWarsSchema.humanType
-            if (droidData[id] != null)
-                return StarWarsSchema.droidType
-            return null;
-        }
+    static characterTypeResolver = { object ->
+        def id = object.id
+        if (humanData[id] != null)
+            return StarWarsSchema.humanType
+        if (droidData[id] != null)
+            return StarWarsSchema.droidType
+        return null;
     }
 
-    static DataFetcher friendsDataFetcher = new DataFetcher() {
-        @Override
-        CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
-            List<Object> result = []
-            for (String id : environment.source.friends) {
-                result.add(getCharacter(id))
-            }
-            return CompletableFuture.completedFuture(result)
+    static friendsDataFetcher = { environment ->
+        List<Object> result = []
+        for (String id : environment.source.friends) {
+            result.add(getCharacter(id))
         }
+        result
     }
 
-    static DataFetcher heroDataFetcher = new DataFetcher() {
-        @Override
-        public CompletionStage<Object> fetch(DataFetchingEnvironment environment) {
-            if (environment.containsArgument("episode") && 5 == environment.argument("episode")) {
-                return CompletableFuture.completedFuture(luke)
-            };
-            return CompletableFuture.completedFuture(artoo)
-        }
+    static heroDataFetcher = { environment ->
+        if (environment.containsArgument("episode")
+                && 5 == environment.getArgument("episode")) return luke;
+        return artoo;
     }
 
 }

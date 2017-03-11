@@ -4,24 +4,26 @@ class FragmentDefinition : AbstractNode, Definition {
 
     val name: String
     val typeCondition: TypeName
-    var directives: List<Directive> = mutableListOf()
-    var selectionSet: SelectionSet? = null
+    val directives: MutableList<Directive> = mutableListOf()
+    var selectionSet: SelectionSet = SelectionSet()
 
     constructor(name: String, typeCondition: TypeName) {
         this.name = name
         this.typeCondition = typeCondition
     }
 
-    constructor(name: String, typeCondition: TypeName, selectionSet: SelectionSet) : this(name, typeCondition) {
-        this.selectionSet = selectionSet
+    constructor(name: String, typeCondition: TypeName,
+                selectionSet: SelectionSet) : this(name, typeCondition) {
+        this.selectionSet.selections().addAll(selectionSet.selections())
     }
 
     override val children: List<Node>
         get() {
             val result = mutableListOf<Node>()
-            typeCondition?.let { result.add(it) }
+            result.add(typeCondition)
             result.addAll(directives)
-            selectionSet?.let { result.add(it) }
+            if (!selectionSet.isEmpty())
+                result.add(selectionSet)
             return result
         }
 

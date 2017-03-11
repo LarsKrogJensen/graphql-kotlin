@@ -4,16 +4,19 @@ package graphql
 import java.util.ArrayList
 
 class ExecutionResultImpl : ExecutionResult {
+    private var _data: Any? = null
+
+    override fun <T> data(): T = _data as T
 
     override val errors = ArrayList<GraphQLError>()
-    override var data: Any? = null
+//    override fun data(): Any? = null
 
     constructor(errors: List<GraphQLError>) {
         this.errors.addAll(errors)
     }
 
-    constructor(data: Any, errors: List<GraphQLError>?) {
-        this.data = data
+    constructor(data: Any?, errors: List<GraphQLError>? = null) {
+        _data = data
 
         if (errors != null) {
             this.errors.addAll(errors)

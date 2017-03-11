@@ -1,10 +1,10 @@
 package graphql.language
 
 class ArrayValue() : AbstractNode(), Value {
-    var values: List<Value> = mutableListOf()
+    val values: MutableList<Value> = mutableListOf()
 
     constructor(values: List<Value>) : this() {
-        this.values = values
+        this.values.addAll(values)
     }
 
     override val children: List<Node>

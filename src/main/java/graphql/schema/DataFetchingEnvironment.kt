@@ -17,7 +17,7 @@ interface DataFetchingEnvironment {
     /**
      * @return the arguments that have been passed in via the graphql query
      */
-    val arguments: Map<String, Any>
+    val arguments: Map<String, Any?>
 
     /**
      * Returns true of the named argument is present

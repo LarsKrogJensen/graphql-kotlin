@@ -3,13 +3,8 @@ package graphql.language
 
 import java.util.ArrayList
 
-class ObjectValue() : AbstractNode(), Value {
-    private val objectFields = ArrayList<ObjectField>()
-
-
-    fun objectFields(): List<ObjectField> {
-        return objectFields
-    }
+class ObjectValue : AbstractNode(), Value {
+    val objectFields = ArrayList<ObjectField>()
 
     override val children: List<Node>
         get() = objectFields

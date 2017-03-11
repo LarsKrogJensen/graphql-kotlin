@@ -2,7 +2,7 @@ package graphql
 
 interface ExecutionResult {
 
-    val data: Any?
+    fun <T> data(): T
 
     val errors: List<GraphQLError>
 

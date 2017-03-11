@@ -3,14 +3,11 @@ package graphql.schema
 import kotlin.properties.Delegates
 
 
-class GraphQLList(wrappedType: GraphQLType) : GraphQLType, GraphQLInputType, GraphQLOutputType, GraphQLModifiedType, GraphQLNullableType {
-    private var _wrappedType: GraphQLType by Delegates.notNull<GraphQLType>()
+class GraphQLList(wrapType: GraphQLType) : GraphQLType, GraphQLInputType, GraphQLOutputType, GraphQLModifiedType, GraphQLNullableType {
+    private var _wrappedType: GraphQLType = wrapType
 
-    override val wrappedType = _wrappedType
-
-    init {
-        _wrappedType = wrappedType
-    }
+    override val wrappedType: GraphQLType
+        get() = _wrappedType
 
     internal fun replaceTypeReferences(typeMap: Map<String, GraphQLType>) {
         _wrappedType = SchemaUtil().resolveTypeReference(wrappedType, typeMap)

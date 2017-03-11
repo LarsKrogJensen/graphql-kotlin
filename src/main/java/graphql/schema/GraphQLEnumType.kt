@@ -111,6 +111,7 @@ class GraphQLEnumType(override val name: String,
     }
 
     companion object {
+        @JvmStatic
         fun newEnum(): Builder {
             return Builder()
         }

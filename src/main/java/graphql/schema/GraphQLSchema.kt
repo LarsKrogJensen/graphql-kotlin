@@ -12,9 +12,9 @@ import graphql.schema.validation.InvalidSchemaException
 import graphql.schema.validation.Validator
 import kotlin.properties.Delegates
 
-class GraphQLSchema (val queryType: GraphQLObjectType,
-                     val mutationType: GraphQLObjectType? = null,
-                     val dictionary: Set<GraphQLType> = emptySet<GraphQLType>()) {
+class GraphQLSchema(val queryType: GraphQLObjectType,
+                    val mutationType: GraphQLObjectType? = null,
+                    val dictionary: Set<GraphQLType> = emptySet<GraphQLType>()) {
     private val _typeMap: Map<String, GraphQLType>
 
     init {
@@ -41,30 +41,31 @@ class GraphQLSchema (val queryType: GraphQLObjectType,
         get() = mutationType != null
 
     class Builder {
-        private var queryType: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
-        private var mutationType: GraphQLObjectType? = null
+        var query: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
+        var mutation: GraphQLObjectType? = null
 
         fun query(builder: GraphQLObjectType.Builder): Builder {
             return query(builder.build())
         }
 
         fun query(queryType: GraphQLObjectType): Builder {
-            this.queryType = queryType
+            this.query = queryType
             return this
         }
+
 
         fun mutation(builder: GraphQLObjectType.Builder): Builder {
             return mutation(builder.build())
         }
 
         fun mutation(mutationType: GraphQLObjectType): Builder {
-            this.mutationType = mutationType
+            this.mutation = mutationType
             return this
         }
 
         fun build(dictionary: Set<GraphQLType> = emptySet<GraphQLType>()): GraphQLSchema {
             Assert.assertNotNull(dictionary, "dictionary can't be null")
-            val graphQLSchema = GraphQLSchema(queryType, mutationType, dictionary)
+            val graphQLSchema = GraphQLSchema(query, mutation, dictionary)
             SchemaUtil().replaceTypeReferences(graphQLSchema)
             val errors = Validator().validateSchema(graphQLSchema)
             if (errors.isNotEmpty()) {
@@ -75,8 +76,15 @@ class GraphQLSchema (val queryType: GraphQLObjectType,
     }
 
     companion object {
+        @JvmStatic
         fun newSchema(): Builder {
             return Builder()
+        }
+
+        fun newSchema(block: Builder.() -> Unit) : GraphQLSchema {
+            val builder = Builder()
+            block(builder)
+            return builder.build()
         }
     }
 

@@ -49,6 +49,7 @@ class GraphQLInputObjectField(val name: String,
 
     companion object {
 
+        @JvmStatic
         fun newInputObjectField(): Builder {
             return Builder()
         }

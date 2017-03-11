@@ -54,15 +54,16 @@ class NoUnbrokenInputCycles : ValidationRule {
     }
 
     private fun unwrapNonNull(type: GraphQLNonNull): GraphQLType {
-        if (type.wrappedType is GraphQLList) {
+        val wrappedType = type.wrappedType
+        if (wrappedType is GraphQLList) {
             //we only care about [type!]! i.e. non-null lists of non-nulls
-            if (type.wrappedType.wrappedType is GraphQLNonNull) {
-                return unwrap(type.wrappedType.wrappedType)
+            if (wrappedType.wrappedType is GraphQLNonNull) {
+                return unwrap(wrappedType.wrappedType)
             } else {
-                return type.wrappedType
+                return wrappedType
             }
         } else {
-            return unwrap(type.wrappedType)
+            return unwrap(wrappedType)
         }
     }
 

@@ -1,36 +1,37 @@
 package graphql.language
 
 
-import java.util.ArrayList
-
 class InlineFragment : AbstractNode, Selection {
-    var typeCondition: TypeName? = null
-    var directives: List<Directive> = ArrayList()
-    var selectionSet: SelectionSet? = null
+    val typeCondition: TypeName
+    val directives: MutableList<Directive>
+    var selectionSet: SelectionSet
 
-    constructor()
 
     constructor(typeCondition: TypeName) {
         this.typeCondition = typeCondition
+        this.directives = ArrayList()
+        this.selectionSet = SelectionSet()
     }
 
     constructor(typeCondition: TypeName, directives: List<Directive>, selectionSet: SelectionSet) {
         this.typeCondition = typeCondition
-        this.directives = directives
+        this.directives = ArrayList(directives)
         this.selectionSet = selectionSet
     }
 
-    constructor(typeCondition: TypeName, selectionSet: SelectionSet) {
+    constructor(typeCondition: TypeName, selectionSet: SelectionSet){
         this.typeCondition = typeCondition
         this.selectionSet = selectionSet
+        this.directives = ArrayList()
     }
 
     override val children: List<Node>
         get() {
             val result = mutableListOf<Node>()
-            typeCondition?.let { result.add(it) }
+            result.add(typeCondition)
             result.addAll(directives)
-            selectionSet?.let { result.add(it) }
+            if (!selectionSet.isEmpty())
+                result.add(selectionSet)
             return result
         }
 

@@ -1,15 +1,16 @@
 package graphql
 
-import graphql.schema.DataFetchingEnvironment
+import graphql.schema.DataFetchingEnvironmentImpl
 import graphql.schema.FieldDataFetcher
 import graphql.schema.PropertyDataFetcher
 import spock.lang.Specification
 
-import static graphql.Scalars.GraphQLBoolean
-import static graphql.Scalars.GraphQLString
+import static graphql.ScalarsKt.GraphQLBoolean
+import static graphql.ScalarsKt.GraphQLString
 
 class DataFetcherTest extends Specification {
 
+    @SuppressWarnings("GroovyUnusedDeclaration")
     class DataHolder {
 
         private String privateField
@@ -17,34 +18,35 @@ class DataFetcherTest extends Specification {
         private Boolean booleanField
         private Boolean booleanFieldWithGet
 
-        public String getProperty() {
+        String getProperty() {
             return privateField
         }
 
-        public void setProperty(String value) {
+        void setProperty(String value) {
             privateField = value
         }
 
-        public Boolean isBooleanField() {
-            return booleanField;
+        Boolean isBooleanField() {
+            return booleanField
         }
 
-        public void setBooleanField(Boolean value) {
+        void setBooleanField(Boolean value) {
             booleanField = value
         }
 
-        public Boolean getBooleanFieldWithGet() {
+        Boolean getBooleanFieldWithGet() {
             return booleanFieldWithGet
         }
 
-        public Boolean setBooleanFieldWithGet(Boolean value) {
+        Boolean setBooleanFieldWithGet(Boolean value) {
             booleanFieldWithGet = value
         }
     }
-    def DataHolder dataHolder
+
+    DataHolder dataHolder
 
     def setup() {
-        dataHolder = new DataHolder();
+        dataHolder = new DataHolder()
         dataHolder.publicField = "publicValue"
         dataHolder.setProperty("propertyValue")
         dataHolder.setBooleanField(true)
@@ -53,45 +55,45 @@ class DataFetcherTest extends Specification {
 
     def "get field value"() {
         given:
-        def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLString, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLString, null, null)
         when:
-        def result = new FieldDataFetcher("publicField").fetch(environment).get()
+        def result = new FieldDataFetcher("publicField").get(environment)
         then:
         result == "publicValue"
     }
 
     def "get property value"() {
         given:
-        def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLString, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLString, null, null)
         when:
-        def result = new PropertyDataFetcher("property").fetch(environment).get()
+        def result = new PropertyDataFetcher("property").get(environment)
         then:
         result == "propertyValue"
     }
 
     def "get Boolean property value"() {
         given:
-        def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLBoolean, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLBoolean, null, null)
         when:
-        def result = new PropertyDataFetcher("booleanField").fetch(environment).get()
+        def result = new PropertyDataFetcher("booleanField").get(environment)
         then:
         result == true
     }
 
     def "get Boolean property value with get"() {
         given:
-        def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLBoolean, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLBoolean, null, null)
         when:
-        def result = new PropertyDataFetcher("booleanFieldWithGet").fetch(environment).get()
+        def result = new PropertyDataFetcher("booleanFieldWithGet").get(environment)
         then:
         result == false
     }
 
     def "get field value as property"() {
         given:
-        def environment = new DataFetchingEnvironment(dataHolder, null, null, null, GraphQLString, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLString, null, null)
         when:
-        def result = new PropertyDataFetcher("publicField").fetch(environment).get()
+        def result = new PropertyDataFetcher("publicField").get(environment)
         then:
         result == "publicValue"
     }

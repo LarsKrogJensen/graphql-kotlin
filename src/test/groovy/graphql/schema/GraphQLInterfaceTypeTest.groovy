@@ -7,7 +7,7 @@ import graphql.AssertException
 import static graphql.schema.GraphQLInterfaceType.newInterface
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
 
-import static graphql.Scalars.GraphQLString
+import static graphql.ScalarsKt.GraphQLString
 
 
 class GraphQLInterfaceTest extends Specification {
@@ -15,7 +15,7 @@ class GraphQLInterfaceTest extends Specification {
     def "duplicate field definition fails"() {
         when:
         newInterface().name("TestInterfaceType")
-                .typeResolver(new TypeResolverProxy())
+//                .typeResolver(new TypeResolverProxy())
                 .field(newFieldDefinition().name("NAME").type(GraphQLString))
                 .field(newFieldDefinition().name("NAME").type(GraphQLString))
                 .build();

@@ -8,7 +8,7 @@ import kotlin.properties.Delegates
 class GraphQLFieldDefinition<T>(val name: String,
                                 val description: String?,
                                 type: GraphQLOutputType,
-                                val dataFetcher: DataFetcher<T>,
+                                val dataFetcher: DataFetcher<T>?,
                                 val arguments: List<GraphQLArgument>,
                                 val deprecationReason: String?) {
     var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
@@ -152,6 +152,7 @@ class GraphQLFieldDefinition<T>(val name: String,
     }
 
     companion object {
+        @JvmStatic
         fun <T> newFieldDefinition(): Builder<T> {
             return Builder()
         }

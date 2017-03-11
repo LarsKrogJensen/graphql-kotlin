@@ -8,7 +8,8 @@ import kotlin.properties.Delegates.notNull
 open class GraphQLInterfaceType(override val name: String,
                                 val description: String?,
                                 fieldDefinitions: List<GraphQLFieldDefinition<*>>,
-                                val typeResolver: TypeResolver) : GraphQLType,
+                                val typeResolver: TypeResolver)
+    : GraphQLType,
         GraphQLOutputType,
         GraphQLFieldsContainer,
         GraphQLCompositeType,
@@ -113,11 +114,12 @@ open class GraphQLInterfaceType(override val name: String,
         }
     }
 
-    class Reference (name: String) : GraphQLInterfaceType(name, "", emptyList<GraphQLFieldDefinition<*>>(), TypeResolverProxy()), TypeReference
+    class Reference(name: String) : GraphQLInterfaceType(name, "", emptyList<GraphQLFieldDefinition<*>>(), typeResolverProxy()), TypeReference
 
 
     companion object {
 
+        @JvmStatic
         fun newInterface(): Builder {
             return Builder()
         }

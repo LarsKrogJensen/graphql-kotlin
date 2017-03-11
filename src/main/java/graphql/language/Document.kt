@@ -1,14 +1,13 @@
 package graphql.language
 
 class Document : AbstractNode {
-    var definitions: List<Definition> = mutableListOf()
+    val definitions: MutableList<Definition> = mutableListOf()
 
     constructor()
 
     constructor(definitions: List<Definition>) {
-        this.definitions = definitions
+        this.definitions.addAll(definitions)
     }
-
 
     override val children: List<Node>
         get() = definitions

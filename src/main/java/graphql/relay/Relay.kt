@@ -83,9 +83,8 @@ class Relay {
         }
 
     fun <T>edgeType(name: String,
-                 nodeType: GraphQLOutputType,
-                 nodeInterface: GraphQLInterfaceType,
-                 edgeFields: List<GraphQLFieldDefinition<*>>): GraphQLObjectType {
+                    nodeType: GraphQLOutputType,
+                    edgeFields: List<GraphQLFieldDefinition<*>>): GraphQLObjectType {
 
         return newObject()
                 .name(name + "Edge")

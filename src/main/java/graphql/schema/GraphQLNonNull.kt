@@ -1,22 +1,20 @@
 package graphql.schema
 
-import kotlin.properties.Delegates
-
 
 class GraphQLNonNull(wrappedType: GraphQLType) : GraphQLType, GraphQLInputType, GraphQLOutputType, GraphQLModifiedType {
 
-    private var _wrappedType: GraphQLType by Delegates.notNull<GraphQLType>()
+    override val wrappedType: GraphQLType
+        get() = _wrappedType!!
 
-    override val wrappedType = _wrappedType
-
-    init {
-        _wrappedType = wrappedType
-    }
+    private var _wrappedType: GraphQLType? = null;
 
     internal fun replaceTypeReferences(typeMap: Map<String, GraphQLType>) {
         _wrappedType = SchemaUtil().resolveTypeReference(wrappedType, typeMap)
     }
 
+    init {
+        _wrappedType = wrappedType
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
