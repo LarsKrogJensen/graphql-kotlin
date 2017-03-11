@@ -64,7 +64,7 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     private fun getFromContextStack(contextProperty: ContextProperty): Any? {
         return contextStack
                 .filter { it.contextProperty == contextProperty }
-                .first { return it.value }
+                .firstOrNull { return it.value }
     }
 
     private fun newSelectionSet(selectionSet: SelectionSet) {

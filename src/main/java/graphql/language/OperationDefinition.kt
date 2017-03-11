@@ -32,7 +32,7 @@ class OperationDefinition : AbstractNode, Definition {
         this.selectionSet = selectionSet
     }
 
-    constructor(name: String,
+    constructor(name: String?,
                 operation: Operation,
                 variableDefinitions: List<VariableDefinition>,
                 selectionSet: SelectionSet) {

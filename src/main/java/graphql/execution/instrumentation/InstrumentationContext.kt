@@ -13,7 +13,7 @@ interface InstrumentationContext<T> {
      * This is invoked when the execution step is completed successfully
      * @param result the successful result of the step
      */
-    fun onEnd(result: T)
+    fun onEnd(result: T?)
 
     /**
      * This is invoked when the execution step is completed unsuccessfully

@@ -1,5 +1,6 @@
 package graphql
 
+import com.sun.javafx.image.BytePixelSetter
 import graphql.schema.DataFetcher
 import graphql.schema.TypeResolver
 import java.util.concurrent.CompletableFuture
@@ -89,10 +90,15 @@ val droidDataFetcher: DataFetcher<Any?> = { environment ->
 }
 
 val characterTypeResolver: TypeResolver = {
-    when (it) {
-//            is Human
-        else -> null
-    }
+    val data: Map<String, Any?> = it as Map<String, Any?>
+    val id: String = data["id"] as String
+
+    if (humanData.containsKey(id))
+        StarWarsSchema.humanType
+    else if(droidData.containsKey(id))
+        StarWarsSchema.droidType
+    else
+        null
 }
 //    static characterTypeResolver =
 //    {

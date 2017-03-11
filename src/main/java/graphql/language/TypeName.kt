@@ -14,6 +14,6 @@ data class TypeName(var name: String) : AbstractNode(), Type {
 
         val namedType = node as TypeName
 
-        return name != namedType.name
+        return name == namedType.name
     }
 }

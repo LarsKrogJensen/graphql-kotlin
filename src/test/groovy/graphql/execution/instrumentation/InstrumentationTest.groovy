@@ -111,12 +111,12 @@ class InstrumentationTest extends Specification {
 
             @Override
             InstrumentationContext<ExecutionResult> beginField(FieldParameters parameters) {
-                return new Timer("field-$parameters.field.name", executionList)
+                return new Timer("field-$parameters.fieldDef.name", executionList)
             }
 
             @Override
             InstrumentationContext<Object> beginFieldFetch(FieldFetchParameters parameters) {
-                return new Timer("fetch-$parameters.field.name", executionList)
+                return new Timer("fetch-$parameters.fieldDef.name", executionList)
             }
         }
 
@@ -127,7 +127,7 @@ class InstrumentationTest extends Specification {
                 .instrumentation(instrumentation)
                 .build()
 
-        graphQL.execute(query).data
+        graphQL.execute(query).toCompletableFuture().get().data()
 
         then:
 

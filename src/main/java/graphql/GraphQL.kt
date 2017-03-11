@@ -61,7 +61,9 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         }
     }
 
-
+    fun execute(requestString: String): CompletionStage<ExecutionResult> {
+        return execute(requestString, null)
+    }
     fun execute(requestString: String,
                 operationName: String? = null,
                 context: Any = Any(),

@@ -61,7 +61,7 @@
             <version>1.0-groovy-2.4</version>
             <scope>test</scope>
         </dependency>
-     
+
 
         <!-- https://mvnrepository.com/artifact/cglib/cglib-nodep -->
         <dependency>
@@ -157,6 +157,26 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <compilerPlugins>
+                        <!-- Or "spring" for the Spring support -->
+                        <plugin>all-open</plugin>
+                    </compilerPlugins>
+
+                    <pluginOptions>
+                        <!-- Each annotation is placed on its own line -->
+                        <option>all-open:annotation=com.my.Annotation</option>
+                        <option>all-open:annotation=com.their.AnotherAnnotation</option>
+                    </pluginOptions>
+                </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -6,7 +6,7 @@ import graphql.language.FragmentDefinition
 import graphql.schema.*
 import java.util.*
 
-class ValidationContext(val schema: GraphQLSchema, val document: Document) {
+open class ValidationContext(val schema: GraphQLSchema, val document: Document) {
 
     val traversalContext: TraversalContext = TraversalContext(schema)
     private val _fragmentDefinitionMap = LinkedHashMap<String, FragmentDefinition>()

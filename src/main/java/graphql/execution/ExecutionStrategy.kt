@@ -4,6 +4,8 @@ import graphql.ExceptionWhileDataFetching
 import graphql.ExecutionResult
 import graphql.ExecutionResultImpl
 import graphql.GraphQLException
+import graphql.execution.instrumentation.parameters.FieldFetchParameters
+import graphql.execution.instrumentation.parameters.FieldParameters
 import graphql.introspection.Introspection.SchemaMetaFieldDef
 import graphql.introspection.Introspection.TypeMetaFieldDef
 import graphql.introspection.Introspection.TypeNameMetaFieldDef
@@ -43,6 +45,12 @@ abstract class ExecutionStrategy {
                 executionContext.graphQLSchema
         )
 
+        val instrumentation = executionContext.instrumentation
+
+        val fieldCtx = instrumentation.beginField(FieldParameters(executionContext, fieldDef))
+
+        val fetchCtx = instrumentation.beginFieldFetch(FieldFetchParameters(executionContext, fieldDef, environment))
+
         val completionStage = if (fieldDef.dataFetcher != null) (fieldDef.dataFetcher)(environment) else null
         if (completionStage == null) {
             return completeValue(executionContext, fieldDef.type, fields, null)
@@ -51,9 +59,15 @@ abstract class ExecutionStrategy {
         return completionStage.exceptionally { e ->
             executionContext.addError(ExceptionWhileDataFetching(e as Throwable))
             null
-        }.thenCompose {
-            resolvedValue ->
-            completeValue(executionContext, fieldDef.type, fields, resolvedValue)
+        }.thenCompose { resolvedValue ->
+            fetchCtx.onEnd(resolvedValue)
+
+            val result: CompletionStage<ExecutionResult> = completeValue(executionContext, fieldDef.type, fields, resolvedValue)
+            result.whenComplete { data, ex ->
+                fieldCtx.onEnd(data)
+            }
+
+            result
         }
     }
 
