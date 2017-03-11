@@ -2,12 +2,12 @@ package graphql.language
 
 
 class InlineFragment : AbstractNode, Selection {
-    val typeCondition: TypeName
+    val typeCondition: TypeName?
     val directives: MutableList<Directive>
     var selectionSet: SelectionSet
 
 
-    constructor(typeCondition: TypeName) {
+    constructor(typeCondition: TypeName?) {
         this.typeCondition = typeCondition
         this.directives = ArrayList()
         this.selectionSet = SelectionSet()
@@ -28,7 +28,9 @@ class InlineFragment : AbstractNode, Selection {
     override val children: List<Node>
         get() {
             val result = mutableListOf<Node>()
-            result.add(typeCondition)
+            if (typeCondition != null) {
+                result.add(typeCondition)
+            }
             result.addAll(directives)
             if (!selectionSet.isEmpty())
                 result.add(selectionSet)

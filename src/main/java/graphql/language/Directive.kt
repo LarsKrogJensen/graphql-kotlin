@@ -14,7 +14,7 @@ data class Directive(var name: String) : AbstractNode() {
         get() = _arguments
 
     override val children: List<Node>
-        get() = ArrayList<Node>(_arguments)
+        get() = _arguments
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true

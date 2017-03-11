@@ -15,7 +15,7 @@ class GraphQLUnionTypeTest extends Specification {
         when:
         newUnionType()
                 .name("TestUnionType")
-//                .typeResolver()
+                .typeResolver(TypeResolverProxyKt.typeResolverProxy())
                 .build();
         then:
         thrown(AssertException)

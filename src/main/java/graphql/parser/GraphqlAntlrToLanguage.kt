@@ -184,7 +184,7 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
         return null
     }
 
-    override fun visitTypeName(ctx: GraphqlParser.TypeNameContext): Void {
+    override fun visitTypeName(ctx: GraphqlParser.TypeNameContext): Void? {
         val typeName = TypeName(ctx.name().text)
         newNode(typeName, ctx)
         for (contextEntry in contextStack) {
@@ -282,7 +282,7 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
         return null
     }
 
-    override fun visitArgument(ctx: GraphqlParser.ArgumentContext): Void {
+    override fun visitArgument(ctx: GraphqlParser.ArgumentContext): Void? {
         val argument = Argument(ctx.name().text, getValue(ctx.valueWithVariable()))
         newNode(argument, ctx)
         if (getFromContextStack(ContextProperty.Directive) != null) {
@@ -296,7 +296,7 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
 
     override fun visitInlineFragment(ctx: GraphqlParser.InlineFragmentContext): Void? {
         val typeName = if (ctx.typeCondition() != null) TypeName(ctx.typeCondition().typeName().text) else null
-        val inlineFragment = InlineFragment(typeName!!)
+        val inlineFragment = InlineFragment(typeName)
         newNode(inlineFragment, ctx)
         (getFromContextStack(ContextProperty.SelectionSet) as SelectionSet).selections().add(inlineFragment)
         addContextProperty(ContextProperty.InlineFragment, inlineFragment)

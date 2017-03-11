@@ -15,7 +15,7 @@ class GraphQLInterfaceTest extends Specification {
     def "duplicate field definition fails"() {
         when:
         newInterface().name("TestInterfaceType")
-//                .typeResolver(new TypeResolverProxy())
+                .typeResolver(TypeResolverProxyKt.typeResolverProxy())
                 .field(newFieldDefinition().name("NAME").type(GraphQLString))
                 .field(newFieldDefinition().name("NAME").type(GraphQLString))
                 .build();

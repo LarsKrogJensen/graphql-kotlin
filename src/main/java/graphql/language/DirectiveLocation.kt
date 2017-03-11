@@ -14,10 +14,7 @@ import java.util.ArrayList
 class DirectiveLocation(private val name: String) : AbstractNode() {
 
     override val children: List<Node>
-        get() {
-            val result = ArrayList<Node>()
-            return result
-        }
+        get() = emptyList()
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true

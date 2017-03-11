@@ -6,7 +6,7 @@ import java.util.ArrayList
 data class TypeName(var name: String) : AbstractNode(), Type {
 
     override val children: List<Node>
-        get() = ArrayList()
+        get() = emptyList()
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true
@@ -14,8 +14,6 @@ data class TypeName(var name: String) : AbstractNode(), Type {
 
         val namedType = node as TypeName
 
-        if (if (name != null) name != namedType.name else namedType.name != null) return false
-
-        return true
+        return name != namedType.name
     }
 }

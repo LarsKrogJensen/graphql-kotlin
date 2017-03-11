@@ -29,7 +29,7 @@ class NoUnbrokenInputCyclesTest extends Specification {
                 .type(PersonInputType))
                 .build();
 
-        PersonInputType.getFieldDefinition("friend").type = new GraphQLNonNull(PersonInputType);
+        PersonInputType.field("friend").type = new GraphQLNonNull(PersonInputType);
         when:
         new NoUnbrokenInputCycles().check(field, errorCollector)
         then:

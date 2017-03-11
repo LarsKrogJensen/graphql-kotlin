@@ -1,6 +1,7 @@
 package graphql.schema
 
 
+import graphql.Assert.assertNotEmpty
 import java.util.ArrayList
 
 import kotlin.properties.Delegates.notNull
@@ -8,10 +9,12 @@ import kotlin.properties.Delegates.notNull
 class GraphQLUnionType(override val name: String,
                        val description: String?,
                        types: List<GraphQLObjectType>,
-                       val typeResolver: TypeResolver) : GraphQLType, GraphQLOutputType, GraphQLCompositeType, GraphQLUnmodifiedType, GraphQLNullableType {
+                       val typeResolver: TypeResolver)
+    : GraphQLType, GraphQLOutputType, GraphQLCompositeType, GraphQLUnmodifiedType, GraphQLNullableType {
     private val types = mutableListOf<GraphQLObjectType>()
 
     init {
+        assertNotEmpty(types, "A Union type must define one or more member types.")
         this.types.addAll(types)
     }
 

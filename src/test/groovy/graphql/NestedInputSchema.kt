@@ -6,7 +6,6 @@ import java.util.concurrent.CompletableFuture
 
 object NestedInputSchema {
 
-
     fun createSchema(): GraphQLSchema {
 
 

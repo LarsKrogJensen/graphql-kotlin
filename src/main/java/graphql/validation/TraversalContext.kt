@@ -13,10 +13,10 @@ import java.util.ArrayList
 
 
 class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisitor {
-    internal var outputTypeStack: MutableList<GraphQLOutputType> = mutableListOf()
-    internal var parentTypeStack: MutableList<GraphQLCompositeType> = mutableListOf()
-    internal var inputTypeStack: MutableList<GraphQLInputType> = mutableListOf()
-    internal var fieldDefStack: MutableList<GraphQLFieldDefinition<*>> = mutableListOf()
+    internal var outputTypeStack: MutableList<GraphQLOutputType?> = mutableListOf()
+    internal var parentTypeStack: MutableList<GraphQLCompositeType?> = mutableListOf()
+    internal var inputTypeStack: MutableList<GraphQLInputType?> = mutableListOf()
+    internal var fieldDefStack: MutableList<GraphQLFieldDefinition<*>?> = mutableListOf()
     var directive: GraphQLDirective? = null
         internal set
     var argument: GraphQLArgument? = null
@@ -41,10 +41,12 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
 
 
     private fun enterImpl(selectionSet: SelectionSet) {
-        val rawType = outputType?.let { SchemaUtil().getUnmodifiedType(it) }
+        val rawType = SchemaUtil().getUnmodifiedType(outputType!!)
+        var parentType: GraphQLCompositeType? = null
         if (rawType is GraphQLCompositeType) {
-            addParentType(rawType)
+            parentType = rawType
         }
+        addParentType(parentType)
     }
 
     private fun enterImpl(field: Field) {
@@ -53,10 +55,9 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
         if (parentType != null) {
             fieldDefinition = getFieldDef(schema, parentType, field)
         }
-        if (fieldDefinition != null) {
-            addFieldDef(fieldDefinition)
-            addType(fieldDefinition.type)
-        }
+
+        addFieldDef(fieldDefinition)
+        addType(fieldDefinition?.type)
     }
 
     private fun enterImpl(directive: Directive) {
@@ -104,8 +105,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
                     null
                 }
 
-        if (argumentType != null)
-            addInputType(argumentType.type)
+        addInputType(argumentType?.type)
         this.argument = argumentType
     }
 
@@ -115,9 +115,9 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
         if (nullableType is GraphQLList) {
             inputType = nullableType.wrappedType as GraphQLInputType
         }
-        if (inputType != null) {
-            addInputType(inputType)
-        }
+
+        addInputType(inputType)
+
     }
 
     private fun enterImpl(objectField: ObjectField) {
@@ -128,9 +128,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
             if (inputField != null)
                 inputType = inputField.type
         }
-        if (inputType != null) {
-            addInputType(inputType)
-        }
+        addInputType(inputType)
     }
 
     private fun find(arguments: List<GraphQLArgument>, name: String): GraphQLArgument? {
@@ -171,7 +169,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
             return lastElement(outputTypeStack)
         }
 
-    private fun addType(type: GraphQLOutputType) {
+    private fun addType(type: GraphQLOutputType?) {
         outputTypeStack.add(type)
     }
 
@@ -185,7 +183,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
             return lastElement(parentTypeStack)
         }
 
-    private fun addParentType(compositeType: GraphQLCompositeType) {
+    private fun addParentType(compositeType: GraphQLCompositeType?) {
         parentTypeStack.add(compositeType)
     }
 
@@ -194,7 +192,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
             return lastElement(inputTypeStack)!!
         }
 
-    private fun addInputType(graphQLInputType: GraphQLInputType) {
+    private fun addInputType(graphQLInputType: GraphQLInputType?) {
         inputTypeStack.add(graphQLInputType)
     }
 
@@ -203,7 +201,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
             return lastElement(fieldDefStack)
         }
 
-    private fun addFieldDef(fieldDefinition: GraphQLFieldDefinition<*>) {
+    private fun addFieldDef(fieldDefinition: GraphQLFieldDefinition<*>?) {
         fieldDefStack.add(fieldDefinition)
     }
 

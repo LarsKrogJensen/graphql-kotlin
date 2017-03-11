@@ -95,7 +95,7 @@ class GraphQLEnumType(override val name: String,
             return this
         }
 
-        fun value(name: String, value: Any): Builder {
+        fun value(name: String, value: Any?): Builder {
             values.add(GraphQLEnumValueDefinition(name, null, value))
             return this
         }

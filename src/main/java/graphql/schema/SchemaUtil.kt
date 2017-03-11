@@ -120,7 +120,7 @@ class SchemaUtil {
     }
 
 
-    internal fun replaceTypeReferences(schema: GraphQLSchema) {
+    fun replaceTypeReferences(schema: GraphQLSchema) {
         val typeMap = allTypes(schema, schema.dictionary)
         for (type in typeMap.values) {
             if (type is GraphQLFieldsContainer) {

@@ -12,11 +12,7 @@ class EnumValueDefinition(val name: String,
             this.directives.addAll(directives)
     }
     override val children: List<Node>
-        get() {
-            val result = ArrayList<Node>()
-            result.addAll(directives)
-            return result
-        }
+        get() = directives
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true
