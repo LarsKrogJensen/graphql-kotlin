@@ -2,6 +2,8 @@ package graphql
 
 import spock.lang.Specification
 
+import static graphql.GraphQLKt.newGraphQL
+
 
 class MutationTest extends Specification {
 
@@ -47,11 +49,12 @@ class MutationTest extends Specification {
         ]
 
         when:
-        def executionResult = newGraphQL(MutationSchema.schema).execute(query, new MutationSchema.Root(6)).get()
+        def executionResult = newGraphQL(MutationSchema.schema).build()
+                .execute(query, null, new MutationSchema.Root(6), new HashMap<>()).toCompletableFuture().get()
 
 
         then:
-        executionResult.data == expectedResult
+        executionResult.data() == expectedResult
 
     }
 
@@ -93,11 +96,12 @@ class MutationTest extends Specification {
         ]
 
         when:
-        def executionResult = GraphQL.newGraphQL(MutationSchema.schema).build().execute(query, new MutationSchema.Root(6))
+        def executionResult = GraphQL.newGraphQL(MutationSchema.schema).build()
+                .execute(query, null, new MutationSchema.Root(6), new HashMap<>()).toCompletableFuture().get()
 
 
         then:
-        executionResult.data == expectedResult
+        executionResult.data() == expectedResult
         executionResult.errors.size() == 2
         executionResult.errors.every({ it instanceof ExceptionWhileDataFetching })
 

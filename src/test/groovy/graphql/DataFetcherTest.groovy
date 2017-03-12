@@ -2,7 +2,10 @@ package graphql
 
 import graphql.schema.DataFetchingEnvironmentImpl
 import graphql.schema.FieldDataFetcher
+import graphql.schema.FieldDataFetcherKt
+import graphql.schema.GraphQLList
 import graphql.schema.PropertyDataFetcher
+import graphql.schema.PropertyDataFetcherKt
 import spock.lang.Specification
 
 import static graphql.ScalarsKt.GraphQLBoolean
@@ -55,46 +58,61 @@ class DataFetcherTest extends Specification {
 
     def "get field value"() {
         given:
-        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLString, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder,
+                new HashMap<>(),
+                new Object(), [], GraphQLString, GraphQLString, StarWarsSchema.starWarsSchema)
+
         when:
-        def result = new FieldDataFetcher("publicField").get(environment)
+        def result = FieldDataFetcherKt.fieldDataFetcher("publicField").invoke(environment)
+
         then:
-        result == "publicValue"
+        result.toCompletableFuture().get() == "publicValue"
     }
 
     def "get property value"() {
         given:
-        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLString, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder,
+                new HashMap<>(),
+                new Object(), [], GraphQLString, GraphQLString, StarWarsSchema.starWarsSchema)
+
         when:
-        def result = new PropertyDataFetcher("property").get(environment)
+        def result = PropertyDataFetcherKt.propertyDataFetcher("property").invoke(environment)
         then:
-        result == "propertyValue"
+        result.toCompletableFuture().get() == "propertyValue"
     }
 
     def "get Boolean property value"() {
         given:
-        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLBoolean, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder,
+                       new HashMap<>(),
+                       new Object(), [], GraphQLBoolean, GraphQLString, StarWarsSchema.starWarsSchema)
+
         when:
-        def result = new PropertyDataFetcher("booleanField").get(environment)
+        def result = PropertyDataFetcherKt.propertyDataFetcher("booleanField").invoke(environment)
         then:
-        result == true
+        result.toCompletableFuture().get() == true
     }
 
     def "get Boolean property value with get"() {
         given:
-        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLBoolean, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder,
+                               new HashMap<>(),
+                               new Object(), [], GraphQLBoolean, GraphQLString, StarWarsSchema.starWarsSchema)
         when:
-        def result = new PropertyDataFetcher("booleanFieldWithGet").get(environment)
+        def result = PropertyDataFetcherKt.propertyDataFetcher("booleanFieldWithGet").invoke(environment)
         then:
-        result == false
+        result.toCompletableFuture().get() == false
     }
 
     def "get field value as property"() {
         given:
-        def environment = new DataFetchingEnvironmentImpl(dataHolder, null, null, null, GraphQLString, null, null)
+        def environment = new DataFetchingEnvironmentImpl(dataHolder,
+                      new HashMap<>(),
+                      new Object(), [], GraphQLString, GraphQLString, StarWarsSchema.starWarsSchema)
+
         when:
-        def result = new PropertyDataFetcher("publicField").get(environment)
+        def result = PropertyDataFetcherKt.propertyDataFetcher("publicField").invoke(environment)
         then:
-        result == "publicValue"
+        result.toCompletableFuture().get() == "publicValue"
     }
 }

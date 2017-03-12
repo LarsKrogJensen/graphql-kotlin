@@ -5,6 +5,8 @@ import graphql.schema.*
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
 
+import java.util.concurrent.CompletableFuture
+
 import static graphql.ScalarsKt.GraphQLString
 import static graphql.schema.GraphQLArgument.newArgument
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
@@ -25,10 +27,10 @@ class GraphQLTest extends Specification {
                         .name("RootQueryType")
                         .field(fieldDefinition)
                         .build()
-        ).build()
+        ).build(new HashSet<GraphQLType>())
 
         when:
-        def result = GraphQL.newGraphQL(schema).build().execute('{ hello }').data
+        def result = GraphQL.newGraphQL(schema).build().execute('{ hello }').toCompletableFuture().get().data()
 
         then:
         result == [hello: 'world']
@@ -59,10 +61,10 @@ class GraphQLTest extends Specification {
                         .name("RootQueryType")
                         .field(simpsonField)
                         .build()
-        ).build()
+        ).build(new HashSet<GraphQLType>())
 
         when:
-        def result = GraphQL.newGraphQL(graphQLSchema).build().execute('{ simpson { id, name } }').data
+        def result = GraphQL.newGraphQL(graphQLSchema).build().execute('{ simpson { id, name } }').toCompletableFuture().get().data()
 
         then:
         result == [simpson: [id: '123', name: 'homer']]
@@ -80,10 +82,10 @@ class GraphQLTest extends Specification {
                         .name("RootQueryType")
                         .field(fieldDefinition)
                         .build()
-        ).build()
+        ).build(new HashSet<GraphQLType>())
 
         when:
-        def errors = GraphQL.newGraphQL(schema).build().execute('{ hello(arg:11) }').errors
+        def errors = GraphQL.newGraphQL(schema).build().execute('{ hello(arg:11) }').toCompletableFuture().get().errors
 
         then:
         errors.size() == 1
@@ -95,15 +97,15 @@ class GraphQLTest extends Specification {
                 newObject()
                         .name("RootQueryType")
                         .build()
-        ).build()
+        ).build(new HashSet<GraphQLType>())
 
         when:
-        def errors = GraphQL.newGraphQL(schema).build().execute('{ hello(() }').errors
+        def errors = GraphQL.newGraphQL(schema).build().execute('{ hello(() }').toCompletableFuture().get().errors
 
         then:
         errors.size() == 1
-        errors[0].errorType == ErrorType.InvalidSyntax
-        errors[0].sourceLocations == [new SourceLocation(1, 8)]
+        errors[0].errorType() == ErrorType.InvalidSyntax
+        errors[0].locations() == [new SourceLocation(1, 8)]
     }
 
     def "query with invalid syntax 2"() {
@@ -112,15 +114,15 @@ class GraphQLTest extends Specification {
                 newObject()
                         .name("RootQueryType")
                         .build()
-        ).build()
+        ).build(new HashSet<GraphQLType>())
 
         when:
-        def errors = GraphQL.newGraphQL(schema).build().execute('{ hello[](() }').errors
+        def errors = GraphQL.newGraphQL(schema).build().execute('{ hello[](() }').toCompletableFuture().get().errors
 
         then:
         errors.size() == 1
-        errors[0].errorType == ErrorType.InvalidSyntax
-        errors[0].sourceLocations == [new SourceLocation(1, 7)]
+        errors[0].errorType() == ErrorType.InvalidSyntax
+        errors[0].locations() == [new SourceLocation(1, 7)]
     }
 
     def "non null argument is missing"() {
@@ -135,16 +137,16 @@ class GraphQLTest extends Specification {
                         .name("arg")
                         .type(new GraphQLNonNull(GraphQLString))))
                         .build()
-        ).build()
+        ).build(new HashSet<GraphQLType>())
 
         when:
-        def errors = GraphQL.newGraphQL(schema).build().execute('{ field }').errors
+        def errors = GraphQL.newGraphQL(schema).build().execute('{ field }').toCompletableFuture().get().errors
 
         then:
         errors.size() == 1
-        errors[0].errorType == ErrorType.ValidationError
+        errors[0].errorType() == ErrorType.ValidationError
         errors[0].validationErrorType == ValidationErrorType.MissingFieldArgument
-        errors[0].sourceLocations == [new SourceLocation(1, 3)]
+        errors[0].locations() == [new SourceLocation(1, 3)]
     }
 
     def "`Iterable` can be used as a `GraphQLList` field result"() {
@@ -153,17 +155,17 @@ class GraphQLTest extends Specification {
         set.add("One")
         set.add("Two")
 
-        def schema = GraphQLSchema.newSchema()
-          .query(GraphQLObjectType.newObject()
+        def schema = newSchema()
+          .query(newObject()
             .name("QueryType")
-            .field(GraphQLFieldDefinition.newFieldDefinition()
+            .field(newFieldDefinition()
               .name("set")
               .type(new GraphQLList(GraphQLString))
-              .dataFetcher({ set })))
-          .build()
+              .dataFetcher({ CompletableFuture.completedFuture(['One', 'Two']) })))
+          .build(new HashSet<GraphQLType>())
 
         when:
-        def data = GraphQL.newGraphQL(schema).build().execute("query { set }").data
+        def data = GraphQL.newGraphQL(schema).build().execute("query { set }").toCompletableFuture().get().data()
 
         then:
         data == [set: ['One', 'Two']]
@@ -175,10 +177,10 @@ class GraphQLTest extends Specification {
         GraphQLSchema schema = newSchema().query(
                 newObject()
                         .name("RootQueryType")
-                        .field(newFieldDefinition().name("field1").type(GraphQLString).dataFetcher(staticDataFetcher("value1")))
-                        .field(newFieldDefinition().name("field2").type(GraphQLString).dataFetcher(staticDataFetcher("value2")))
+                        .field(newFieldDefinition().name("field1").type(GraphQLString).dataFetcher(DataFetcherKt.staticDataFetcher("value1")))
+                        .field(newFieldDefinition().name("field2").type(GraphQLString).dataFetcher(DataFetcherKt.staticDataFetcher("value2")))
         )
-                .build()
+                .build(new HashSet<GraphQLType>())
 
         def query = """
         query Query1 { field1 }
@@ -188,10 +190,11 @@ class GraphQLTest extends Specification {
         def expected = [field2: 'value2']
 
         when:
-        def result = GraphQL.newGraphQL(schema).build().execute(query, 'Query2', null, [:])
+        def result = GraphQL.newGraphQL(schema).build()
+                .execute(query, 'Query2', new Object(), [:]).toCompletableFuture().get()
 
         then:
-        result.data == expected
+        result.data() == expected
         result.errors.size() == 0
     }
 
@@ -203,7 +206,7 @@ class GraphQLTest extends Specification {
                         .name("RootQueryType")
                         .field(newFieldDefinition().name("name").type(GraphQLString))
         )
-        .build()
+        .build(new HashSet<GraphQLType>())
 
         def query = """
         query Query1 { name }

@@ -14,13 +14,13 @@ class ExecutionTest extends Specification {
     def queryStrategy = Mock(IExecutionStrategy)
     def execution = new Execution(queryStrategy, mutationStrategy, NoOpInstrumentation.INSTANCE)
 
+    def setup() {
+        queryStrategy.execute(*_) >> CompletableFuture.completedFuture(null)
+        mutationStrategy.execute(*_) >> CompletableFuture.completedFuture(null)
+    }
+
     def "query strategy is used for query requests"() {
         given:
-        //def mutationStrategy = Mock(ExecutionStrategy)
-        queryStrategy.execute(_,_,_,_) >> CompletableFuture.completedFuture(null)
-
-        def execution = new Execution(queryStrategy, mutationStrategy, NoOpInstrumentation.INSTANCE)
-
         def query = '''
             query {
                 numberHolder {
@@ -38,23 +38,23 @@ class ExecutionTest extends Specification {
         0 * mutationStrategy.execute(*_)
     }
 
-    def "mutation strategy is used for mutation requests"() {
-        given:
-        def query = '''
-            mutation {
-                changeTheNumber(newNumber: 1) {
-                    theNumber
-                }
-            }
-        '''
-        def document = parser.parseDocument(query)
-        queryStrategy.execute(*_) >> CompletableFuture.completedFuture(null)
-        
-        when:
-        execution.execute(new ExecutionId("aasas"), MutationSchema.schema, new Object(), document, null, new HashMap<>())
-
-        then:
-        0 * queryStrategy.execute(*_)
-        1 * mutationStrategy.execute(*_)
-    }
+//    def "mutation strategy is used for mutation requests"() {
+//        given:
+//        def query = '''
+//            mutation {
+//                changeTheNumber(newNumber: 1) {
+//                    theNumber
+//                }
+//            }
+//        '''
+//        def document = parser.parseDocument(query)
+//        queryStrategy.execute(*_) >> CompletableFuture.completedFuture(null)
+//
+//        when:
+//        execution.execute(new ExecutionId("aasas"), MutationSchema.schema, new Object(), document, null, new HashMap<>())
+//
+//        then:
+//        0 * queryStrategy.execute(*_)
+//        1 * mutationStrategy.execute(*_)
+//    }
 }
