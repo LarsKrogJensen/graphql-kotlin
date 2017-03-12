@@ -36,12 +36,12 @@ class ValidationUtilTest extends Specification {
 
     def "null and NonNull is invalid"() {
         expect:
-        !validationUtil.isValidLiteralValue(null, nonNull(GraphQLString))
+        !validationUtil.isValidLiteralValue(null, new GraphQLNonNull(GraphQLString))
     }
 
     def "a nonNull value for a NonNull type is valid"() {
         expect:
-        validationUtil.isValidLiteralValue(new StringValue("string"), nonNull(GraphQLString))
+        validationUtil.isValidLiteralValue(new StringValue("string"), new GraphQLNonNull(GraphQLString))
     }
 
     def "null is valid when type is NonNull"() {
@@ -57,7 +57,7 @@ class ValidationUtilTest extends Specification {
     def "ArrayValue and ListType is invalid when one entry is invalid"() {
         given:
         def arrayValue = new ArrayValue([new BooleanValue(true)])
-        def type = list(GraphQLString)
+        def type = new GraphQLList(GraphQLString)
 
         expect:
         !validationUtil.isValidLiteralValue(arrayValue, type)
@@ -66,7 +66,7 @@ class ValidationUtilTest extends Specification {
     def "One value is a single element List"() {
         given:
         def singleValue = new BooleanValue(true)
-        def type = list(GraphQLBoolean)
+        def type = new GraphQLList(GraphQLBoolean)
         expect:
         validationUtil.isValidLiteralValue(singleValue, type)
     }
@@ -74,7 +74,7 @@ class ValidationUtilTest extends Specification {
     def "a valid array"() {
         given:
         def arrayValue = new ArrayValue([new StringValue("hello")])
-        def type = list(GraphQLString)
+        def type = new GraphQLList(GraphQLString)
 
         expect:
         validationUtil.isValidLiteralValue(arrayValue, type)
@@ -150,7 +150,7 @@ class ValidationUtilTest extends Specification {
                 .name("inputObjectType")
                 .field(GraphQLInputObjectField.newInputObjectField()
                 .name("hello")
-                .type(nonNull(GraphQLString)))
+                .type(new GraphQLNonNull(GraphQLString)))
                 .build()
         def objectValue = new ObjectValue()
 

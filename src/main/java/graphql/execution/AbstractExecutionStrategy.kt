@@ -15,15 +15,17 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
-abstract class ExecutionStrategy {
+interface IExecutionStrategy {
+    fun execute(executionContext: ExecutionContext,
+                parentType: GraphQLObjectType,
+                source: Any,
+                fields: Map<String, List<Field>>): CompletionStage<ExecutionResult>
+}
+
+abstract class AbstractExecutionStrategy : IExecutionStrategy {
 
     protected var valuesResolver = ValuesResolver()
     protected var fieldCollector = FieldCollector()
-
-    abstract fun execute(executionContext: ExecutionContext,
-                         parentType: GraphQLObjectType,
-                         source: Any,
-                         fields: Map<String, List<Field>>): CompletionStage<ExecutionResult>
 
     internal fun resolveField(executionContext: ExecutionContext,
                               parentType: GraphQLObjectType,

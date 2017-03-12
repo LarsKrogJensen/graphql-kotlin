@@ -23,8 +23,8 @@ class ExecutionContextBuilder(private val valuesResolver: ValuesResolver,
     }
 
     fun build(graphQLSchema: GraphQLSchema,
-              queryStrategy: ExecutionStrategy,
-              mutationStrategy: ExecutionStrategy,
+              queryStrategy: IExecutionStrategy,
+              mutationStrategy: IExecutionStrategy,
               root: Any,
               document: Document,
               operationName: String?,

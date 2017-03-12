@@ -11,7 +11,7 @@ interface IValidationContext {
     val document: Document
     val traversalContext: ITraversalContext
     val parentType: GraphQLCompositeType?
-    val inputType: GraphQLInputType
+    val inputType: GraphQLInputType?
     val fieldDef: GraphQLFieldDefinition<*>?
     val directive: GraphQLDirective?
     val argument: GraphQLArgument?
@@ -45,7 +45,7 @@ class ValidationContext(override val schema: GraphQLSchema,
     override val parentType: GraphQLCompositeType?
         get() = traversalContext.parentType
 
-    override val inputType: GraphQLInputType
+    override val inputType: GraphQLInputType?
         get() = traversalContext.inputType
 
     override val fieldDef: GraphQLFieldDefinition<*>?

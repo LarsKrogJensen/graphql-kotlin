@@ -10,7 +10,7 @@ class VariablesTypesMatcher {
 
     fun doesVariableTypesMatch(variableType: GraphQLType?,
                                variableDefaultValue: Value?,
-                               expectedType: GraphQLType): Boolean {
+                               expectedType: GraphQLType?): Boolean {
         return checkType(effectiveType(variableType, variableDefaultValue), expectedType)
     }
 
@@ -20,7 +20,7 @@ class VariablesTypesMatcher {
         return GraphQLNonNull(variableType!!)
     }
 
-    private fun checkType(actualType: GraphQLType?, expectedType: GraphQLType): Boolean {
+    private fun checkType(actualType: GraphQLType?, expectedType: GraphQLType?): Boolean {
 
         if (expectedType is GraphQLNonNull) {
             if (actualType is GraphQLNonNull) {

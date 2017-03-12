@@ -23,25 +23,25 @@ import java.util.concurrent.CompletionStage
 
 
 class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
-                                  private val queryStrategy: ExecutionStrategy,
-                                  private val mutationStrategy: ExecutionStrategy,
+                                  private val queryStrategy: IExecutionStrategy,
+                                  private val mutationStrategy: IExecutionStrategy,
                                   private val idProvider: ExecutionIdProvider,
                                   private val instrumentation: Instrumentation) {
 
 
     class Builder(private val graphQLSchema: GraphQLSchema) {
-        private var queryExecutionStrategy: ExecutionStrategy = SimpleExecutionStrategy()
-        private var mutationExecutionStrategy: ExecutionStrategy = SimpleExecutionStrategy()
+        private var queryExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
+        private var mutationExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
         private var idProvider = DEFAULT_EXECUTION_ID_PROVIDER
         private var instrumentation: Instrumentation = NoOpInstrumentation.INSTANCE
 
 
-        fun queryExecutionStrategy(executionStrategy: ExecutionStrategy): Builder {
+        fun queryExecutionStrategy(executionStrategy: IExecutionStrategy): Builder {
             this.queryExecutionStrategy = executionStrategy
             return this
         }
 
-        fun mutationExecutionStrategy(executionStrategy: ExecutionStrategy): Builder {
+        fun mutationExecutionStrategy(executionStrategy: IExecutionStrategy): Builder {
             this.mutationExecutionStrategy = executionStrategy
             return this
         }

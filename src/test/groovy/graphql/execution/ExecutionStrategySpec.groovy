@@ -9,9 +9,6 @@ import graphql.language.FragmentDefinition
 import graphql.language.OperationDefinition
 import graphql.schema.GraphQLList
 import graphql.schema.GraphQLObjectType
-import graphql.schema.GraphQLSchema
-import graphql.schema.GraphQLType
-import org.codehaus.groovy.runtime.metaclass.ConcurrentReaderHashMap
 import org.jetbrains.annotations.NotNull
 import spock.lang.Specification
 
@@ -19,10 +16,10 @@ import java.util.concurrent.CompletionStage
 
 class ExecutionStrategySpec extends Specification {
 
-    ExecutionStrategy executionStrategy
+    IExecutionStrategy executionStrategy
 
     def setup() {
-        executionStrategy = new ExecutionStrategy() {
+        executionStrategy = new AbstractExecutionStrategy() {
             @Override
             CompletionStage<ExecutionResult> execute(
                     @NotNull ExecutionContext executionContext,

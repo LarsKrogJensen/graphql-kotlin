@@ -83,7 +83,7 @@ class TraversalContextTest extends Specification {
         traversalContext.enter(directive,[])
 
         then:
-        traversalContext.getDirective() == Directives.SkipDirective
+        traversalContext.getDirective() == DirectivesKt.SkipDirective
 
         when:
         traversalContext.leave(directive,[])

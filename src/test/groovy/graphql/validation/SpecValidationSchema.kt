@@ -173,6 +173,7 @@ object SpecValidationSchema {
 
 
     val specValidationSchema = newSchema {
+        dictionary = specValidationDictionary
         query = queryRoot
     }
 }

@@ -17,7 +17,7 @@ public class RulesVisitorTest extends Specification {
         // this is one of the rules which checks inside fragment spreads, so it's needed to test this
         NoUnusedVariables noUnusedVariables = new NoUnusedVariables(validationContext, errorCollector)
 
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedVariables]))
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedVariables], false))
     }
 
     def "RulesVisitor does not repeatedly spread directly recursive fragments leading to a stackoverflow"() {

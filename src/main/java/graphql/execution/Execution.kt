@@ -13,13 +13,13 @@ import graphql.schema.GraphQLSchema
 import java.util.*
 import java.util.concurrent.CompletionStage
 
-class Execution(queryStrategy: ExecutionStrategy?,
-                mutationStrategy: ExecutionStrategy?,
+class Execution(queryStrategy: IExecutionStrategy?,
+                mutationStrategy: IExecutionStrategy?,
                 private val instrumentation: Instrumentation) {
 
     private val fieldCollector = FieldCollector()
-    private val queryStrategy: ExecutionStrategy = queryStrategy ?: SimpleExecutionStrategy()
-    private val mutationStrategy: ExecutionStrategy = mutationStrategy ?: SimpleExecutionStrategy()
+    private val queryStrategy: IExecutionStrategy = queryStrategy ?: SimpleExecutionStrategy()
+    private val mutationStrategy: IExecutionStrategy = mutationStrategy ?: SimpleExecutionStrategy()
 
     fun execute(executionId: ExecutionId,
                 graphQLSchema: GraphQLSchema,

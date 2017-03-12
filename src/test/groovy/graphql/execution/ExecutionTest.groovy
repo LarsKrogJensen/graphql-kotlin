@@ -10,17 +10,15 @@ import java.util.concurrent.CompletableFuture
 class ExecutionTest extends Specification {
 
     def parser = new Parser()
-    def mutationStrategy = Mock(ExecutionStrategy)
-    def queryStrategy = Mock(ExecutionStrategy)
+    def mutationStrategy = Mock(IExecutionStrategy)
+    def queryStrategy = Mock(IExecutionStrategy)
     def execution = new Execution(queryStrategy, mutationStrategy, NoOpInstrumentation.INSTANCE)
 
     def "query strategy is used for query requests"() {
         given:
-        def mutationStrategy = Mock(ExecutionStrategy)
+        //def mutationStrategy = Mock(ExecutionStrategy)
+        queryStrategy.execute(_,_,_,_) >> CompletableFuture.completedFuture(null)
 
-        def queryStrategy = Mock(ExecutionStrategy.class) {
-            execute(*_) >> CompletableFuture.completedFuture(null)
-        }
         def execution = new Execution(queryStrategy, mutationStrategy, NoOpInstrumentation.INSTANCE)
 
         def query = '''
@@ -50,9 +48,10 @@ class ExecutionTest extends Specification {
             }
         '''
         def document = parser.parseDocument(query)
-
+        queryStrategy.execute(*_) >> CompletableFuture.completedFuture(null)
+        
         when:
-        execution.execute(ExecutionId.generate(), MutationSchema.schema, null, document, null, null)
+        execution.execute(new ExecutionId("aasas"), MutationSchema.schema, new Object(), document, null, new HashMap<>())
 
         then:
         0 * queryStrategy.execute(*_)

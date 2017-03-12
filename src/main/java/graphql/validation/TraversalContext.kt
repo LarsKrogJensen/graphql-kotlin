@@ -156,7 +156,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : ITraversalContext {
     }
 
 
-    private fun getNullableType(type: GraphQLType): GraphQLNullableType =
+    private fun getNullableType(type: GraphQLType?): GraphQLNullableType =
             when (type) {
                 is GraphQLNonNull -> type.wrappedType
                 else              -> type
@@ -185,9 +185,9 @@ class TraversalContext(internal var schema: GraphQLSchema) : ITraversalContext {
         parentTypeStack.add(compositeType)
     }
 
-    val inputType: GraphQLInputType
+    val inputType: GraphQLInputType?
         get() {
-            return lastElement(inputTypeStack)!!
+            return lastElement(inputTypeStack)
         }
 
     private fun addInputType(graphQLInputType: GraphQLInputType?) {

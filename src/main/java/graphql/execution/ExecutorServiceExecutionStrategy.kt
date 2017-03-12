@@ -25,7 +25,7 @@ import java.util.concurrent.*
 
  * See `graphql.execution.ExecutorServiceExecutionStrategyTest` for example usage.
  */
-class ExecutorServiceExecutionStrategy(val executorService: ExecutorService) : ExecutionStrategy() {
+class ExecutorServiceExecutionStrategy(val executorService: ExecutorService) : AbstractExecutionStrategy() {
 
     override fun execute(executionContext: ExecutionContext,
                          parentType: GraphQLObjectType,

@@ -9,7 +9,7 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
-open class SimpleExecutionStrategy : ExecutionStrategy() {
+open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
     override fun execute(executionContext: ExecutionContext,
                          parentType: GraphQLObjectType,
                          source: Any,
