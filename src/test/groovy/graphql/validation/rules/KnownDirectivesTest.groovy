@@ -8,12 +8,12 @@ import spock.lang.Specification
 
 class KnownDirectivesTest extends Specification {
 
-    ValidationContext validationContext = Mock(ValidationContext)
+    IValidationContext validationContext = Mock(IValidationContext)
     ValidationErrorCollector errorCollector = new ValidationErrorCollector()
     KnownDirectives knownDirectives = new KnownDirectives(validationContext,errorCollector)
 
     def setup() {
-        def traversalContext = Mock(TraversalContext)
+        def traversalContext = Mock(ITraversalContext)
         validationContext.getSchema() >> StarWarsSchema.starWarsSchema
         validationContext.getTraversalContext() >> traversalContext
     }
@@ -31,7 +31,7 @@ class KnownDirectivesTest extends Specification {
         LanguageTraversal languageTraversal = new LanguageTraversal();
 
         when:
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [knownDirectives]));
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [knownDirectives], false));
 
         then:
         errorCollector.containsValidationError(ValidationErrorType.MisplacedDirective)
@@ -50,10 +50,10 @@ class KnownDirectivesTest extends Specification {
         LanguageTraversal languageTraversal = new LanguageTraversal();
 
         when:
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [knownDirectives]));
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [knownDirectives], false));
 
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
 
     }
 

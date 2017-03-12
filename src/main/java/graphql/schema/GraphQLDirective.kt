@@ -62,6 +62,7 @@ class GraphQLDirective(val name: String,
 
     companion object {
 
+        @JvmStatic
         fun newDirective(): Builder {
             return Builder()
         }

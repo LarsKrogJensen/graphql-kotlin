@@ -1,8 +1,10 @@
 package graphql.validation.rules
 
+import graphql.ScalarsKt
 import graphql.language.Field
 import graphql.schema.GraphQLFieldDefinition
 import graphql.schema.GraphQLObjectType
+import graphql.validation.IValidationContext
 import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
@@ -11,7 +13,7 @@ import spock.lang.Specification
 class FieldsOnCorrectTypeTest extends Specification {
 
     ValidationErrorCollector errorCollector = new ValidationErrorCollector()
-    ValidationContext validationContext = Mock(ValidationContext)
+    IValidationContext validationContext = Mock(IValidationContext)
     FieldsOnCorrectType fieldsOnCorrectType = new FieldsOnCorrectType(validationContext, errorCollector)
 
 
@@ -27,22 +29,22 @@ class FieldsOnCorrectTypeTest extends Specification {
 
         then:
         errorCollector.containsValidationError(ValidationErrorType.FieldUndefined)
-        errorCollector.errors.size() == 1
-        errorCollector.errors[0].message == "Validation error of type FieldUndefined: Field name is undefined"
+        errorCollector.errors().size() == 1
+        errorCollector.errors()[0].message() == "Validation error of type FieldUndefined: Field name is undefined"
     }
 
     def "should results in no error when field definition is filled"() {
         given:
         def parentType = GraphQLObjectType.newObject().name("parentType").build()
         validationContext.getParentType() >> parentType
-        validationContext.getFieldDef() >> Mock(GraphQLFieldDefinition)
+        validationContext.getFieldDef() >> GraphQLFieldDefinition.newFieldDefinition().name("n").type(ScalarsKt.GraphQLString).build()
         def field = new Field("name")
 
         when:
         fieldsOnCorrectType.checkField(field)
 
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def "should results in no error when parent type is null"() {
@@ -54,6 +56,6 @@ class FieldsOnCorrectTypeTest extends Specification {
         fieldsOnCorrectType.checkField(field)
 
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
     }
 }

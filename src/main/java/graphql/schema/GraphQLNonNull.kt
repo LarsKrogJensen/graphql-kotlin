@@ -20,9 +20,9 @@ class GraphQLNonNull(wrappedType: GraphQLType) : GraphQLType, GraphQLInputType, 
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
 
-        val that = other as GraphQLNonNull?
+        val that = other as GraphQLNonNull
 
-        return wrappedType == that
+        return wrappedType == that.wrappedType
     }
 
     override fun hashCode(): Int {

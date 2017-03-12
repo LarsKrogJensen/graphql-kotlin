@@ -4,7 +4,7 @@ package graphql.validation.rules
 import graphql.language.Field
 import graphql.validation.*
 
-class FieldsOnCorrectType(validationContext: ValidationContext,
+class FieldsOnCorrectType(validationContext: IValidationContext,
                           validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

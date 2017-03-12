@@ -9,7 +9,7 @@ import graphql.schema.*
 import graphql.validation.*
 import java.util.*
 
-class PossibleFragmentSpreads(validationContext: ValidationContext,
+class PossibleFragmentSpreads(validationContext: IValidationContext,
                               validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 
@@ -26,7 +26,7 @@ class PossibleFragmentSpreads(validationContext: ValidationContext,
     }
 
     override fun checkFragmentSpread(fragmentSpread: FragmentSpread) {
-        val fragment = validationContext.getFragment(fragmentSpread.name) ?: return
+        val fragment = validationContext.fragment(fragmentSpread.name) ?: return
         val typeCondition = TypeFromAST.getTypeFromAST(validationContext.schema, fragment.typeCondition)
         val parentType = validationContext.parentType
         if (typeCondition == null || parentType == null) return

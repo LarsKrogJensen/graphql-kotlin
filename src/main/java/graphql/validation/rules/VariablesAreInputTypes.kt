@@ -5,7 +5,7 @@ import graphql.language.VariableDefinition
 import graphql.schema.SchemaUtil
 import graphql.validation.*
 
-class VariablesAreInputTypes(validationContext: ValidationContext,
+class VariablesAreInputTypes(validationContext: IValidationContext,
                              validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

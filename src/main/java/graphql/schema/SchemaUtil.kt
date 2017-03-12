@@ -19,11 +19,11 @@ class SchemaUtil {
                 || unmodifiedType is GraphQLInputObjectType
     }
 
-    fun getUnmodifiedType(graphQLType: GraphQLType): GraphQLUnmodifiedType {
+    fun getUnmodifiedType(graphQLType: GraphQLType?): GraphQLUnmodifiedType? {
         if (graphQLType is GraphQLModifiedType) {
             return getUnmodifiedType(graphQLType.wrappedType)
         }
-        return graphQLType as GraphQLUnmodifiedType
+        return graphQLType as GraphQLUnmodifiedType?
     }
 
 

@@ -5,7 +5,7 @@ import graphql.language.*
 
 import java.util.*
 
-class RulesVisitor(private val validationContext: ValidationContext,
+class RulesVisitor(private val validationContext: IValidationContext,
                    rules: List<AbstractRule>,
                    subVisitor: Boolean = false) : QueryLanguageVisitor {
 
@@ -93,7 +93,7 @@ class RulesVisitor(private val validationContext: ValidationContext,
         }
         val rulesVisitingFragmentSpreads = getRulesVisitingFragmentSpreads(rules)
         if (rulesVisitingFragmentSpreads.isNotEmpty()) {
-            val fragment = validationContext.getFragment(fragmentSpread.name)
+            val fragment = validationContext.fragment(fragmentSpread.name)
             if (!path.contains(fragment as Node)) {
                 LanguageTraversal(path).traverse(fragment, RulesVisitor(validationContext, rulesVisitingFragmentSpreads, true))
             }

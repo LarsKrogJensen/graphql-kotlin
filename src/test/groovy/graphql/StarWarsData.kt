@@ -100,25 +100,19 @@ val characterTypeResolver: TypeResolver = {
     else
         null
 }
-//    static characterTypeResolver =
-//    {
-//        object ->
-//        def id = object.id
-//        if (humanData[id] != null)
-//            return StarWarsSchema.humanType
-//        if (droidData[id] != null)
-//            return StarWarsSchema.droidType
-//        return null;
-//    }
+
 
 val friendsDataFetcher: DataFetcher<Any?> = { environment ->
+    val map = environment.source<Map<String, Any?>>()
+    val friends = map["friends"] as List<String>;
 
-    //        List<Object> result = []
-//        for (String id to environment . source . friends) {
-//        result.add(getCharacter(id))
-//    }
-    //result
-    CompletableFuture.completedFuture(null)
+    val result = mutableListOf<Any?>()
+
+    for (friend in friends) {
+        result += getCharacter(friend);
+    }
+
+    CompletableFuture.completedFuture(result)
 }
 
 val heroDataFetcher: DataFetcher<Any?> = { environment ->

@@ -12,11 +12,11 @@ class NoFragmentCyclesTest extends Specification {
 
     def traverse(String query) {
         Document document = new Parser().parseDocument(query)
-        ValidationContext validationContext = new ValidationContext(TestUtil.dummySchema, document)
+        IValidationContext validationContext = new ValidationContext(TestUtil.dummySchema, document)
         NoFragmentCycles noFragmentCycles = new NoFragmentCycles(validationContext, errorCollector)
         LanguageTraversal languageTraversal = new LanguageTraversal();
 
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noFragmentCycles]));
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noFragmentCycles], false));
     }
 
     def 'single reference is valid'() {

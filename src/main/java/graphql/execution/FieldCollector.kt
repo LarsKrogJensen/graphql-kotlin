@@ -106,7 +106,7 @@ class FieldCollector {
         return checkTypeCondition(executionContext, type, conditionType)
     }
 
-    private fun checkTypeCondition(executionContext: ExecutionContext, type: GraphQLObjectType, conditionType: GraphQLType): Boolean {
+    private fun checkTypeCondition(executionContext: ExecutionContext, type: GraphQLObjectType, conditionType: GraphQLType?): Boolean {
         if (conditionType == type) {
             return true
         }

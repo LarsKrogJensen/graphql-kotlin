@@ -10,7 +10,7 @@ import graphql.validation.*
 import java.util.ArrayList
 import java.util.LinkedHashMap
 
-class NoUnusedFragments(validationContext: ValidationContext,
+class NoUnusedFragments(validationContext: IValidationContext,
                         validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

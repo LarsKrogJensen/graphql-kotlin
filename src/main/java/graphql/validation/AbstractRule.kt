@@ -3,7 +3,7 @@ package graphql.validation
 
 import graphql.language.*
 
-open class AbstractRule(val validationContext: ValidationContext,
+open class AbstractRule(val validationContext: IValidationContext,
                         private val validationErrorCollector: ValidationErrorCollector) {
 
     var isVisitFragmentSpreads: Boolean = false

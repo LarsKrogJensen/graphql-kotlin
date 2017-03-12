@@ -1,9 +1,17 @@
 package graphql.execution
 
 import graphql.ExecutionResult
+import graphql.ScalarsKt
+import graphql.StarWarsSchema
+import graphql.execution.instrumentation.NoOpInstrumentation
 import graphql.language.Field
+import graphql.language.FragmentDefinition
+import graphql.language.OperationDefinition
 import graphql.schema.GraphQLList
 import graphql.schema.GraphQLObjectType
+import graphql.schema.GraphQLSchema
+import graphql.schema.GraphQLType
+import org.codehaus.groovy.runtime.metaclass.ConcurrentReaderHashMap
 import org.jetbrains.annotations.NotNull
 import spock.lang.Specification
 
@@ -26,33 +34,43 @@ class ExecutionStrategySpec extends Specification {
     }
 
     def buildContext() {
-        new ExecutionContext(null, null, null, executionStrategy, executionStrategy, null, null, null, null)
+        new ExecutionContext(
+                NoOpInstrumentation.INSTANCE,
+                new ExecutionId("1"),
+                StarWarsSchema.INSTANCE.starWarsSchema,
+                executionStrategy,
+                executionStrategy,
+                new HashMap<String, FragmentDefinition>(),
+                new OperationDefinition(OperationDefinition.Operation.QUERY),
+                new HashMap(),
+                new Object())
     }
 
     def "completes value for a java.util.List"() {
         given:
         ExecutionContext executionContext = buildContext()
         Field field = new Field("test")
-        def fieldType = new GraphQLList(Scalars.GraphQLString)
+        def fieldType = new GraphQLList(ScalarsKt.GraphQLString)
         def result = Arrays.asList("test")
+
         when:
         def executionResult = executionStrategy.completeValue(executionContext, fieldType, [field], result)
 
         then:
-        executionResult.data == ["test"]
+        executionResult.toCompletableFuture().get().data() == ["test"]
     }
 
     def "completes value for an array"() {
         given:
         ExecutionContext executionContext = buildContext()
         Field field = new Field("test")
-        def fieldType = new GraphQLList(Scalars.GraphQLString)
+        def fieldType = new GraphQLList(ScalarsKt.GraphQLString)
         String[] result = ["test"]
         when:
         def executionResult = executionStrategy.completeValue(executionContext, fieldType, [field], result)
 
         then:
-        executionResult.data == ["test"]
+        executionResult.toCompletableFuture().get().data() == ["test"]
     }
 
 }

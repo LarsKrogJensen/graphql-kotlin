@@ -6,6 +6,7 @@ import graphql.language.StringValue
 import graphql.schema.GraphQLArgument
 import graphql.schema.GraphQLDirective
 import graphql.schema.GraphQLFieldDefinition
+import graphql.validation.IValidationContext
 import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
@@ -16,7 +17,7 @@ import static graphql.ScalarsKt.GraphQLString
 
 class KnownArgumentNamesTest extends Specification {
 
-    ValidationContext validationContext = Mock(ValidationContext)
+    IValidationContext validationContext = Mock(IValidationContext)
     ValidationErrorCollector errorCollector = new ValidationErrorCollector()
     KnownArgumentNames knownArgumentNames = new KnownArgumentNames(validationContext, errorCollector)
 
@@ -41,7 +42,7 @@ class KnownArgumentNamesTest extends Specification {
         when:
         knownArgumentNames.checkArgument(argument)
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def "unknown directive argument"() {
@@ -69,7 +70,7 @@ class KnownArgumentNamesTest extends Specification {
         when:
         knownArgumentNames.checkArgument(argument)
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def "directive argument not validated against field arguments"() {

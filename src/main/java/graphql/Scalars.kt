@@ -25,12 +25,11 @@ private fun isWholeNumber(input: Any?) = input is Long || input is Int || input 
 // true if its a number or string that we will attempt to convert to a number via toNumber()
 private fun isNumberIsh(input: Any?): Boolean = input is Number || input is String
 
-private fun toNumber(input: Any): Number =
-        when (input) {
-            is Number -> input
-            is String -> input.toDouble()    // Use double as a intermediate Number representation
-            else      -> throw AssertException("Unexpected case - this call should be protected by a previous call to isNumberIsh()")
-        }
+private fun toNumber(input: Any?) = when (input) {
+    is Number -> input
+    is String -> input.toDouble()    // Use double as a intermediate Number representation
+    else      -> throw AssertException("Unexpected case - this call should be protected by a previous call to isNumberIsh()")
+}
 
 private fun verifyRange(input: IntValue, min: BigInteger, max: BigInteger): IntValue {
     val value = input.value;
@@ -44,8 +43,8 @@ private fun verifyRange(input: IntValue, min: BigInteger, max: BigInteger): IntV
 
 val GraphQLInt = GraphQLScalarType("Int", "Built-in Int", object : Coercing<Int?, Int?> {
     override fun serialize(input: Any?): Int? =
-            when (input) {
-                is Int             -> input
+            when {
+                input is Int       -> input
                 isNumberIsh(input) -> toNumber(input).toInt()
                 else               -> null
             }
@@ -62,8 +61,8 @@ val GraphQLInt = GraphQLScalarType("Int", "Built-in Int", object : Coercing<Int?
 
 val GraphQLLong = GraphQLScalarType("Long", "Long type", object : Coercing<Long?, Long?> {
     override fun serialize(input: Any?): Long? =
-            when (input) {
-                is Long            -> input
+            when {
+                input is Long      -> input
                 isNumberIsh(input) -> toNumber(input).toLong()
                 else               -> null
             }
@@ -80,8 +79,8 @@ val GraphQLLong = GraphQLScalarType("Long", "Long type", object : Coercing<Long?
 
 val GraphQLShort = GraphQLScalarType("Short", "Built-in Short as Int", object : Coercing<Short?, Short?> {
     override fun serialize(input: Any?): Short? =
-            when (input) {
-                is Short           -> input
+            when {
+                input is Short     -> input
                 isNumberIsh(input) -> toNumber(input).toShort()
                 else               -> null
             }
@@ -98,8 +97,8 @@ val GraphQLShort = GraphQLScalarType("Short", "Built-in Short as Int", object : 
 
 var GraphQLByte = GraphQLScalarType("Byte", "Built-in Byte as Int", object : Coercing<Byte?, Byte?> {
     override fun serialize(input: Any?): Byte? =
-            when (input) {
-                is Byte            -> input
+            when {
+                input is Byte      -> input
                 isNumberIsh(input) -> toNumber(input).toByte()
                 else               -> null
             }
@@ -115,12 +114,12 @@ var GraphQLByte = GraphQLScalarType("Byte", "Built-in Byte as Int", object : Coe
 })
 
 val GraphQLFloat = GraphQLScalarType("Float", "Built-in Float", object : Coercing<Double?, Double?> {
-    override fun serialize(input: Any?): Double? =
-            when (input) {
-                is Double          -> input
-                isNumberIsh(input) -> toNumber(input).toDouble()
-                else               -> null
-            }
+    override fun serialize(input: Any?) = when {
+        input is Float     -> toNumber(input.toString()).toDouble()
+        input is Double    -> input
+        isNumberIsh(input) -> toNumber(input).toDouble()
+        else               -> null
+    }
 
     override fun parseValue(input: Any?): Double? = serialize(input)
 

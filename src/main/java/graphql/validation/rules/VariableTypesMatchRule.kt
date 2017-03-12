@@ -8,9 +8,11 @@ import graphql.language.VariableReference
 import graphql.validation.*
 import java.util.*
 
-class VariableTypesMatchRule(validationContext: ValidationContext, validationErrorCollector: ValidationErrorCollector) : AbstractRule(validationContext, validationErrorCollector) {
+class VariableTypesMatchRule(validationContext: IValidationContext,
+                             validationErrorCollector: ValidationErrorCollector)
+    : AbstractRule(validationContext, validationErrorCollector) {
 
-    internal var variablesTypesMatcher = VariablesTypesMatcher()
+    internal val variablesTypesMatcher = VariablesTypesMatcher()
 
     init {
         isVisitFragmentSpreads = true
@@ -30,7 +32,7 @@ class VariableTypesMatchRule(validationContext: ValidationContext, validationErr
         val variableDefinition = variableDefinitionMap!![variableReference.name] ?: return
         val variableType = TypeFromAST.getTypeFromAST(validationContext.schema, variableDefinition.type)
         val inputType = validationContext.inputType
-        if (!variablesTypesMatcher.doesVariableTypesMatch(variableType, variableDefinition.defaultValue!!, inputType)) {
+        if (!variablesTypesMatcher.doesVariableTypesMatch(variableType, variableDefinition.defaultValue, inputType)) {
             val message = "Variable type doesn't match"
             addError(ValidationError(ValidationErrorType.VariableTypeMismatch, variableReference.sourceLocation, message))
         }

@@ -6,7 +6,7 @@ import graphql.schema.GraphQLNonNull
 import graphql.validation.*
 
 
-class VariableDefaultValuesOfCorrectType(validationContext: ValidationContext,
+class VariableDefaultValuesOfCorrectType(validationContext: IValidationContext,
                                          validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

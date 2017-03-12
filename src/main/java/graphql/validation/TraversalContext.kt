@@ -9,18 +9,16 @@ import graphql.introspection.Introspection.TypeNameMetaFieldDef
 import graphql.language.*
 import graphql.schema.*
 
-import java.util.ArrayList
 
-
-class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisitor {
+class TraversalContext(internal var schema: GraphQLSchema) : ITraversalContext {
     internal var outputTypeStack: MutableList<GraphQLOutputType?> = mutableListOf()
     internal var parentTypeStack: MutableList<GraphQLCompositeType?> = mutableListOf()
     internal var inputTypeStack: MutableList<GraphQLInputType?> = mutableListOf()
     internal var fieldDefStack: MutableList<GraphQLFieldDefinition<*>?> = mutableListOf()
-    var directive: GraphQLDirective? = null
-        internal set
-    var argument: GraphQLArgument? = null
-        internal set
+    override var directive: GraphQLDirective? = null
+        set
+    override var argument: GraphQLArgument? = null
+        set
 
     internal var schemaUtil = SchemaUtil()
 
@@ -41,7 +39,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
 
 
     private fun enterImpl(selectionSet: SelectionSet) {
-        val rawType = SchemaUtil().getUnmodifiedType(outputType!!)
+        val rawType = SchemaUtil().getUnmodifiedType(outputType)
         var parentType: GraphQLCompositeType? = null
         if (rawType is GraphQLCompositeType) {
             parentType = rawType
@@ -76,9 +74,9 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
 
     private fun enterImpl(inlineFragment: InlineFragment) {
         val typeCondition = inlineFragment.typeCondition
-        val type: GraphQLOutputType
+        val type: GraphQLOutputType?
         if (typeCondition != null) {
-            type = schema.type(typeCondition.name) as GraphQLOutputType
+            type = schema.type(typeCondition.name) as GraphQLOutputType?
         } else {
             type = parentType as GraphQLOutputType
         }
@@ -87,7 +85,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
 
     private fun enterImpl(fragmentDefinition: FragmentDefinition) {
         val type = schema.type(fragmentDefinition.typeCondition.name)
-        addType(type as GraphQLOutputType)
+        addType(type as GraphQLOutputType?)
     }
 
     private fun enterImpl(variableDefinition: VariableDefinition) {
@@ -164,7 +162,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
                 else              -> type
             } as GraphQLNullableType
 
-    val outputType: GraphQLOutputType?
+    override val outputType: GraphQLOutputType?
         get() {
             return lastElement(outputTypeStack)
         }
@@ -178,7 +176,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
         return list[list.size - 1]
     }
 
-    val parentType: GraphQLCompositeType?
+    override val parentType: GraphQLCompositeType?
         get() {
             return lastElement(parentTypeStack)
         }
@@ -196,7 +194,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : QueryLanguageVisito
         inputTypeStack.add(graphQLInputType)
     }
 
-    val fieldDef: GraphQLFieldDefinition<*>?
+    override val fieldDef: GraphQLFieldDefinition<*>?
         get() {
             return lastElement(fieldDefStack)
         }

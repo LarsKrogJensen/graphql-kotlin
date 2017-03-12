@@ -7,7 +7,7 @@ import graphql.schema.GraphQLCompositeType
 import graphql.schema.GraphQLType
 import graphql.validation.*
 
-class FragmentsOnCompositeType(validationContext: ValidationContext,
+class FragmentsOnCompositeType(validationContext: IValidationContext,
                                validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

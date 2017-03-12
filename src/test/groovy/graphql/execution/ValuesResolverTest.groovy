@@ -24,17 +24,24 @@ class ValuesResolverTest extends Specification {
         given:
         def schema = TestUtil.schemaWithInputType(inputType)
         VariableDefinition variableDefinition = new VariableDefinition("variable", variableType)
+
         when:
         def resolvedValues = resolver.getVariableValues(schema, [variableDefinition], [variable: inputValue])
+
         then:
         resolvedValues['variable'] == outputValue
 
         where:
         inputType      | variableType            | inputValue   || outputValue
         GraphQLInt     | new TypeName("Int")     | 100          || 100
+        GraphQLInt     | new TypeName("Int")     | '100'        || 100
+        GraphQLLong    | new TypeName("Long")    | 100l         || 100l
+        GraphQLLong    | new TypeName("Long")    | '100'        || 100l
         GraphQLString  | new TypeName("String")  | 'someString' || 'someString'
         GraphQLBoolean | new TypeName("Boolean") | 'true'       || true
-        GraphQLFloat | new TypeName("Float") | '42.43' || 42.43d
+        GraphQLFloat   | new TypeName("Float")   | 42.43d       || 42.43d
+        GraphQLFloat   | new TypeName("Float")   | 42.44f       || 42.44d
+        GraphQLFloat   | new TypeName("Float")   | '42.45'      || 42.45d
 
     }
 
@@ -59,10 +66,10 @@ class ValuesResolverTest extends Specification {
         then:
         resolvedValues['variable'] == outputValue
         where:
-        inputValue              || outputValue
-        [name: 'a', id: 123]    || [name: 'a', id: 123]
-        [id: 123]               || [id: 123]
-        [name: 'x']             || [name: 'x']
+        inputValue           || outputValue
+        [name: 'a', id: 123] || [name: 'a', id: 123]
+        [id: 123]            || [id: 123]
+        [name: 'x']          || [name: 'x']
     }
 
     def "getVariableValues: simple value gets resolved to a list when the type is a List"() {
@@ -81,11 +88,11 @@ class ValuesResolverTest extends Specification {
     def "getArgumentValues: resolves argument with variable reference"() {
         given:
         def variables = [var: 'hello']
-        def fieldArgument = new GraphQLArgument("arg", GraphQLString)
+        def fieldArgument = new GraphQLArgument("arg", null, GraphQLString, null)
         def argument = new Argument("arg", new VariableReference("var"))
 
         when:
-        def values = resolver.getArgumentValues([fieldArgument], [argument], variables)
+        def values = resolver.argumentValues([fieldArgument], [argument], variables)
 
         then:
         values['arg'] == 'hello'
@@ -111,11 +118,11 @@ class ValuesResolverTest extends Specification {
                 .name("subObject")
                 .type(subObjectType))
                 .build()
-        def fieldArgument = new GraphQLArgument("arg", inputObjectType)
+        def fieldArgument = new GraphQLArgument("arg", null,inputObjectType, null)
 
         when:
         def argument = new Argument("arg", inputValue)
-        def values = resolver.getArgumentValues([fieldArgument], [argument], [:])
+        def values = resolver.argumentValues([fieldArgument], [argument], [:])
 
         then:
         values['arg'] == outputValue
@@ -123,14 +130,14 @@ class ValuesResolverTest extends Specification {
         where:
         inputValue << [
                 buildObjectLiteral([
-                        intKey: new IntValue(BigInteger.ONE),
+                        intKey   : new IntValue(BigInteger.ONE),
                         stringKey: new StringValue("world"),
                         subObject: [
                                 subKey: new BooleanValue(true)
                         ]
                 ]),
                 buildObjectLiteral([
-                        intKey: new IntValue(BigInteger.ONE),
+                        intKey   : new IntValue(BigInteger.ONE),
                         stringKey: new StringValue("world")
                 ]),
                 buildObjectLiteral([
@@ -159,11 +166,11 @@ class ValuesResolverTest extends Specification {
                 .defaultValue("defaultString")
                 .build())
                 .build()
-        def fieldArgument = new GraphQLArgument("arg", inputObjectType)
+        def fieldArgument = new GraphQLArgument("arg", null, inputObjectType, null)
 
         when:
         def argument = new Argument("arg", inputValue)
-        def values = resolver.getArgumentValues([fieldArgument], [argument], [:])
+        def values = resolver.argumentValues([fieldArgument], [argument], [:])
 
         then:
         values['arg'] == outputValue
@@ -171,7 +178,7 @@ class ValuesResolverTest extends Specification {
         where:
         inputValue << [
                 buildObjectLiteral([
-                        intKey: new IntValue(BigInteger.ONE),
+                        intKey   : new IntValue(BigInteger.ONE),
                         stringKey: new StringValue("world")
                 ]),
                 buildObjectLiteral([
@@ -195,11 +202,11 @@ class ValuesResolverTest extends Specification {
                 .type(new GraphQLNonNull(GraphQLInt))
                 .build())
                 .build()
-        def fieldArgument = new GraphQLArgument("arg", inputObjectType)
+        def fieldArgument = new GraphQLArgument("arg", null, inputObjectType, null)
 
         when:
         def argument = new Argument("arg", new ObjectValue())
-        resolver.getArgumentValues([fieldArgument], [argument], [:])
+        resolver.argumentValues([fieldArgument], [argument], [:])
 
         then:
         thrown(GraphQLException)
@@ -227,10 +234,10 @@ class ValuesResolverTest extends Specification {
                 .value("PLUTO")
                 .value("MARS", "mars")
                 .build()
-        def fieldArgument1 = new GraphQLArgument("arg1", enumType)
-        def fieldArgument2 = new GraphQLArgument("arg2", enumType)
+        def fieldArgument1 = new GraphQLArgument("arg1", null, enumType, null)
+        def fieldArgument2 = new GraphQLArgument("arg2", null, enumType, null)
         when:
-        def values = resolver.getArgumentValues([fieldArgument1, fieldArgument2], [argument1, argument2], [:])
+        def values = resolver.argumentValues([fieldArgument1, fieldArgument2], [argument1, argument2], [:])
 
         then:
         values['arg1'] == 'PLUTO'
@@ -244,10 +251,10 @@ class ValuesResolverTest extends Specification {
         arrayValue.getValues().add(new BooleanValue(false))
         def argument = new Argument("arg", arrayValue)
 
-        def fieldArgument = new GraphQLArgument("arg", new GraphQLList(GraphQLBoolean))
+        def fieldArgument = new GraphQLArgument("arg", null, new GraphQLList(GraphQLBoolean), null)
 
         when:
-        def values = resolver.getArgumentValues([fieldArgument], [argument], [:])
+        def values = resolver.argumentValues([fieldArgument], [argument], [:])
 
         then:
         values['arg'] == [true, false]
@@ -259,10 +266,10 @@ class ValuesResolverTest extends Specification {
         StringValue stringValue = new StringValue("world")
         def argument = new Argument("arg", stringValue)
 
-        def fieldArgument = new GraphQLArgument("arg", new GraphQLList(GraphQLString))
+        def fieldArgument = new GraphQLArgument("arg", null, new GraphQLList(GraphQLString), null)
 
         when:
-        def values = resolver.getArgumentValues([fieldArgument], [argument], [:])
+        def values = resolver.argumentValues([fieldArgument], [argument], [:])
 
         then:
         values['arg'] == ['world']

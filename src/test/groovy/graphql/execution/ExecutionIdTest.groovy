@@ -55,7 +55,7 @@ class ExecutionIdTest extends Specification {
             @Override
             ExecutionId provide(String query, String operationName, Object context) {
                 count++
-                return ExecutionId.from(count.toString())
+                return new ExecutionId(count.toString())
             }
         }
         def graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)

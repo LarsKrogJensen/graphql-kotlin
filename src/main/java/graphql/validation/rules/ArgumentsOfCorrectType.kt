@@ -5,7 +5,7 @@ import graphql.language.Argument
 import graphql.schema.GraphQLArgument
 import graphql.validation.*
 
-class ArgumentsOfCorrectType(validationContext: ValidationContext,
+class ArgumentsOfCorrectType(validationContext: IValidationContext,
                              validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

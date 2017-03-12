@@ -6,6 +6,9 @@ import java.util.*
  * This opaque identifier is used to identify a unique query execution
  */
 data class ExecutionId(private val id: String) {
+    override fun toString(): String {
+        return id
+    }
 
     companion object {
 

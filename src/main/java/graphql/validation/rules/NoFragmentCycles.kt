@@ -7,7 +7,7 @@ import graphql.language.Node
 import graphql.validation.*
 import java.util.*
 
-class NoFragmentCycles(validationContext: ValidationContext,
+class NoFragmentCycles(validationContext: IValidationContext,
                        validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

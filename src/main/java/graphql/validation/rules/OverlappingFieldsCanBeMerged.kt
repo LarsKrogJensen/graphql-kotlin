@@ -113,7 +113,7 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
         }
         val selectionSet1 = field1.selectionSet
         val selectionSet2 = field2.selectionSet
-        if (selectionSet1 != null && selectionSet2 != null) {
+        if (!selectionSet1.isEmpty() && !selectionSet2.isEmpty()) {
             val visitedFragmentSpreads = LinkedHashSet<String>()
             val subFieldMap = LinkedHashMap<String, MutableList<FieldAndType>>()
             collectFields(subFieldMap, selectionSet1, type1, visitedFragmentSpreads)
@@ -215,13 +215,13 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
                                                visitedFragmentSpreads: MutableSet<String>,
                                                selection: FragmentSpread) {
         val fragmentSpread = selection
-        val fragment = validationContext.getFragment(fragmentSpread.name) ?: return
+        val fragment = validationContext.fragment(fragmentSpread.name) ?: return
         if (visitedFragmentSpreads.contains(fragment.name)) {
             return
         }
         visitedFragmentSpreads.add(fragment.name)
         val graphQLType = TypeFromAST.getTypeFromAST(validationContext.schema,
-                                                     fragment.typeCondition) as GraphQLOutputType
+                                                     fragment.typeCondition) as GraphQLOutputType?
         collectFields(fieldMap, fragment.selectionSet, graphQLType, visitedFragmentSpreads)
     }
 

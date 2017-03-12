@@ -4,7 +4,9 @@ import graphql.language.Argument
 import graphql.validation.*
 
 
-class KnownArgumentNames(validationContext: ValidationContext, validationErrorCollector: ValidationErrorCollector) : AbstractRule(validationContext, validationErrorCollector) {
+class KnownArgumentNames(validationContext: IValidationContext,
+                         validationErrorCollector: ValidationErrorCollector)
+    : AbstractRule(validationContext, validationErrorCollector) {
     override fun checkArgument(argument: Argument) {
         val directiveDef = validationContext.directive
         if (directiveDef != null) {

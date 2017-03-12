@@ -4,7 +4,7 @@ import kotlin.properties.Delegates.notNull
 
 
 class GraphQLArgument(val name: String,
-                      val description: String,
+                      val description: String?,
                       type: GraphQLInputType,
                       val defaultValue: Any?) {
 

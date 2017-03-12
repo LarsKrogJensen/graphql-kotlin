@@ -131,7 +131,7 @@ object StarWarsSchema {
             .build()
 
 
-    var starWarsSchema = GraphQLSchema.newSchema()
+    val starWarsSchema = GraphQLSchema.newSchema()
             .query(queryType)
             .build()
 }

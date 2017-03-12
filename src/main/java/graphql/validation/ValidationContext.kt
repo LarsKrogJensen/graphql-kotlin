@@ -6,9 +6,23 @@ import graphql.language.FragmentDefinition
 import graphql.schema.*
 import java.util.*
 
-open class ValidationContext(val schema: GraphQLSchema, val document: Document) {
+interface IValidationContext {
+    val schema: GraphQLSchema
+    val document: Document
+    val traversalContext: ITraversalContext
+    val parentType: GraphQLCompositeType?
+    val inputType: GraphQLInputType
+    val fieldDef: GraphQLFieldDefinition<*>?
+    val directive: GraphQLDirective?
+    val argument: GraphQLArgument?
+    val outputType: GraphQLOutputType?
+    fun fragment(name: String): FragmentDefinition?
+}
 
-    val traversalContext: TraversalContext = TraversalContext(schema)
+class ValidationContext(override val schema: GraphQLSchema,
+                        override val document: Document) : IValidationContext {
+
+    override val traversalContext: TraversalContext = TraversalContext(schema)
     private val _fragmentDefinitionMap = LinkedHashMap<String, FragmentDefinition>()
 
 
@@ -24,26 +38,26 @@ open class ValidationContext(val schema: GraphQLSchema, val document: Document) 
         }
     }
 
-    fun getFragment(name: String): FragmentDefinition? {
+    override fun fragment(name: String): FragmentDefinition? {
         return _fragmentDefinitionMap[name]
     }
 
-    val parentType: GraphQLCompositeType?
+    override val parentType: GraphQLCompositeType?
         get() = traversalContext.parentType
 
-    val inputType: GraphQLInputType
+    override val inputType: GraphQLInputType
         get() = traversalContext.inputType
 
-    val fieldDef: GraphQLFieldDefinition<*>?
+    override val fieldDef: GraphQLFieldDefinition<*>?
         get() = traversalContext.fieldDef
 
-    val directive: GraphQLDirective?
+    override val directive: GraphQLDirective?
         get() = traversalContext.directive
 
-    val argument: GraphQLArgument?
+    override val argument: GraphQLArgument?
         get() = traversalContext.argument
 
-    val outputType: GraphQLOutputType?
+    override val outputType: GraphQLOutputType?
         get() = traversalContext.outputType
 
 }

@@ -18,7 +18,7 @@ class NoUnusedVariablesTest extends Specification {
         NoUnusedVariables noUnusedVariables = new NoUnusedVariables(validationContext, errorCollector)
         LanguageTraversal languageTraversal = new LanguageTraversal();
 
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedVariables]));
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedVariables], false,));
     }
 
 
@@ -46,7 +46,7 @@ class NoUnusedVariablesTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def "variable used by fragment in multiple operations"() {
@@ -70,7 +70,7 @@ class NoUnusedVariablesTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def "variables not used"(){

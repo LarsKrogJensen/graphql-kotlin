@@ -14,11 +14,11 @@ class NoUndefinedVariablesTest extends Specification {
 
     def traverse(String query){
         Document document = new Parser().parseDocument(query)
-        ValidationContext validationContext = new ValidationContext(TestUtil.dummySchema,document)
+        IValidationContext validationContext = new ValidationContext(TestUtil.dummySchema,document)
         NoUndefinedVariables noUndefinedVariables = new NoUndefinedVariables(validationContext, errorCollector)
         LanguageTraversal languageTraversal = new LanguageTraversal();
 
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUndefinedVariables]));
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUndefinedVariables], false));
     }
 
 
@@ -50,7 +50,7 @@ class NoUndefinedVariablesTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
 
     }
 
@@ -79,7 +79,7 @@ class NoUndefinedVariablesTest extends Specification {
         traverse(query)
 
         then:
-        errorCollector.errors.isEmpty()
+        errorCollector.errors().isEmpty()
     }
 
     def 'variable in fragment not defined by operation'() {

@@ -2,13 +2,9 @@ package graphql.validation.rules
 
 import graphql.language.Document
 import graphql.language.OperationDefinition
-import graphql.validation.AbstractRule
-import graphql.validation.ValidationContext
-import graphql.validation.ValidationErrorCollector
-import graphql.validation.ValidationError
-import graphql.validation.ValidationErrorType
+import graphql.validation.*
 
-class LoneAnonymousOperation(validationContext: ValidationContext,
+class LoneAnonymousOperation(validationContext: IValidationContext,
                              validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

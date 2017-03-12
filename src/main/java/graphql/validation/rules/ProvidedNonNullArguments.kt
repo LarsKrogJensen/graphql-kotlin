@@ -9,7 +9,7 @@ import graphql.schema.GraphQLNonNull
 import graphql.validation.*
 import java.util.*
 
-class ProvidedNonNullArguments(validationContext: ValidationContext,
+class ProvidedNonNullArguments(validationContext: IValidationContext,
                                validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

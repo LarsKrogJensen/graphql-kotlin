@@ -7,7 +7,7 @@ import graphql.language.OperationDefinition.Operation
 import graphql.schema.GraphQLDirective
 import graphql.validation.*
 
-class KnownDirectives(validationContext: ValidationContext,
+class KnownDirectives(validationContext: IValidationContext,
                       validationErrorCollector: ValidationErrorCollector) : AbstractRule(validationContext, validationErrorCollector) {
 
     override fun checkDirective(directive: Directive, ancestors: List<Node>) {

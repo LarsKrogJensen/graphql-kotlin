@@ -52,7 +52,7 @@ class ValuesResolver {
     private fun variableValue(schema: GraphQLSchema,
                               variableDefinition: VariableDefinition,
                               inputValue: Any?): Any? {
-        val type = TypeFromAST.getTypeFromAST(schema, variableDefinition.type!!)
+        val type = TypeFromAST.getTypeFromAST(schema, variableDefinition.type)
 
         if (!isValid(type, inputValue)) {
             throw GraphQLException("Invalid value for type")
@@ -65,11 +65,11 @@ class ValuesResolver {
         return coerceValue(type, inputValue)
     }
 
-    private fun isValid(type: GraphQLType, inputValue: Any?): Boolean {
+    private fun isValid(type: GraphQLType?, inputValue: Any?): Boolean {
         return true
     }
 
-    private fun coerceValue(graphQLType: GraphQLType, value: Any?): Any? {
+    private fun coerceValue(graphQLType: GraphQLType?, value: Any?): Any? {
         if (graphQLType is GraphQLNonNull) {
             return coerceValue(graphQLType.wrappedType, value) ?: throw GraphQLException("Null value for NonNull type " + graphQLType)
         }
@@ -92,7 +92,7 @@ class ValuesResolver {
     private fun coerceValueForInputObjectType(inputObjectType: GraphQLInputObjectType, input: Map<String, Any>): Any {
         return inputObjectType.fields
                 .filter { input.containsKey(it.name) || alwaysHasValue(it) }
-                .associateBy({ it.type }, { coerceValue(it.type, input[it.name]) ?: it.defaultValue })
+                .associateBy({ it.name }, { coerceValue(it.type, input[it.name]) ?: it.defaultValue })
     }
 
     private fun alwaysHasValue(inputField: GraphQLInputObjectField): Boolean {
@@ -115,7 +115,7 @@ class ValuesResolver {
         }
     }
 
-    private fun coerceValueAst(type: GraphQLType,
+    private fun coerceValueAst(type: GraphQLType?,
                                inputValue: Value?,
                                variables: Map<String, Any?>): Any? {
         if (inputValue is VariableReference) {

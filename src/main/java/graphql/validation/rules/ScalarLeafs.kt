@@ -6,7 +6,7 @@ import graphql.schema.GraphQLOutputType
 import graphql.schema.SchemaUtil
 import graphql.validation.*
 
-class ScalarLeafs(validationContext: ValidationContext,
+class ScalarLeafs(validationContext: IValidationContext,
                   validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

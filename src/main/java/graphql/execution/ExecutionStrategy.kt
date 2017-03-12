@@ -71,7 +71,7 @@ abstract class ExecutionStrategy {
         }
     }
 
-    protected fun completeValue(executionContext: ExecutionContext,
+    fun completeValue(executionContext: ExecutionContext,
                                 fieldType: GraphQLType,
                                 fields: List<Field>,
                                 result: Any?): CompletionStage<ExecutionResult> {

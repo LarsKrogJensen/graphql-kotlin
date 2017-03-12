@@ -9,7 +9,7 @@ import graphql.validation.*
 
 import java.util.LinkedHashSet
 
-class NoUndefinedVariables(validationContext: ValidationContext,
+class NoUndefinedVariables(validationContext: IValidationContext,
                            validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

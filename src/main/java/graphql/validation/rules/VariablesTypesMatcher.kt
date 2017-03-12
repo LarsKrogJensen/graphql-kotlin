@@ -8,17 +8,19 @@ import graphql.schema.GraphQLType
 
 class VariablesTypesMatcher {
 
-    fun doesVariableTypesMatch(variableType: GraphQLType, variableDefaultValue: Value, expectedType: GraphQLType): Boolean {
+    fun doesVariableTypesMatch(variableType: GraphQLType?,
+                               variableDefaultValue: Value?,
+                               expectedType: GraphQLType): Boolean {
         return checkType(effectiveType(variableType, variableDefaultValue), expectedType)
     }
 
-    private fun effectiveType(variableType: GraphQLType, defaultValue: Value?): GraphQLType {
+    private fun effectiveType(variableType: GraphQLType?, defaultValue: Value?): GraphQLType? {
         if (defaultValue == null) return variableType
         if (variableType is GraphQLNonNull) return variableType
-        return GraphQLNonNull(variableType)
+        return GraphQLNonNull(variableType!!)
     }
 
-    private fun checkType(actualType: GraphQLType, expectedType: GraphQLType): Boolean {
+    private fun checkType(actualType: GraphQLType?, expectedType: GraphQLType): Boolean {
 
         if (expectedType is GraphQLNonNull) {
             if (actualType is GraphQLNonNull) {

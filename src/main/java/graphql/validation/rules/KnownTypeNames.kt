@@ -4,7 +4,7 @@ package graphql.validation.rules
 import graphql.language.TypeName
 import graphql.validation.*
 
-class KnownTypeNames(validationContext: ValidationContext,
+class KnownTypeNames(validationContext: IValidationContext,
                      validationErrorCollector: ValidationErrorCollector)
     : AbstractRule(validationContext, validationErrorCollector) {
 

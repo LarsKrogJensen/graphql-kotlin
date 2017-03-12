@@ -9,7 +9,7 @@ import graphql.validation.*
 import java.util.ArrayList
 import java.util.LinkedHashSet
 
-class NoUnusedVariables(validationContext: ValidationContext,
+class NoUnusedVariables(validationContext: IValidationContext,
                         validationErrorCollector: ValidationErrorCollector) : AbstractRule(validationContext, validationErrorCollector) {
 
     private val _variableDefinitions = ArrayList<VariableDefinition>()
