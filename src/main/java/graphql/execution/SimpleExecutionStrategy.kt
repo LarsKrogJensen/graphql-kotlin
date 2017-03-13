@@ -30,7 +30,14 @@ open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
 
         val toTypedArray = fieldPromises.toTypedArray() as Array<CompletableFuture<*>>
         CompletableFuture.allOf(*toTypedArray)
-                .thenAccept { promise.complete(ExecutionResultImpl(results))}
+                .thenAccept {
+//                    println("---- Completed execute: field orders")
+//                    fields.keys.forEach { print(it +", ") }
+//                    println()
+//                    results.keys.forEach { print(it +", ") }
+//                    println()
+                    promise.complete(ExecutionResultImpl(results))
+                }
 
         return promise
     }

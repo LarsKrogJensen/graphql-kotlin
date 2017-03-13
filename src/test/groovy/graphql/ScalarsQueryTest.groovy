@@ -1,7 +1,9 @@
 package graphql
 
 import spock.lang.Specification
-import spock.lang.Unroll;
+import spock.lang.Unroll
+
+import java.util.concurrent.ExecutionException;
 
 class ScalarsQueryTest extends Specification {
 
@@ -23,11 +25,12 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
+        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build()
+                .execute(query).toCompletableFuture().get()
 
         then:
-        result.data == expected
-        result.errors.empty == true
+        result.data() == expected
+        result.errors.empty
     }
     
     def 'Large BigDecimals'() {
@@ -48,11 +51,12 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
+        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build()
+                .execute(query).toCompletableFuture().get()
 
         then:
-        result.data == expected
-        result.errors.empty == true
+        result.data() == expected
+        result.errors.empty
     }
 
     def 'Float NaN Not a Number '() {
@@ -68,15 +72,15 @@ class ScalarsQueryTest extends Specification {
 
         when:
         def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema)
-                .build().execute(query)
+                .build().execute(query).toCompletableFuture().get()
         def resultBatched = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema)
                 //.queryExecutionStrategy(new BatchedExecutionStrategy())
-                .build().execute(query)
+                .build().execute(query).toCompletableFuture().get()
 
         then:
-        result.data == expected
+        result.data() == expected
         result.errors.empty
-        resultBatched.data == expected
+        resultBatched.data() == expected
         resultBatched.errors.empty
     }
 
@@ -93,10 +97,10 @@ class ScalarsQueryTest extends Specification {
 
         when:
         def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
-
+                .toCompletableFuture().get()
         then:
-        result.data == expected
-        result.errors.empty == true
+        result.data() == expected
+        result.errors.empty
     }
     
     @Unroll
@@ -106,10 +110,13 @@ class ScalarsQueryTest extends Specification {
         
         when:
         def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
+                .toCompletableFuture().get()
         
         then:
         //FIXME do not propagate exception, but instead raise an error.
-        thrown(NumberFormatException)
+        def ex = thrown(ExecutionException)
+        ex.cause instanceof NumberFormatException
+        
         //TODO result.errors.empty == false
         //TODO result.errors == xyz
         

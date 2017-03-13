@@ -12,7 +12,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "String parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLString.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLString.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                 | result
@@ -24,8 +24,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "String serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLString.getCoercing().serialize(value) == result
-        Scalars.GraphQLString.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLString.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLString.getCoercing().parseValue(value) == result
 
         where:
         value         | result
@@ -37,7 +37,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Char parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLChar.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLChar.getCoercing().parseLiteral(literal) == result
 
         where:
         literal               | result
@@ -53,8 +53,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Char serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLChar.getCoercing().serialize(value) == result
-        Scalars.GraphQLChar.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLChar.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLChar.getCoercing().parseValue(value) == result
 
         where:
         value  | result
@@ -70,7 +70,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "ID parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLID.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLID.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                               | result
@@ -81,8 +81,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "ID serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLID.getCoercing().serialize(value) == result
-        Scalars.GraphQLID.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLID.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLID.getCoercing().parseValue(value) == result
 
         where:
         value                | result
@@ -94,7 +94,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Boolean parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLBoolean.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLBoolean.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                 | result
@@ -106,8 +106,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Boolean serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLBoolean.getCoercing().serialize(value) == result
-        Scalars.GraphQLBoolean.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLBoolean.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLBoolean.getCoercing().parseValue(value) == result
 
         where:
         value   | result
@@ -130,14 +130,14 @@ class ScalarsTest extends Specification {
 
         where:
         scalar               | intValue
-        Scalars.GraphQLLong  | BigInteger.valueOf(Long.MIN_VALUE) - 1l
-        Scalars.GraphQLLong  | BigInteger.valueOf(Long.MAX_VALUE) + 1l
-        Scalars.GraphQLInt   | Integer.MIN_VALUE - 1l
-        Scalars.GraphQLInt   | Integer.MAX_VALUE + 1l
-        Scalars.GraphQLShort | Short.MIN_VALUE - 1l
-        Scalars.GraphQLShort | Short.MAX_VALUE + 1l
-        Scalars.GraphQLByte  | Byte.MIN_VALUE - 1l
-        Scalars.GraphQLByte  | Byte.MAX_VALUE + 1l
+        ScalarsKt.GraphQLLong  | BigInteger.valueOf(Long.MIN_VALUE) - 1l
+        ScalarsKt.GraphQLLong  | BigInteger.valueOf(Long.MAX_VALUE) + 1l
+        ScalarsKt.GraphQLInt   | Integer.MIN_VALUE - 1l
+        ScalarsKt.GraphQLInt   | Integer.MAX_VALUE + 1l
+        ScalarsKt.GraphQLShort | Short.MIN_VALUE - 1l
+        ScalarsKt.GraphQLShort | Short.MAX_VALUE + 1l
+        ScalarsKt.GraphQLByte  | Byte.MIN_VALUE - 1l
+        ScalarsKt.GraphQLByte  | Byte.MAX_VALUE + 1l
     }
 
     @Unroll
@@ -150,16 +150,16 @@ class ScalarsTest extends Specification {
 
         where:
         scalar                    | literal
-        Scalars.GraphQLBigInteger | new StringValue("1.0")
-        Scalars.GraphQLBigInteger | new StringValue("foo")
-        Scalars.GraphQLBigDecimal | new StringValue("foo")
-        Scalars.GraphQLLong       | new StringValue("foo")
+        ScalarsKt.GraphQLBigInteger | new StringValue("1.0")
+        ScalarsKt.GraphQLBigInteger | new StringValue("foo")
+        ScalarsKt.GraphQLBigDecimal | new StringValue("foo")
+        ScalarsKt.GraphQLLong       | new StringValue("foo")
     }
 
     @Unroll
     def "Long parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLLong.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLLong.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                                           | result
@@ -174,8 +174,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Long serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLLong.getCoercing().serialize(value) == result
-        Scalars.GraphQLLong.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLLong.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLLong.getCoercing().parseValue(value) == result
 
         where:
         value                        | result
@@ -198,7 +198,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Int parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLInt.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLInt.getCoercing().parseLiteral(literal) == result
 
         where:
         literal               | result
@@ -211,8 +211,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Int serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLInt.getCoercing().serialize(value) == result
-        Scalars.GraphQLInt.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLInt.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLInt.getCoercing().parseValue(value) == result
 
         where:
         value                        | result
@@ -235,7 +235,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Short parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLShort.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLShort.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                            | result
@@ -247,8 +247,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Short serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLShort.getCoercing().serialize(value) == result
-        Scalars.GraphQLShort.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLShort.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLShort.getCoercing().parseValue(value) == result
 
         where:
         value                | result
@@ -277,7 +277,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Byte parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLByte.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLByte.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                            | result
@@ -289,8 +289,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Byte serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLByte.getCoercing().serialize(value) == result
-        Scalars.GraphQLByte.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLByte.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLByte.getCoercing().parseValue(value) == result
 
         where:
         value                | result
@@ -319,7 +319,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Float parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLFloat.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLFloat.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                | result
@@ -334,8 +334,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "Float serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLFloat.getCoercing().serialize(value) == result
-        Scalars.GraphQLFloat.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLFloat.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLFloat.getCoercing().parseValue(value) == result
 
         where:
         value                        | result
@@ -360,7 +360,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "BigInteger parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLBigInteger.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLBigInteger.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                                                                | result
@@ -375,8 +375,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "BigInteger serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLBigInteger.getCoercing().serialize(value) == result
-        Scalars.GraphQLBigInteger.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLBigInteger.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLBigInteger.getCoercing().parseValue(value) == result
 
         where:
         value                                                 | result
@@ -400,7 +400,7 @@ class ScalarsTest extends Specification {
     @Unroll
     def "BigDecimal parse literal #literal.value as #result"() {
         expect:
-        Scalars.GraphQLBigDecimal.getCoercing().parseLiteral(literal) == result
+        ScalarsKt.GraphQLBigDecimal.getCoercing().parseLiteral(literal) == result
 
         where:
         literal                                                                  | result
@@ -414,8 +414,8 @@ class ScalarsTest extends Specification {
     @Unroll
     def "BigDecimal serialize/parseValue #value into #result (#result.class)"() {
         expect:
-        Scalars.GraphQLBigDecimal.getCoercing().serialize(value) == result
-        Scalars.GraphQLBigDecimal.getCoercing().parseValue(value) == result
+        ScalarsKt.GraphQLBigDecimal.getCoercing().serialize(value) == result
+        ScalarsKt.GraphQLBigDecimal.getCoercing().parseValue(value) == result
 
         where:
         value                        | result

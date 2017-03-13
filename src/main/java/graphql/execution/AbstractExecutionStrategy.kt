@@ -74,9 +74,10 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
     }
 
     fun completeValue(executionContext: ExecutionContext,
-                                fieldType: GraphQLType,
-                                fields: List<Field>,
-                                result: Any?): CompletionStage<ExecutionResult> {
+                      fieldType: GraphQLType,
+                      fields: List<Field>,
+                      result: Any?): CompletionStage<ExecutionResult> {
+        //println("completValue for " + fieldType)
         val promise = CompletableFuture<ExecutionResult>()
 
         if (fieldType is GraphQLNonNull) {
@@ -160,7 +161,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         }
 
 
-        return completeValueForList(executionContext, fieldType, fields, result1 as List<Any>)
+        return completeValueForList(executionContext, fieldType, fields, result1 as Iterable<Any>)
     }
 
     protected fun resolveType(graphQLInterfaceType: GraphQLInterfaceType, value: Any): GraphQLObjectType {
@@ -188,7 +189,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
     protected fun completeValueForList(executionContext: ExecutionContext,
                                        fieldType: GraphQLList,
                                        fields: List<Field>,
-                                       result: List<Any>): CompletionStage<ExecutionResult> {
+                                       result: Iterable<Any>): CompletionStage<ExecutionResult> {
 
         val completionPromises = ArrayList<CompletableFuture<*>>()
 

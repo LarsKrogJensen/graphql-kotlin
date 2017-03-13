@@ -90,10 +90,6 @@ class FieldCollector {
     private fun doesFragmentConditionMatch(executionContext: ExecutionContext,
                                            inlineFragment: InlineFragment,
                                            type: GraphQLObjectType): Boolean {
-//        if (inlineFragment.typeCondition == null) {
-//            return true
-//        }
-
         val conditionType = getTypeFromAST(executionContext.graphQLSchema,
                                            inlineFragment.typeCondition)
         return checkTypeCondition(executionContext, type, conditionType)

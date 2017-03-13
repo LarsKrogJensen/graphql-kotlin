@@ -53,9 +53,9 @@ val GraphQLInt = GraphQLScalarType("Int", "Built-in Int", object : Coercing<Int?
 
     override fun parseLiteral(input: Any?): Int? =
             when (input) {
-                is StringValue -> input.value.toInt()
-                is IntValue    -> verifyRange(input, INT_MIN, INT_MAX).value.toInt()
-                else           -> null
+//                is StringValue -> input.value.toInt()
+                is IntValue -> verifyRange(input, INT_MIN, INT_MAX).value.toInt()
+                else        -> null
             }
 })
 
@@ -113,31 +113,31 @@ var GraphQLByte = GraphQLScalarType("Byte", "Built-in Byte as Int", object : Coe
             }
 })
 
-val GraphQLFloat = GraphQLScalarType("Float", "Built-in Float", object : Coercing<Double?, Double?> {
-    override fun serialize(input: Any?) = when {
-        input is Float     -> toNumber(input.toString()).toDouble()
+val GraphQLFloat = GraphQLScalarType("Float", "Built-in Float", object : Coercing<Number?, Number?> {
+    override fun serialize(input: Any?): Number? = when {
+        input is Float     -> input //toNumber(input.toString()).toDouble()
         input is Double    -> input
         isNumberIsh(input) -> toNumber(input).toDouble()
         else               -> null
     }
 
-    override fun parseValue(input: Any?): Double? = serialize(input)
+    override fun parseValue(input: Any?): Number? = serialize(input)
 
-    override fun parseLiteral(input: Any?): Double? =
+    override fun parseLiteral(input: Any?): Number? =
             when (input) {
-                is StringValue -> input.value.toDouble()
-                is IntValue    -> toNumber(input).toDouble()
-                else           -> null
+                is FloatValue -> input.value.toDouble()
+                is IntValue   -> input.value.toDouble()
+                else          -> null
             }
 })
 
 val GraphQLBigInteger = GraphQLScalarType("BigInteger", "Built-in java.math.BigInteger", object : Coercing<BigInteger?, BigInteger?> {
     override fun serialize(input: Any?): BigInteger? =
-            when (input) {
-                is BigInteger      -> input
-                is String          -> BigInteger(input)
-                isNumberIsh(input) -> BigInteger.valueOf(toNumber(input).toLong())
-                else               -> null
+            when {
+                input is BigInteger -> input
+                input is String     -> BigInteger(input)
+                isNumberIsh(input)  -> BigInteger.valueOf(toNumber(input).toLong())
+                else                -> null
             }
 
     override fun parseValue(input: Any?): BigInteger? = serialize(input)
@@ -152,11 +152,11 @@ val GraphQLBigInteger = GraphQLScalarType("BigInteger", "Built-in java.math.BigI
 
 val GraphQLBigDecimal = GraphQLScalarType("BigDecimal", "Built-in java.math.BigDecimal", object : Coercing<BigDecimal?, BigDecimal?> {
     override fun serialize(input: Any?): BigDecimal? =
-            when (input) {
-                is BigDecimal        -> input
-                is String            -> BigDecimal(input)
+            when {
+                input is BigDecimal  -> input
+                input is String      -> BigDecimal(input)
                 isWholeNumber(input) -> BigDecimal.valueOf(toNumber(input).toLong())
-                is Number            -> BigDecimal.valueOf(toNumber(input).toDouble())
+                input is Number      -> BigDecimal.valueOf(toNumber(input).toDouble())
                 else                 -> null
             }
 

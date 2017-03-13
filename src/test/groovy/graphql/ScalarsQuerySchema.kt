@@ -7,11 +7,12 @@ import graphql.schema.GraphQLObjectType.Companion.newObject
 
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.concurrent.CompletableFuture
 
 object ScalarsQuerySchema {
 
     val inputDF: DataFetcher<Any> = { env ->
-        env.argument("input")
+        CompletableFuture.completedFuture(env.argument("input"))
     }
 
 

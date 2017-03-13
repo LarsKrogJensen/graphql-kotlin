@@ -24,6 +24,12 @@ class GraphQLList(wrapType: GraphQLType) : GraphQLType, GraphQLInputType, GraphQ
         return wrappedType.hashCode()
     }
 
-    override val name: String
-        get() = ""
+    override fun toString(): String {
+        return "GraphQLList{" +
+                "wrappedType=" + wrappedType +
+                '}'
+    }
+
+    override val name: String?
+        get() = null
 }

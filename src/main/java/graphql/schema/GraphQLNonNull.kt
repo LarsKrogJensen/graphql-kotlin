@@ -35,7 +35,7 @@ class GraphQLNonNull(wrappedType: GraphQLType) : GraphQLType, GraphQLInputType, 
                 '}'
     }
 
-    override val name: String
-        get() = ""
+    override val name: String?
+        get() = null
     
 }

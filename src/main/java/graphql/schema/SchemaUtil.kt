@@ -30,6 +30,8 @@ class SchemaUtil {
     private fun collectTypes(root: GraphQLType, result: MutableMap<String, GraphQLType>) {
         if (root is GraphQLNonNull) {
             collectTypes(root.wrappedType, result)
+        } else if (root is TypeReference) {
+            // nothing to do
         } else if (root is GraphQLList) {
             collectTypes(root.wrappedType, result)
         } else if (root is GraphQLEnumType) {
@@ -123,6 +125,9 @@ class SchemaUtil {
     fun replaceTypeReferences(schema: GraphQLSchema) {
         val typeMap = allTypes(schema, schema.dictionary)
         for (type in typeMap.values) {
+            if (type is GraphQLObjectType)
+                type.replaceTypeReferences(typeMap)
+
             if (type is GraphQLFieldsContainer) {
                 resolveTypeReferencesForFieldsContainer(type, typeMap)
             }

@@ -2,5 +2,5 @@ package graphql.schema
 
 
 interface GraphQLType {
-    val name: String
+    val name: String?
 }

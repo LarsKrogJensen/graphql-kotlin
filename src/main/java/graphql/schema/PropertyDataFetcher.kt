@@ -45,11 +45,11 @@ private class PropertyDataFetcher<T>(private val propertyName: String)  {
     }
 
     @Throws(NoSuchMethodException::class)
-    private fun getPropertyViaGetterUsingPrefix(`object`: Any, prefix: String): Any {
+    private fun getPropertyViaGetterUsingPrefix(obj: Any, prefix: String): Any? {
         val getterName = prefix + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1)
         try {
-            val method = `object`.javaClass.getMethod(getterName)
-            return method.invoke(`object`)
+            val method = obj.javaClass.getMethod(getterName)
+            return method.invoke(obj)
 
         } catch (e: IllegalAccessException) {
             throw RuntimeException(e)
