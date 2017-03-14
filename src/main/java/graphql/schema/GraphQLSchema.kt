@@ -11,6 +11,9 @@ import graphql.schema.validation.Validator
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
+@DslMarker
+annotation class GraphQLDslMarker
+
 class GraphQLSchema(val queryType: GraphQLObjectType,
                     val mutationType: GraphQLObjectType? = null,
                     val dictionary: Set<GraphQLType> = emptySet<GraphQLType>()) {

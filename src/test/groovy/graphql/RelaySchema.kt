@@ -49,9 +49,7 @@ val RelayQueryType = newObject {
             name = "id"
             description = "id of the thing"
             type = GraphQLNonNull(GraphQLString)
-            argument {
 
-            }
         }
         fetcher = {
             CompletableFuture.completedFuture(null)

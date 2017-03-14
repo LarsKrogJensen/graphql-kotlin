@@ -18,6 +18,7 @@ class GraphQLArgument(val name: String,
         type = SchemaUtil().resolveTypeReference(type, typeMap) as GraphQLInputType
     }
 
+    @GraphQLDslMarker
     class Builder {
         var name: String by notNull<String>()
         var type: GraphQLInputType by notNull<GraphQLInputType>()

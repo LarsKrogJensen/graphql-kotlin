@@ -31,6 +31,7 @@ class GraphQLUnionType(override val name: String,
         return types
     }
 
+    @GraphQLDslMarker
     class Builder {
         var name: String by notNull<String>()
         var description: String? = null

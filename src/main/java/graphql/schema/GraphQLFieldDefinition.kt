@@ -35,6 +35,8 @@ class GraphQLFieldDefinition<T>(val name: String,
     val deprecated: Boolean
         get() = deprecationReason != null
 
+
+    @GraphQLDslMarker
     class Builder<T> {
         var name: String by Delegates.notNull<String>()
         var description: String? = null
@@ -87,6 +89,7 @@ class GraphQLFieldDefinition<T>(val name: String,
             this.arguments.add(argument)
             return this
         }
+
 
         fun argument(block: GraphQLArgument.Builder.() -> Unit): Unit {
             arguments += newArgument(block)

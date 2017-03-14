@@ -45,6 +45,7 @@ open class GraphQLInterfaceType(override val name: String,
     }
 
 
+    @GraphQLDslMarker
     class Builder {
         var name: String by notNull<String>()
         var description: String? = null
