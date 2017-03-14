@@ -19,11 +19,10 @@ class GraphQLArgument(val name: String,
     }
 
     class Builder {
-
-        private var name: String by notNull<String>()
-        private var type: GraphQLInputType by notNull<GraphQLInputType>()
-        private var defaultValue: Any? = null
-        private var description: String = "No description available."
+        var name: String by notNull<String>()
+        var type: GraphQLInputType by notNull<GraphQLInputType>()
+        var defaultValue: Any? = null
+        var description: String = "No description available."
 
         fun name(name: String): Builder {
             this.name = name
@@ -62,5 +61,11 @@ class GraphQLArgument(val name: String,
 
 fun newArgument(): GraphQLArgument.Builder {
     return GraphQLArgument.Builder()
+}
+
+fun newArgument(block: GraphQLArgument.Builder.() -> Unit) : GraphQLArgument {
+    val builder = newArgument()
+    builder.block()
+    return builder.build()
 }
 

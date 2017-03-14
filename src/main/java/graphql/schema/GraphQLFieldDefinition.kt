@@ -39,7 +39,7 @@ class GraphQLFieldDefinition<T>(val name: String,
         var name: String by Delegates.notNull<String>()
         var description: String? = null
         var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
-        var dataFetcher: DataFetcher<T>? = null
+        var fetcher: DataFetcher<T>? = null
         val arguments = ArrayList<GraphQLArgument>()
         var deprecationReason: String? = null
         var isField: Boolean = false
@@ -73,29 +73,23 @@ class GraphQLFieldDefinition<T>(val name: String,
         }
 
         fun dataFetcher(dataFetcher: DataFetcher<T>): Builder<T> {
-            this.dataFetcher = dataFetcher
+            this.fetcher = dataFetcher
             return this
         }
 
         fun staticValue(value: T): Builder<T> {
-            this.dataFetcher = staticDataFetcher(value)
+            this.fetcher = staticDataFetcher(value)
 
-            return this
-        }
-
-        /**
-         * Get the data from a field, rather than a property.
-
-         * @return this builder
-         */
-        fun fetchField(): Builder<T> {
-            this.isField = true
             return this
         }
 
         fun argument(argument: GraphQLArgument): Builder<T> {
             this.arguments.add(argument)
             return this
+        }
+
+        fun argument(block: GraphQLArgument.Builder.() -> Unit): Unit {
+            arguments += newArgument(block)
         }
 
         /**
@@ -140,7 +134,7 @@ class GraphQLFieldDefinition<T>(val name: String,
         }
 
         fun build(): GraphQLFieldDefinition<T> {
-            val fetcher: DataFetcher<T> = dataFetcher ?:
+            val fetcher: DataFetcher<T> = fetcher ?:
                     if (isField) {
                         fieldDataFetcher<T>(name)
                     } else {

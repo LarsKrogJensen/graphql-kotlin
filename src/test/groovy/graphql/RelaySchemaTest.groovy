@@ -32,7 +32,7 @@ class RelaySchemaTest extends Specification {
                     }
                     """
         when:
-        def data = GraphQL.newGraphQL(RelaySchema.Schema).build().execute(query).toCompletableFuture().get().data()
+        def data = GraphQL.newGraphQL(RelaySchemaKt.Schema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         def nodeField = data["__schema"]["queryType"]["fields"][0];
@@ -59,7 +59,7 @@ class RelaySchemaTest extends Specification {
                           }
                         }"""
         when:
-        def data = GraphQL.newGraphQL(RelaySchema.Schema).build().execute(query).toCompletableFuture().get().data()
+        def data = GraphQL.newGraphQL(RelaySchemaKt.Schema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         def fields = data["__type"]["fields"];
@@ -86,7 +86,7 @@ class RelaySchemaTest extends Specification {
                         }
                     """
         when:
-        def data = GraphQL.newGraphQL(RelaySchema.Schema).build().execute(query).toCompletableFuture().get().data()
+        def data = GraphQL.newGraphQL(RelaySchemaKt.Schema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         def fields = data["__type"]["fields"];
