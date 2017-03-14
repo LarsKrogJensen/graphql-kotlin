@@ -32,10 +32,10 @@ class GraphQLUnionType(override val name: String,
     }
 
     class Builder {
-        private var name: String by notNull<String>()
-        private var description: String? = null
-        private val types = ArrayList<GraphQLObjectType>()
-        private var typeResolver: TypeResolver by notNull<TypeResolver>()
+        var name: String by notNull<String>()
+        var description: String? = null
+        val types = ArrayList<GraphQLObjectType>()
+        var typeResolver: TypeResolver by notNull<TypeResolver>()
 
         fun name(name: String): Builder {
             this.name = name
@@ -77,4 +77,10 @@ class GraphQLUnionType(override val name: String,
             return Builder()
         }
     }
+}
+
+fun newUnionType(block: GraphQLUnionType.Builder.()->Unit) : GraphQLUnionType{
+    val builder = GraphQLUnionType.newUnionType()
+    builder.block()
+    return builder.build()
 }

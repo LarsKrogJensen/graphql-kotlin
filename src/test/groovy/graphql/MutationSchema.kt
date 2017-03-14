@@ -1,12 +1,9 @@
 package graphql
 
 
-import graphql.schema.DataFetcher
-import graphql.schema.DataFetchingEnvironment
+import graphql.schema.*
 import graphql.schema.GraphQLFieldDefinition.Companion.newFieldDefinition
-import graphql.schema.GraphQLObjectType
 import graphql.schema.GraphQLSchema.Companion.newSchema
-import graphql.schema.newArgument
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 

@@ -37,73 +37,74 @@ object GarfieldSchema {
     val liz = Person("Liz")
     val john = Person("John", Arrays.asList(garfield), Arrays.asList(odie), Arrays.asList(liz, odie))
 
-    val NamedType = newInterface()
-            .name("Named")
-            .field(newFieldDefinition<String>()
-                           .name("name")
-                           .type(GraphQLString))
-            .typeResolver {
-                when (it) {
-                    is Dog    -> DogType
-                    is Person -> PersonType
-                    is Cat    -> CatType
-                    else      -> null
-                }
-
-            }.build()
-
-    val DogType = newObject()
-            .name("Dog")
-            .field(newFieldDefinition<String>()
-                           .name("name")
-                           .type(GraphQLString))
-            .field(newFieldDefinition<String>()
-                           .name("barks")
-                           .type(GraphQLBoolean))
-            .withInterface(GraphQLInterfaceType.reference("Named"))
-            .build()
-
-    val CatType = newObject()
-            .name("Cat")
-            .field(newFieldDefinition<String>()
-                           .name("name")
-                           .type(GraphQLString))
-            .field(newFieldDefinition<String>()
-                           .name("meows")
-                           .type(GraphQLBoolean))
-            .withInterface(GraphQLInterfaceType.reference("Named"))
-            .build()
-
-    val PetType = newUnionType()
-            .name("Pet")
-            .possibleType(CatType)
-            .possibleType(DogType)
-            .typeResolver {
-                when (it) {
-                    is Cat -> CatType
-                    is Dog -> DogType
-                    else   -> null
-                }
+    val NamedType = newInterface {
+        name = "Named"
+        field<String> {
+            name = "name"
+        }
+        typeResolver {
+            when (it) {
+                is Dog    -> DogType
+                is Person -> PersonType
+                is Cat    -> CatType
+                else      -> null
             }
-            .build()
+        }
+    }
 
-    val PersonType = newObject()
-            .name("Person")
-            .field(newFieldDefinition<String>()
-                           .name("name")
-                           .type(GraphQLString))
-            .field(newFieldDefinition<List<Any>>()
-                           .name("pets")
-                           .type(GraphQLList(PetType)))
-            .field(newFieldDefinition<List<Named>>()
-                           .name("friends")
-                           .type(GraphQLList(GraphQLTypeReference("Named"))))
-            .withInterface(GraphQLInterfaceType.reference("Named"))
-            .build()
+    val DogType = newObject {
+        name = "Dog"
+        field<String> {
+            name = "name"
+        }
+        field<Boolean> {
+            name = "barks"
+        }
+        interfaces += GraphQLInterfaceType.reference("Named")
+    }
 
-    val GarfieldSchema = GraphQLSchema.newSchema()
-            .query(PersonType)
-            .build(setOf(NamedType))
+    val CatType = newObject {
+        name = "Cat"
+        field<String> {
+            name = "name"
+        }
+        field<Boolean> {
+            name = "meows"
+        }
+        interfaces += GraphQLInterfaceType.reference("Named")
+    }
 
+    val PetType = newUnionType {
+        name = "Pet"
+        types += CatType
+        types += DogType
+        typeResolver = {
+            when (it) {
+                is Cat -> CatType
+                is Dog -> DogType
+                else   -> null
+            }
+        }
+    }
 
+    val PersonType = newObject {
+        name = "Person"
+        field<String> {
+            name = "name"
+        }
+        field<List<Any>> {
+            name = "pets"
+            type = GraphQLList(PetType)
+        }
+        field<List<Named>> {
+            name = "friends"
+            type = GraphQLList(GraphQLTypeReference("Named"))
+        }
+        interfaces += GraphQLInterfaceType.reference("Named")
+    }
+
+    val GarfieldSchema = newSchema {
+        query = PersonType
+        dictionary += NamedType
+    }
 }

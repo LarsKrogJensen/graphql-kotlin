@@ -1,16 +1,15 @@
 package graphql.schema
 
 
-import graphql.Assert
+import graphql.*
 
 import java.util.*
 
 import graphql.Assert.assertNotNull
-import graphql.IncludeDirective
-import graphql.SkipDirective
 import graphql.schema.validation.InvalidSchemaException
 import graphql.schema.validation.Validator
 import kotlin.properties.Delegates
+import kotlin.reflect.KClass
 
 class GraphQLSchema(val queryType: GraphQLObjectType,
                     val mutationType: GraphQLObjectType? = null,
@@ -82,11 +81,24 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
             return Builder()
         }
 
-        fun newSchema(block: Builder.() -> Unit) : GraphQLSchema {
-            val builder = Builder()
-            block(builder)
-            return builder.build(builder.dictionary)
-        }
-    }
 
+    }
+}
+
+fun newSchema(block: GraphQLSchema.Builder.() -> Unit): GraphQLSchema {
+    val builder = GraphQLSchema.Builder()
+    builder.block()
+    return builder.build(builder.dictionary)
+}
+
+
+fun <T : Any> typeResolve(type: KClass<T>) : GraphQLOutputType? = when (type) {
+    String::class -> GraphQLString
+ //   Date::class -> GraphQLDate
+    Int::class -> GraphQLInt
+    Long::class -> GraphQLLong
+    Float::class -> GraphQLFloat
+    Double::class -> GraphQLFloat
+    Boolean::class -> GraphQLBoolean
+    else -> null
 }

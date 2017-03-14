@@ -40,7 +40,7 @@ class ValuesResolverTest extends Specification {
         GraphQLString  | new TypeName("String")  | 'someString' || 'someString'
         GraphQLBoolean | new TypeName("Boolean") | 'true'       || true
         GraphQLFloat   | new TypeName("Float")   | 42.43d       || 42.43d
-        GraphQLFloat   | new TypeName("Float")   | 42.44f       || 42.44d
+        GraphQLFloat   | new TypeName("Float")   | 42.44f       || 42.44f
         GraphQLFloat   | new TypeName("Float")   | '42.45'      || 42.45d
 
     }

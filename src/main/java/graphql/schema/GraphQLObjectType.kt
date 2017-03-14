@@ -47,7 +47,7 @@ open class GraphQLObjectType(override val name: String,
         get() = ArrayList(_fieldDefinitionsByName.values)
 
 
-    val  interfaces: List<GraphQLInterfaceType>
+    val interfaces: List<GraphQLInterfaceType>
         get() = _interfaces
 
 
@@ -61,10 +61,10 @@ open class GraphQLObjectType(override val name: String,
     }
 
     class Builder {
-        private var name: String by notNull<String>()
-        private var description: String? = null
-        private val fieldDefinitions = mutableListOf<GraphQLFieldDefinition<*>>()
-        private val interfaces = mutableListOf<GraphQLInterfaceType>()
+        var name: String by notNull<String>()
+        var description: String? = null
+        val fieldDefinitions = mutableListOf<GraphQLFieldDefinition<*>>()
+        val interfaces = mutableListOf<GraphQLInterfaceType>()
 
         fun name(name: String): Builder {
             this.name = name
@@ -118,6 +118,10 @@ open class GraphQLObjectType(override val name: String,
             return this
         }
 
+        inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
+            this.fieldDefinitions +=newField<T>(block)
+        }
+
         fun fields(fieldDefinitions: List<GraphQLFieldDefinition<*>>): Builder {
             assertNotNull(fieldDefinitions, "fieldDefinitions can't be null")
             this.fieldDefinitions.addAll(fieldDefinitions)
@@ -160,4 +164,10 @@ open class GraphQLObjectType(override val name: String,
             return Reference(name)
         }
     }
+}
+
+fun newObject(block: GraphQLObjectType.Builder.() -> Unit): GraphQLObjectType {
+    val builder = GraphQLObjectType.Builder()
+    builder.block()
+    return builder.build()
 }

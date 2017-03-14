@@ -3,6 +3,7 @@ package graphql.schema
 import graphql.Assert.assertNotNull
 import graphql.AssertException
 import java.util.*
+import kotlin.coroutines.experimental.EmptyCoroutineContext.plus
 import kotlin.properties.Delegates.notNull
 
 open class GraphQLInterfaceType(override val name: String,
@@ -45,10 +46,10 @@ open class GraphQLInterfaceType(override val name: String,
 
 
     class Builder {
-        private var name: String by notNull<String>()
-        private var description: String? = null
-        private val fields = ArrayList<GraphQLFieldDefinition<*>>()
-        private var typeResolver: TypeResolver by notNull<TypeResolver>()
+        var name: String by notNull<String>()
+        var description: String? = null
+        val fields = ArrayList<GraphQLFieldDefinition<*>>()
+        var typeResolver: TypeResolver by notNull<TypeResolver>()
 
 
         fun name(name: String): Builder {
@@ -61,28 +62,13 @@ open class GraphQLInterfaceType(override val name: String,
             return this
         }
 
+        inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
+            this.fields += newField<T>(block)
+        }
+
         fun field(fieldDefinition: GraphQLFieldDefinition<*>): Builder {
             fields.add(fieldDefinition)
             return this
-        }
-
-        /**
-         * Take a field builder in a function definition and apply. Can be used in a jdk8 lambda
-         * e.g.:
-         * <pre>
-         * `field(f -> f.name("fieldName"))
-        ` *
-        </pre> *
-
-         * @param builderFunction a supplier for the builder impl
-         * *
-         * @return this
-         */
-        fun field(builderFunction: BuilderFunction<GraphQLFieldDefinition.Builder<*>>): Builder {
-            assertNotNull(builderFunction, "builderFunction can't be null")
-            var builder: GraphQLFieldDefinition.Builder<*> = GraphQLFieldDefinition.newFieldDefinition<Any>()
-            builder = builderFunction.apply(builder)
-            return field(builder)
         }
 
         /**
@@ -128,6 +114,11 @@ open class GraphQLInterfaceType(override val name: String,
             return Reference(name)
         }
     }
-
-
 }
+
+fun newInterface(block: GraphQLInterfaceType.Builder.() -> Unit): GraphQLInterfaceType {
+    val builder = GraphQLInterfaceType.Builder()
+    builder.block()
+    return builder.build()
+}
+

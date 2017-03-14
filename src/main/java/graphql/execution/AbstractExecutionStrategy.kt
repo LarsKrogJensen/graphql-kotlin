@@ -50,7 +50,6 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         val instrumentation = executionContext.instrumentation
 
         val fieldCtx = instrumentation.beginField(FieldParameters(executionContext, fieldDef))
-
         val fetchCtx = instrumentation.beginFieldFetch(FieldFetchParameters(executionContext, fieldDef, environment))
 
         val completionStage = if (fieldDef.dataFetcher != null) (fieldDef.dataFetcher)(environment) else null

@@ -2,6 +2,7 @@ package graphql.execution
 
 import graphql.ExecutionResult
 import graphql.ExecutionResultImpl
+import graphql.GraphQLError
 import graphql.language.Field
 import graphql.schema.GraphQLObjectType
 
@@ -20,9 +21,9 @@ open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
         val fieldPromises = fields.map { (fieldName, fieldList) ->
             resolveField(executionContext, parentType, source, fieldList)
                     .whenComplete { resolvedResult, ex ->
-                        if (ex == null)
+                        if (ex == null) {
                             results.put(fieldName, resolvedResult?.data())
-                        else
+                        } else
                             promise.completeExceptionally(ex)
                     }.toCompletableFuture()
 
@@ -31,12 +32,7 @@ open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
         val toTypedArray = fieldPromises.toTypedArray() as Array<CompletableFuture<*>>
         CompletableFuture.allOf(*toTypedArray)
                 .thenAccept {
-//                    println("---- Completed execute: field orders")
-//                    fields.keys.forEach { print(it +", ") }
-//                    println()
-//                    results.keys.forEach { print(it +", ") }
-//                    println()
-                    promise.complete(ExecutionResultImpl(results))
+                    promise.complete(ExecutionResultImpl(results, executionContext.errors()))
                 }
 
         return promise

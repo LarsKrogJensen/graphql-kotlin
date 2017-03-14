@@ -48,10 +48,9 @@ class Execution(queryStrategy: IExecutionStrategy?,
         }
     }
 
-    private fun executeOperation(
-            executionContext: ExecutionContext,
-            root: Any,
-            operationDefinition: OperationDefinition): CompletionStage<ExecutionResult> {
+    private fun executeOperation(executionContext: ExecutionContext,
+                                 root: Any,
+                                 operationDefinition: OperationDefinition): CompletionStage<ExecutionResult> {
 
         val dataFetchCtx = instrumentation.beginDataFetch(DataFetchParameters(executionContext))
 
@@ -64,18 +63,18 @@ class Execution(queryStrategy: IExecutionStrategy?,
                                      mutableListOf(),
                                      fields)
 
-        val result = if (operationDefinition.operation === OperationDefinition.Operation.MUTATION) {
+        val promise = if (operationDefinition.operation === OperationDefinition.Operation.MUTATION) {
             mutationStrategy.execute(executionContext, operationRootType, root, fields)
         } else {
             queryStrategy.execute(executionContext, operationRootType, root, fields)
         }
 
-        result.whenComplete { executionResult, ex ->
+        promise.whenComplete { executionResult, ex ->
             if (ex != null)
                 dataFetchCtx.onEnd(ex as Exception)
             else
                 dataFetchCtx.onEnd(executionResult)
         }
-        return result
+        return promise
     }
 }

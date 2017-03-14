@@ -36,13 +36,13 @@ class GraphQLFieldDefinition<T>(val name: String,
         get() = deprecationReason != null
 
     class Builder<T> {
-        private var name: String by Delegates.notNull<String>()
-        private var description: String? = null
-        private var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
-        private var dataFetcher: DataFetcher<T>? = null
-        private val arguments = ArrayList<GraphQLArgument>()
-        private var deprecationReason: String? = null
-        private var isField: Boolean = false
+        var name: String by Delegates.notNull<String>()
+        var description: String? = null
+        var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
+        var dataFetcher: DataFetcher<T>? = null
+        val arguments = ArrayList<GraphQLArgument>()
+        var deprecationReason: String? = null
+        var isField: Boolean = false
 
 
         fun name(name: String): Builder<T> {
@@ -141,11 +141,11 @@ class GraphQLFieldDefinition<T>(val name: String,
 
         fun build(): GraphQLFieldDefinition<T> {
             val fetcher: DataFetcher<T> = dataFetcher ?:
-                if (isField) {
-                    fieldDataFetcher<T>(name)
-                } else {
-                    propertyDataFetcher<T>(name)
-                }
+                    if (isField) {
+                        fieldDataFetcher<T>(name)
+                    } else {
+                        propertyDataFetcher<T>(name)
+                    }
 
             return GraphQLFieldDefinition(name, description, type, fetcher, arguments, deprecationReason)
         }
@@ -157,4 +157,11 @@ class GraphQLFieldDefinition<T>(val name: String,
             return Builder()
         }
     }
+}
+
+inline fun <reified T : Any> newField(block: GraphQLFieldDefinition.Builder<T>.() -> Unit): GraphQLFieldDefinition<T> {
+    val builder = GraphQLFieldDefinition.newFieldDefinition<T>()
+    typeResolve(T::class)?.let { builder.type = it }
+    builder.block()
+    return builder.build()
 }

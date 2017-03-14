@@ -10,14 +10,22 @@ import java.util.concurrent.CompletableFuture
 class ExecutionTest extends Specification {
 
     def parser = new Parser()
-    def mutationStrategy = Mock(IExecutionStrategy)
-    def queryStrategy = Mock(IExecutionStrategy)
+    def mutationStrategy = Mock(IExecutionStrategy) {
+        execute(*_) >> {
+            println "mutate"
+            CompletableFuture.completedFuture(null)
+        }
+    }
+    def queryStrategy = Mock(IExecutionStrategy) {
+        execute(*_) >> {
+            println "query"
+            CompletableFuture.completedFuture(null)
+        }
+    }
+
+
     def execution = new Execution(queryStrategy, mutationStrategy, NoOpInstrumentation.INSTANCE)
 
-    def setup() {
-        queryStrategy.execute(*_) >> CompletableFuture.completedFuture(null)
-        mutationStrategy.execute(*_) >> CompletableFuture.completedFuture(null)
-    }
 
     def "query strategy is used for query requests"() {
         given:
