@@ -30,10 +30,11 @@ open class GraphQLInputObjectType(override val name: String,
         return fieldMap[name]
     }
 
+    @GraphQLDslMarker
     class Builder {
-        private var name: String by notNull<String>()
-        private var description: String? = null
-        private val fields = mutableListOf<GraphQLInputObjectField>()
+        var name: String by notNull<String>()
+        var description: String? = null
+        val fields = mutableListOf<GraphQLInputObjectField>()
 
         fun name(name: String): Builder {
             this.name = name
@@ -45,39 +46,16 @@ open class GraphQLInputObjectType(override val name: String,
             return this
         }
 
+        fun field(block: GraphQLInputObjectField.Builder.()->Unit) {
+            fields += newInputField(block)
+        }
+
         fun field(field: GraphQLInputObjectField): Builder {
             assertNotNull(field, "field can't be null")
             fields.add(field)
             return this
         }
 
-        /**
-         * Take a field builder in a function definition and apply. Can be used in a jdk8 lambda
-         * e.g.:
-         * <pre>
-         * `field(f -> f.name("fieldName"))
-        ` *
-        </pre> *
-
-         * @param builderFunction a supplier for the builder impl
-         * *
-         * @return this
-         */
-        fun field(builderFunction: BuilderFunction<GraphQLInputObjectField.Builder>): Builder {
-            assertNotNull(builderFunction, "builderFunction should not be null")
-            var builder: GraphQLInputObjectField.Builder = GraphQLInputObjectField.newInputObjectField()
-            builder = builderFunction.apply(builder)
-            return field(builder)
-        }
-
-        /**
-         * Same effect as the field(GraphQLFieldDefinition). Builder.build() is called
-         * from within
-
-         * @param builder an un-built/incomplete GraphQLFieldDefinition
-         * *
-         * @return this
-         */
         fun field(builder: GraphQLInputObjectField.Builder): Builder {
             this.fields.add(builder.build())
             return this
@@ -96,7 +74,7 @@ open class GraphQLInputObjectType(override val name: String,
 
     }
 
-    class Reference (name: String) :
+    class Reference(name: String) :
             GraphQLInputObjectType(name, "", emptyList()), TypeReference
 
     companion object {
@@ -105,9 +83,15 @@ open class GraphQLInputObjectType(override val name: String,
         fun newInputObject(): Builder {
             return Builder()
         }
-
-        fun reference(name: String): Reference {
-            return Reference(name)
-        }
     }
+}
+
+fun newInputObject(block: GraphQLInputObjectType.Builder.() -> Unit): GraphQLInputObjectType {
+    val builder = GraphQLInputObjectType.Builder()
+    builder.block()
+    return builder.build()
+}
+
+fun inputRef(name: String): GraphQLInputObjectType.Reference {
+    return GraphQLInputObjectType.Reference(name)
 }

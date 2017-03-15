@@ -38,6 +38,7 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4</artifactId>
             <version>${antlr.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
         <dependency>
@@ -45,8 +46,7 @@
             <artifactId>antlr4-runtime</artifactId>
             <version>${antlr.version}</version>
         </dependency>
-
-
+        
         <!-- TESTING -->
         <dependency>
             <groupId>junit</groupId>
@@ -112,12 +112,14 @@
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>3.2.5</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.objenesis</groupId>
             <artifactId>objenesis</artifactId>
             <version>2.5.1</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

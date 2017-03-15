@@ -16,6 +16,7 @@ class GraphQLDirective(val name: String,
         return null
     }
 
+    @GraphQLDslMarker
     class Builder {
         private var name: String by notNull<String>()
         private val locations = mutableSetOf<DirectiveLocation>()

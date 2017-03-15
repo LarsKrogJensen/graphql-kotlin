@@ -4,63 +4,58 @@ import graphql.GarfieldSchema.CatType
 import graphql.GarfieldSchema.DogType
 import graphql.GarfieldSchema.NamedType
 import graphql.schema.*
-import graphql.schema.GraphQLFieldDefinition.Companion.newFieldDefinition
-import graphql.schema.GraphQLInputObjectField.Companion.newInputObjectField
-import graphql.schema.GraphQLInputObjectType.Companion.newInputObject
-import graphql.schema.GraphQLInputObjectType.Companion.reference
-import graphql.schema.GraphQLObjectType.Companion.newObject
-import graphql.schema.GraphQLUnionType.Companion.newUnionType
-import java.util.*
 
-object TypeReferenceSchema {
+val PetType = newUnionType {
+    name = "Pet"
+    types += objectRef(CatType.name)
+    types += objectRef(DogType.name)
+    typeResolver = typeResolverProxy()
+}
 
-    var PetType = newUnionType()
-            .name("Pet")
-            .possibleType(GraphQLObjectType.reference(CatType.name))
-            .possibleType(GraphQLObjectType.reference(DogType.name))
-            .typeResolver(typeResolverProxy())
-            .build()
+val PersonInputType = newInputObject {
+    name ="Person_Input"
+    field {
+        name = "name"
+        type = GraphQLString
+    }
+}
 
-    var PersonInputType = newInputObject()
-            .name("Person_Input")
-            .field(newInputObjectField()
-                           .name("name")
-                           .type(GraphQLString))
-            .build()
+val PersonType = newObject {
+    name = "Person"
+    field<String> {
+        name = "name"
+    }
+    field<Any> {
+        name = "pet"
+        type = typeRef(PetType.name)
+    }
+    interfaces += interfaceRef(NamedType.name)
+}
 
-    var PersonType = newObject()
-            .name("Person")
-            .field(newFieldDefinition<Any>()
-                           .name("name")
-                           .type(GraphQLString))
-            .field(newFieldDefinition<Any>()
-                           .name("pet")
-                           .type(GraphQLTypeReference(PetType.name)))
-            .withInterface(GraphQLInterfaceType.reference(NamedType.name))
-            .build()
+val exists = newField<Any>{
+    name = "exists"
+    type = GraphQLBoolean
+    argument {
+        name = "person"
+        type = inputRef("Person_Input")
+    }
+}
 
-    var exists: GraphQLFieldDefinition<*> = newFieldDefinition<Any>()
-            .name("exists")
-            .type(GraphQLBoolean)
-            .argument(newArgument()
-                              .name("person")
-                              .type(reference("Person_Input")))
-            .build()
+val find = newField<Any>{
+    name = "find"
+    type = typeRef("Person")
+    argument {
+        name ="name"
+        type = GraphQLString
+    }
+}
+val PersonService = newObject {
+    name = "PersonService"
+    fields += exists
+    fields += find
+}
 
-    var find: GraphQLFieldDefinition<*> = newFieldDefinition<Any>()
-            .name("find")
-            .type(GraphQLTypeReference("Person"))
-            .argument(newArgument()
-                              .name("name")
-                              .type(GraphQLString))
-            .build()
-
-    var PersonService = newObject()
-            .name("PersonService")
-            .field(exists)
-            .field(find)
-            .build()
-
-    var SchemaWithReferences = GraphQLSchema(PersonService, null,
-                                             HashSet<GraphQLType>(Arrays.asList<GraphQLUnmodifiedType>(PersonType, PersonInputType, PetType, CatType, DogType, NamedType)))
+val SchemaWithReferences = newSchema {
+    query = PersonService
+    dictionary = setOf(PersonType, PersonInputType, PetType, CatType, DogType, NamedType)
 }

@@ -144,3 +144,5 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
 fun newGraphQL(graphQLSchema: GraphQLSchema): GraphQL.Builder {
     return GraphQL.Builder(graphQLSchema)
 }
+
+//

@@ -1,11 +1,11 @@
 package graphql.schema
 
 import graphql.NestedInputSchema
-import graphql.TypeReferenceSchema
+import graphql.TypeReferenceSchemaKt
 import graphql.introspection.Introspection
 import spock.lang.Specification
 
-import static TypeReferenceSchema.SchemaWithReferences
+import static TypeReferenceSchemaKt.SchemaWithReferences
 import static graphql.ScalarsKt.*
 import static graphql.StarWarsSchema.*
 import static graphql.schema.GraphQLArgument.newArgument

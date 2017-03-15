@@ -10,6 +10,8 @@ import graphql.schema.GraphQLScalarType
 
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.text.SimpleDateFormat
+import java.util.*
 
 private val LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE)
 private val LONG_MIN = BigInteger.valueOf(Long.MIN_VALUE)
@@ -234,5 +236,48 @@ val GraphQLChar = GraphQLScalarType("Char", "Built-in Char as Character", object
                 is StringValue -> if (input.value.length == 1) input.value.get(0) else null
                 else           -> null
             }
+})
+
+val GraphQLDate = GraphQLScalarType("DateTime", "DateTime type", object : Coercing<Date?, Date?> {
+    private val dateFormat = "yyyy-MM-dd'T'HH:mm'Z'"
+    private val timeZone = TimeZone.getTimeZone("UTC")
+
+    override fun serialize(input: Any?): Date? {
+        when (input) {
+            is String -> return parse(input as String?)
+            is Date   -> return input
+            is Long   -> return Date(input)
+            is Int    -> return Date(input.toLong())
+            else      -> throw GraphQLException("Wrong timestamp value")
+        }
+    }
+
+    override fun parseValue(input: Any?): Date? {
+        return serialize(input)
+    }
+
+    override fun parseLiteral(input: Any?): Date? {
+        if (input !is StringValue) return null
+        return parse(input.value)
+    }
+
+//    private fun format(input: Date?): String? {
+//        return inputsimpleDateFormat.format(input.time)
+//    }
+
+    private fun parse(input: String?): Date {
+        try {
+            return simpleDateFormat.parse(input)
+        } catch (e: Exception) {
+            throw GraphQLException("Can not parse input date", e)
+        }
+    }
+
+    private val simpleDateFormat: SimpleDateFormat
+        get() {
+            val df = SimpleDateFormat(dateFormat)
+            df.timeZone = timeZone
+            return df
+        }
 })
 

@@ -95,32 +95,7 @@ class GraphQLFieldDefinition<T>(val name: String,
             arguments += newArgument(block)
         }
 
-        /**
-         * Take an argument builder in a function definition and apply. Can be used in a jdk8 lambda
-         * e.g.:
-         * <pre>
-         * `argument(a -> a.name("argumentName"))
-        ` *
-        </pre> *
 
-         * @param builderFunction a supplier for the builder impl
-         * *
-         * @return this
-         */
-        fun argument(builderFunction: BuilderFunction<GraphQLArgument.Builder>): Builder<T> {
-            var builder: GraphQLArgument.Builder = newArgument()
-            builder = builderFunction.apply(builder)
-            return argument(builder)
-        }
-
-        /**
-         * Same effect as the argument(GraphQLArgument). Builder.build() is called
-         * from within
-
-         * @param builder an un-built/incomplete GraphQLArgument
-         * *
-         * @return this
-         */
         fun argument(builder: GraphQLArgument.Builder): Builder<T> {
             this.arguments.add(builder.build())
             return this

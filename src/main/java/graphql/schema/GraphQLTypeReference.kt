@@ -6,3 +6,5 @@ package graphql.schema
  * object when the schema is build.
  */
 class GraphQLTypeReference(override val name: String) : GraphQLType, GraphQLOutputType, GraphQLInputType, TypeReference
+
+fun typeRef(name: String) = GraphQLTypeReference(name)

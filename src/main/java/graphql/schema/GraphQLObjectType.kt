@@ -64,7 +64,7 @@ open class GraphQLObjectType(override val name: String,
     class Builder {
         var name: String by notNull<String>()
         var description: String? = null
-        val fieldDefinitions = mutableListOf<GraphQLFieldDefinition<*>>()
+        val fields = mutableListOf<GraphQLFieldDefinition<*>>()
         val interfaces = mutableListOf<GraphQLInterfaceType>()
 
         fun name(name: String): Builder {
@@ -79,7 +79,7 @@ open class GraphQLObjectType(override val name: String,
 
         fun <T> field(fieldDefinition: GraphQLFieldDefinition<T>): Builder {
             assertNotNull(fieldDefinition, "fieldDefinition can't be null")
-            this.fieldDefinitions.add(fieldDefinition)
+            this.fields.add(fieldDefinition)
             return this
         }
 
@@ -115,17 +115,17 @@ open class GraphQLObjectType(override val name: String,
          * @return this
         </T> */
         fun <T> field(builder: GraphQLFieldDefinition.Builder<T>): Builder {
-            this.fieldDefinitions.add(builder.build())
+            this.fields.add(builder.build())
             return this
         }
 
         inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
-            this.fieldDefinitions +=newField<T>(block)
+            this.fields +=newField<T>(block)
         }
 
         fun fields(fieldDefinitions: List<GraphQLFieldDefinition<*>>): Builder {
             assertNotNull(fieldDefinitions, "fieldDefinitions can't be null")
-            this.fieldDefinitions.addAll(fieldDefinitions)
+            this.fields.addAll(fieldDefinitions)
             return this
         }
 
@@ -143,7 +143,7 @@ open class GraphQLObjectType(override val name: String,
         }
 
         fun build(): GraphQLObjectType {
-            return GraphQLObjectType(name, description, fieldDefinitions, interfaces)
+            return GraphQLObjectType(name, description, fields, interfaces)
         }
     }
 
@@ -166,6 +166,8 @@ open class GraphQLObjectType(override val name: String,
         }
     }
 }
+
+fun objectRef(name: String) = GraphQLObjectType.Reference(name)
 
 fun newObject(block: GraphQLObjectType.Builder.() -> Unit): GraphQLObjectType {
     val builder = GraphQLObjectType.Builder()

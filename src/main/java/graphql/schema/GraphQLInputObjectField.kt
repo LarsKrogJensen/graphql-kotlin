@@ -12,11 +12,12 @@ class GraphQLInputObjectField(val name: String,
         type = SchemaUtil().resolveTypeReference(type, typeMap) as GraphQLInputType
     }
 
+    @GraphQLDslMarker
     class Builder {
-        private var name: String by notNull<String>()
-        private var description: String? = null
-        private var defaultValue: Any? = null
-        private var type: GraphQLInputType by notNull<GraphQLInputType>()
+        var name: String by notNull<String>()
+        var description: String? = null
+        var defaultValue: Any? = null
+        var type: GraphQLInputType by notNull<GraphQLInputType>()
 
         fun name(name: String): Builder {
             this.name = name
@@ -54,4 +55,10 @@ class GraphQLInputObjectField(val name: String,
             return Builder()
         }
     }
+}
+
+inline fun newInputField(block: GraphQLInputObjectField.Builder.() -> Unit): GraphQLInputObjectField {
+    val builder = GraphQLInputObjectField.Builder()
+    builder.block()
+    return builder.build()
 }

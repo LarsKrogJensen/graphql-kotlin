@@ -1,6 +1,5 @@
 package graphql
 
-import com.sun.javafx.image.BytePixelSetter
 import graphql.schema.DataFetcher
 import graphql.schema.TypeResolver
 import java.util.concurrent.CompletableFuture

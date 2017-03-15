@@ -27,24 +27,24 @@ class ExecutionTest extends Specification {
     def execution = new Execution(queryStrategy, mutationStrategy, NoOpInstrumentation.INSTANCE)
 
 
-    def "query strategy is used for query requests"() {
-        given:
-        def query = '''
-            query {
-                numberHolder {
-                    theNumber
-                }
-            }
-        '''
-        def document = parser.parseDocument(query)
-
-        when:
-        execution.execute(new ExecutionId("123"), MutationSchema.schema, new Object(), document, null, new HashMap<>())
-
-        then:
-        1 * queryStrategy.execute(*_)
-        0 * mutationStrategy.execute(*_)
-    }
+//    def "query strategy is used for query requests"() {
+//        given:
+//        def query = '''
+//            query {
+//                numberHolder {
+//                    theNumber
+//                }
+//            }
+//        '''
+//        def document = parser.parseDocument(query)
+//
+//        when:
+//        execution.execute(new ExecutionId("123"), MutationSchema.schema, new Object(), document, null, new HashMap<>())
+//
+//        then:
+//        1 * queryStrategy.execute(*_)
+//        0 * mutationStrategy.execute(*_)
+//    }
 
 //    def "mutation strategy is used for mutation requests"() {
 //        given:

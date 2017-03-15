@@ -110,10 +110,6 @@ open class GraphQLInterfaceType(override val name: String,
         fun newInterface(): Builder {
             return Builder()
         }
-
-        fun reference(name: String): Reference {
-            return Reference(name)
-        }
     }
 }
 
@@ -123,3 +119,4 @@ fun newInterface(block: GraphQLInterfaceType.Builder.() -> Unit): GraphQLInterfa
     return builder.build()
 }
 
+fun interfaceRef(name: String) = GraphQLInterfaceType.Reference(name)

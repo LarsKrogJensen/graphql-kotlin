@@ -60,7 +60,7 @@ object GarfieldSchema {
         field<Boolean> {
             name = "barks"
         }
-        interfaces += GraphQLInterfaceType.reference("Named")
+        interfaces += interfaceRef("Named")
     }
 
     val CatType = newObject {
@@ -71,7 +71,7 @@ object GarfieldSchema {
         field<Boolean> {
             name = "meows"
         }
-        interfaces += GraphQLInterfaceType.reference("Named")
+        interfaces += interfaceRef("Named")
     }
 
     val PetType = newUnionType {
@@ -100,7 +100,7 @@ object GarfieldSchema {
             name = "friends"
             type = GraphQLList(GraphQLTypeReference("Named"))
         }
-        interfaces += GraphQLInterfaceType.reference("Named")
+        interfaces += interfaceRef("Named")
     }
 
     val GarfieldSchema = newSchema {

@@ -11,7 +11,6 @@ import graphql.schema.GraphQLObjectType.Companion.newObject
 
 object StarWarsSchema {
 
-
     var episodeEnum = newEnum()
             .name("Episode")
             .description("One of the films in the Star Wars Trilogy")
