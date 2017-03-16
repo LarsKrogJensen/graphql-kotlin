@@ -39,7 +39,7 @@ interface DataFetchingEnvironment {
      * *
      * @return the named argument or null if its not [present
     </T> */
-    fun <T> argument(name: String): T
+    fun <T> argument(name: String): T?
 
     /**
      * Returns a context argument that is set up when the [graphql.GraphQL.execute] method

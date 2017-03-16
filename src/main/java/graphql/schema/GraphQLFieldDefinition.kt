@@ -74,7 +74,7 @@ class GraphQLFieldDefinition<T>(val name: String,
             return this
         }
 
-        fun dataFetcher(dataFetcher: DataFetcher<T>): Builder<T> {
+        fun fetcher(dataFetcher: DataFetcher<T>): Builder<T> {
             this.fetcher = dataFetcher
             return this
         }

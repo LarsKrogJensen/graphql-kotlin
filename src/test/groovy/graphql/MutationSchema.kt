@@ -53,8 +53,8 @@ object MutationSchema {
                            .argument(newArgument()
                                              .name("newNumber")
                                              .type(GraphQLInt))
-                           .dataFetcher { environment ->
-                               val newNumber = environment.argument<Int>("newNumber")
+                           .fetcher { environment ->
+                               val newNumber = environment.argument<Int>("newNumber")!!
                                val root = environment.source<Any>() as Root
                                CompletableFuture.completedFuture<Any>(root.changeNumber(newNumber))
                            })
@@ -64,8 +64,8 @@ object MutationSchema {
                            .argument(newArgument()
                                              .name("newNumber")
                                              .type(GraphQLInt))
-                           .dataFetcher { environment ->
-                               val newNumber = environment.argument<Int>("newNumber")
+                           .fetcher { environment ->
+                               val newNumber = environment.argument<Int>("newNumber")!!
                                val root = environment.source<Any>() as Root
                                val promise = CompletableFuture<Any>()
                                try {

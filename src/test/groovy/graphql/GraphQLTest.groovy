@@ -161,7 +161,7 @@ class GraphQLTest extends Specification {
             .field(newFieldDefinition()
               .name("set")
               .type(new GraphQLList(GraphQLString))
-              .dataFetcher({ CompletableFuture.completedFuture(['One', 'Two']) })))
+              .fetcher({ CompletableFuture.completedFuture(['One', 'Two']) })))
           .build(new HashSet<GraphQLType>())
 
         when:
@@ -177,8 +177,8 @@ class GraphQLTest extends Specification {
         GraphQLSchema schema = newSchema().query(
                 newObject()
                         .name("RootQueryType")
-                        .field(newFieldDefinition().name("field1").type(GraphQLString).dataFetcher(DataFetcherKt.staticDataFetcher("value1")))
-                        .field(newFieldDefinition().name("field2").type(GraphQLString).dataFetcher(DataFetcherKt.staticDataFetcher("value2")))
+                        .field(newFieldDefinition().name("field1").type(GraphQLString).fetcher(DataFetcherKt.staticDataFetcher("value1")))
+                        .field(newFieldDefinition().name("field2").type(GraphQLString).fetcher(DataFetcherKt.staticDataFetcher("value2")))
         )
                 .build(new HashSet<GraphQLType>())
 

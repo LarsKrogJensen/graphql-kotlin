@@ -1,29 +1,31 @@
 package graphql
 
-import graphql.relay.Relay
-import graphql.schema.*
-import graphql.schema.GraphQLFieldDefinition.Companion.newFieldDefinition
-import graphql.schema.GraphQLObjectType.Companion.newObject
-import java.util.*
+import graphql.relay.connectionType
+import graphql.relay.edgeType
+import graphql.relay.nodeField
+import graphql.relay.nodeInterface
+import graphql.schema.GraphQLNonNull
+import graphql.schema.newObject
+import graphql.schema.newSchema
 import java.util.concurrent.CompletableFuture
 
 
-val relay = Relay()
-val StuffType = newObject {
-    name = "Stuff"
-    field<String> {
-        name = "id"
-        isField = true
+val NodeInterface = nodeInterface { null }
+val STUFF = "Stuff"
+
+val StuffConnectionType = connectionType<Any> {
+    baseName = STUFF
+    edgeType = edgeType<Any> {
+        baseName = STUFF
+        nodeType = newObject {
+            name = STUFF
+            field<String> {
+                name = "id"
+                isField = true
+            }
+        }
     }
 }
-
-val NodeInterface = relay.nodeInterface { null }
-
-val StuffEdgeType =
-        relay.edgeType<Any>("Stuff", StuffType, ArrayList<GraphQLFieldDefinition<*>>())
-
-val StuffConnectionType =
-        relay.connectionType<Any>("Stuff", StuffEdgeType, ArrayList<GraphQLFieldDefinition<*>>())
 
 val ThingType = newObject {
     name = "Thing"
@@ -39,7 +41,7 @@ val ThingType = newObject {
 
 val RelayQueryType = newObject {
     name = "RelayQuery"
-    field(relay.nodeField(NodeInterface) {
+    field(nodeField(NodeInterface) {
         CompletableFuture.completedFuture<String>(null as String?)
     })
     field<String> {

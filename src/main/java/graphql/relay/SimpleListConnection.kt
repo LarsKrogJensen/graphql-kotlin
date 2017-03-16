@@ -33,8 +33,8 @@ class SimpleListConnection<T>(data: List<T>) {
         }
 
 
-        val first = environment.argument<Int>("first")
-        val last = environment.argument<Int>("last")
+        val first = environment.argument<Int>("first") ?: 0
+        val last = environment.argument<Int>("last") ?: edges.size
 
         val firstPresliceCursor = edges[0].cursor
         val lastPresliceCursor = edges[edges.size - 1].cursor
@@ -50,11 +50,12 @@ class SimpleListConnection<T>(data: List<T>) {
         val firstEdge = edges[0]
         val lastEdge = edges[edges.size - 1]
 
-        val pageInfo = PageInfo()
-        pageInfo.startCursor = firstEdge.cursor
-        pageInfo.endCursor = lastEdge.cursor
-        pageInfo.isHasPreviousPage = firstEdge.cursor != firstPresliceCursor
-        pageInfo.isHasNextPage = lastEdge.cursor != lastPresliceCursor
+        val pageInfo = PageInfo().apply {
+            startCursor = firstEdge.cursor
+            endCursor = lastEdge.cursor
+            isHasPreviousPage = firstEdge.cursor != firstPresliceCursor
+            isHasNextPage = lastEdge.cursor != lastPresliceCursor
+        }
 
         val connection = Connection<T>()
         connection.edges = edges

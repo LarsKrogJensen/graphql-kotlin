@@ -83,37 +83,6 @@ open class GraphQLObjectType(override val name: String,
             return this
         }
 
-        /**
-         * Take a field builder in a function definition and apply. Can be used in a jdk8 lambda
-         * e.g.:
-         * <pre>
-         * `field(f -> f.name("fieldName"))
-        ` *
-        </pre> *
-
-         * @param builderFunction a supplier for the builder impl
-         * *
-         * @param <T>             field outputtype
-         * *
-         * @return this
-        </T> */
-        fun <T> field(builderFunction: BuilderFunction<GraphQLFieldDefinition.Builder<T>>): Builder {
-            assertNotNull(builderFunction, "builderFunction can't be null")
-            var builder: GraphQLFieldDefinition.Builder<T> = GraphQLFieldDefinition.newFieldDefinition<T>()
-            builder = builderFunction.apply(builder)
-            return field(builder.build())
-        }
-
-        /**
-         * Same effect as the field(GraphQLFieldDefinition). Builder.build() is called
-         * from within
-
-         * @param builder an un-built/incomplete GraphQLFieldDefinition
-         * *
-         * @param <T>     field outputtype
-         * *
-         * @return this
-        </T> */
         fun <T> field(builder: GraphQLFieldDefinition.Builder<T>): Builder {
             this.fields.add(builder.build())
             return this
@@ -121,12 +90,6 @@ open class GraphQLObjectType(override val name: String,
 
         inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
             this.fields +=newField<T>(block)
-        }
-
-        fun fields(fieldDefinitions: List<GraphQLFieldDefinition<*>>): Builder {
-            assertNotNull(fieldDefinitions, "fieldDefinitions can't be null")
-            this.fields.addAll(fieldDefinitions)
-            return this
         }
 
         fun withInterface(interfaceType: GraphQLInterfaceType): Builder {

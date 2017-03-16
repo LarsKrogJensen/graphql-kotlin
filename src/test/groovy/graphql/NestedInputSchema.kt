@@ -23,10 +23,10 @@ object NestedInputSchema {
                 .field(GraphQLFieldDefinition.newFieldDefinition<Any>()
                                .name("value")
                                .type(GraphQLInt)
-                               .dataFetcher { environment ->
+                               .fetcher { environment ->
 
-                                   val initialValue = environment.argument<Int>("initialValue")
-                                   val filter = environment.argument<Map<String, Any>>("filter")
+                                   val initialValue = environment.argument<Int>("initialValue")!!
+                                   val filter = environment.argument<Map<String, Any>>("filter")!!
 
                                    if (filter.containsKey("even")) {
                                        val even = filter["even"] as Boolean

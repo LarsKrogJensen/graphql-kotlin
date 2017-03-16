@@ -67,7 +67,7 @@ object Introspection {
             .field(newFieldDefinition<String>()
                            .name("defaultValue")
                            .type(GraphQLString)
-                           .dataFetcher({ environment ->
+                           .fetcher({ environment ->
                                             val promise = CompletableFuture<String>()
                                             val source: Any = environment.source()
                                             promise.complete(
@@ -92,7 +92,7 @@ object Introspection {
             .field(GraphQLFieldDefinition.newFieldDefinition<List<GraphQLArgument>>()
                            .name("args")
                            .type(GraphQLNonNull(GraphQLList(GraphQLNonNull(__InputValue))))
-                           .dataFetcher { environment ->
+                           .fetcher { environment ->
                                val promise = CompletableFuture<List<GraphQLArgument>>()
                                val type = environment.source<Any>() as GraphQLFieldDefinition<*>
                                promise.complete(type.arguments)
@@ -104,7 +104,7 @@ object Introspection {
             .field(GraphQLFieldDefinition.newFieldDefinition<Boolean>()
                            .name("isDeprecated")
                            .type(GraphQLNonNull(GraphQLBoolean))
-                           .dataFetcher { environment ->
+                           .fetcher { environment ->
                                val promise = CompletableFuture<Boolean>()
                                val type = environment.source<Any>()
                                promise.complete((type as GraphQLFieldDefinition<*>).deprecated)
@@ -127,7 +127,7 @@ object Introspection {
             .field(GraphQLFieldDefinition.newFieldDefinition<Boolean>()
                            .name("isDeprecated")
                            .type(GraphQLNonNull(GraphQLBoolean))
-                           .dataFetcher { environment ->
+                           .fetcher { environment ->
                                val promise = CompletableFuture<Boolean>()
                                val enumValue = environment.source<Any>() as GraphQLEnumValueDefinition
                                promise.complete(enumValue.deprecated)
@@ -141,7 +141,7 @@ object Introspection {
     private val fieldsFetcher: DataFetcher<List<GraphQLFieldDefinition<*>>> = { environment ->
         val promise = CompletableFuture<List<GraphQLFieldDefinition<*>>>()
         val type = environment.source<Any>()
-        val includeDeprecated = environment.argument<Boolean>("includeDeprecated")
+        val includeDeprecated = environment.argument<Boolean>("includeDeprecated")?:true
         if (type is GraphQLFieldsContainer) {
             val fieldDefinitions = type.fieldDefinitions
             if (includeDeprecated) {
@@ -184,7 +184,7 @@ object Introspection {
     private val enumValuesTypesFetcher: DataFetcher<List<GraphQLEnumValueDefinition>> = { environment ->
         val promise = CompletableFuture<List<GraphQLEnumValueDefinition>>()
         val type = environment.source<Any>()
-        val includeDeprecated = environment.argument<Boolean>("includeDeprecated")
+        val includeDeprecated = environment.argument<Boolean>("includeDeprecated")?:true
         if (type is GraphQLEnumType) {
             val values = type.values
             if (includeDeprecated) {
@@ -224,7 +224,7 @@ object Introspection {
             .field(GraphQLFieldDefinition.newFieldDefinition<TypeKind>()
                            .name("kind")
                            .type(GraphQLNonNull(__TypeKind))
-                           .dataFetcher(kindDataFetcher))
+                           .fetcher(kindDataFetcher))
             .field(newFieldDefinition<String>()
                            .name("name")
                            .type(GraphQLString))
@@ -238,15 +238,15 @@ object Introspection {
                                              .name("includeDeprecated")
                                              .type(GraphQLBoolean)
                                              .defaultValue(false))
-                           .dataFetcher(fieldsFetcher))
+                           .fetcher(fieldsFetcher))
             .field(GraphQLFieldDefinition.newFieldDefinition<List<GraphQLInterfaceType>>()
                            .name("interfaces")
                            .type(GraphQLList(GraphQLNonNull(GraphQLTypeReference("__Type"))))
-                           .dataFetcher(interfacesFetcher))
+                           .fetcher(interfacesFetcher))
             .field(GraphQLFieldDefinition.newFieldDefinition<List<GraphQLObjectType>>()
                            .name("possibleTypes")
                            .type(GraphQLList(GraphQLNonNull(GraphQLTypeReference("__Type"))))
-                           .dataFetcher(possibleTypesFetcher))
+                           .fetcher(possibleTypesFetcher))
             .field(GraphQLFieldDefinition.newFieldDefinition<List<GraphQLEnumValueDefinition>>()
                            .name("enumValues")
                            .type(GraphQLList(GraphQLNonNull(__EnumValue)))
@@ -254,15 +254,15 @@ object Introspection {
                                              .name("includeDeprecated")
                                              .type(GraphQLBoolean)
                                              .defaultValue(false))
-                           .dataFetcher(enumValuesTypesFetcher))
+                           .fetcher(enumValuesTypesFetcher))
             .field(GraphQLFieldDefinition.newFieldDefinition<List<GraphQLInputObjectField>>()
                            .name("inputFields")
                            .type(GraphQLList(GraphQLNonNull(__InputValue)))
-                           .dataFetcher(inputFieldsFetcher))
+                           .fetcher(inputFieldsFetcher))
             .field(GraphQLFieldDefinition.newFieldDefinition<GraphQLType>()
                            .name("ofType")
                            .type(GraphQLTypeReference("__Type"))
-                           .dataFetcher(OfTypeFetcher))
+                           .fetcher(OfTypeFetcher))
             .build()
 
     enum class DirectiveLocation {
@@ -299,7 +299,7 @@ object Introspection {
             .field(newFieldDefinition<List<GraphQLArgument>>()
                            .name("args")
                            .type(GraphQLNonNull(GraphQLList(GraphQLNonNull(__InputValue))))
-                           .dataFetcher({ environment ->
+                           .fetcher({ environment ->
                                             completedFuture(environment.source<GraphQLDirective>().arguments)
                                         }))
             .field(newFieldDefinition<Boolean>()
@@ -325,35 +325,35 @@ object Introspection {
                            .name("types")
                            .description("A list of all types supported by this server.")
                            .type(GraphQLNonNull(GraphQLList(GraphQLNonNull(__Type))))
-                           .dataFetcher({ environment ->
+                           .fetcher({ environment ->
                                             completedFuture(environment.source<GraphQLSchema>().allTypesAsList)
                                         }))
             .field(newFieldDefinition<GraphQLObjectType>()
                            .name("queryType")
                            .description("The type that query operations will be rooted at.")
                            .type(GraphQLNonNull(__Type))
-                           .dataFetcher({ environment ->
+                           .fetcher({ environment ->
                                             completedFuture(environment.source<GraphQLSchema>().queryType)
                                         }))
             .field(newFieldDefinition<GraphQLObjectType>()
                            .name("mutationType")
                            .description("If this server supports mutation, the type that mutation operations will be rooted at.")
                            .type(__Type)
-                           .dataFetcher({ environment ->
+                           .fetcher({ environment ->
                                             completedFuture(environment.source<GraphQLSchema>().mutationType)
                                         }))
             .field(newFieldDefinition<List<GraphQLDirective>>()
                            .name("directives")
                            .description("'A list of all directives supported by this server.")
                            .type(GraphQLNonNull(GraphQLList(GraphQLNonNull(__Directive))))
-                           .dataFetcher({ environment ->
+                           .fetcher({ environment ->
                                             completedFuture(environment.graphQLSchema.directives)
                                         }))
             .field(newFieldDefinition<Any>()
                            .name("subscriptionType")
                            .description("'If this server support subscription, the type that subscription operations will be rooted at.")
                            .type(__Type)
-                           .dataFetcher({
+                           .fetcher({
                                             // Not yet supported
                                             completedFuture(null)
                                         }))
@@ -364,7 +364,7 @@ object Introspection {
             .name("__schema")
             .type(GraphQLNonNull(__Schema))
             .description("Access the current type schema of this server.")
-            .dataFetcher { environment -> completedFuture(environment.graphQLSchema) }
+            .fetcher { environment -> completedFuture(environment.graphQLSchema) }
             .build()
 
     val TypeMetaFieldDef = newFieldDefinition<GraphQLType>()
@@ -374,8 +374,8 @@ object Introspection {
             .argument(newArgument()
                               .name("name")
                               .type(GraphQLNonNull(GraphQLString)))
-            .dataFetcher({ environment ->
-                             val name = environment.argument<String>("name")
+            .fetcher({ environment ->
+                             val name = environment.argument<String>("name")!!
                              completedFuture<GraphQLType>(environment.graphQLSchema.type(name))
                          }).build()
 
@@ -383,7 +383,7 @@ object Introspection {
             .name("__typename")
             .type(GraphQLNonNull(GraphQLString))
             .description("The name of the current Object type at runtime.")
-            .dataFetcher { environment -> completedFuture(environment.parentType.name) }
+            .fetcher { environment -> completedFuture(environment.parentType.name) }
             .build()
 
 
