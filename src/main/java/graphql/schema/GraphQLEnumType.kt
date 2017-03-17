@@ -70,29 +70,16 @@ class GraphQLEnumType(override val name: String,
         }
     }
 
+    @GraphQLDslMarker
     class Builder {
-        private var name: String by Delegates.notNull<String>()
-        private var description: String? = null
-        private val values = ArrayList<GraphQLEnumValueDefinition>()
+        var name: String by Delegates.notNull<String>()
+        var description: String? = null
+        val values = ArrayList<GraphQLEnumValueDefinition>()
 
-        fun name(name: String): Builder {
-            this.name = name
-            return this
-        }
-
-        fun description(description: String): Builder {
-            this.description = description
-            return this
-        }
-
-        fun value(name: String, value: Any, description: String, deprecationReason: String): Builder {
-            values.add(GraphQLEnumValueDefinition(name, description, value, deprecationReason))
-            return this
-        }
-
-        fun value(name: String, value: Any, description: String): Builder {
-            values.add(GraphQLEnumValueDefinition(name, description, value))
-            return this
+        fun value(block: GraphQLEnumValueDefinition.Builder.() -> Unit) {
+            val builder = GraphQLEnumValueDefinition.Builder()
+            builder.block()
+            values += builder.build()
         }
 
         fun value(name: String, value: Any?): Builder {
@@ -109,11 +96,10 @@ class GraphQLEnumType(override val name: String,
             return GraphQLEnumType(name, description, values)
         }
     }
+}
 
-    companion object {
-        @JvmStatic
-        fun newEnum(): Builder {
-            return Builder()
-        }
-    }
+fun newEnum(block: GraphQLEnumType.Builder.() -> Unit): GraphQLEnumType {
+    val builder = GraphQLEnumType.Builder()
+    builder.block()
+    return builder.build()
 }

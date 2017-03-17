@@ -6,6 +6,7 @@ import graphql.language.FloatValue
 import graphql.language.IntValue
 import graphql.language.StringValue
 import graphql.schema.Coercing
+import graphql.schema.GraphQLNonNull
 import graphql.schema.GraphQLScalarType
 
 import java.math.BigDecimal
@@ -184,6 +185,8 @@ val GraphQLString = GraphQLScalarType("String", "Built-in String", object : Coer
                 else           -> null
             }
 })
+
+val GraphQLStringNonNull = GraphQLNonNull(GraphQLString)
 
 val GraphQLBoolean = GraphQLScalarType("Boolean", "Built-in Boolean", object : Coercing<Boolean?, Boolean?> {
     override fun serialize(input: Any?): Boolean? =

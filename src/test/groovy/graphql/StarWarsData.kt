@@ -93,9 +93,9 @@ val characterTypeResolver: TypeResolver = {
     val id: String = data["id"] as String
 
     if (humanData.containsKey(id))
-        StarWarsSchema.humanType
+        humanType
     else if(droidData.containsKey(id))
-        StarWarsSchema.droidType
+        droidType
     else
         null
 }
