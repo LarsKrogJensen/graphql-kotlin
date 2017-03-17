@@ -1,4 +1,12 @@
 package graphql.relay
 
+/**
+ * represents an edge in relay.
+ */
+interface Edge<out T> {
 
-data class Edge<T>(var node: T, var cursor: ConnectionCursor)
+    val node: T?
+
+    val cursor: ConnectionCursor
+
+}

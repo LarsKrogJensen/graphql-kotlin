@@ -1,10 +1,12 @@
 package graphql.relay
 
+/**
+ * represents a connection in relay.
+ */
+interface Connection<out T> {
 
-import java.util.ArrayList
+    val edges: List<Edge<T>>
 
-class Connection<T> {
-    var edges: List<Edge<T>> = ArrayList()
+    val pageInfo: PageInfo
 
-    var pageInfo: PageInfo? = null
 }

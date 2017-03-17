@@ -3,45 +3,39 @@ package graphql.relay
 
 import graphql.schema.DataFetchingEnvironment
 
-import java.util.ArrayList
+private val DEFAULT_CURSOR_PREFIX = "default-cursor"
 
-class SimpleListConnection<T>(data: List<T>) {
-    private val data = ArrayList<T>(data)
+class SimpleListConnection<T>(private val data: List<T>)  {
 
-    private fun buildEdges(): List<Edge<T>> {
-        val edges = ArrayList<Edge<T>>()
-        var ix = 0
-        for (obj in data) {
-            edges.add(Edge(obj, ConnectionCursor(createCursor(ix++))))
+    fun fetch(environment: DataFetchingEnvironment): Connection<T> {
+
+        var edges = data.withIndex().map { (index, obj) ->
+            DefaultEdge(obj, DefaultConnectionCursor(createCursor(index)))
         }
-        return edges
-    }
 
 
-    operator fun get(environment: DataFetchingEnvironment): Connection<T> {
-        var edges = buildEdges()
-
-
-        val afterOffset = getOffsetFromCursor(environment.argument<String>("after"), -1)
+        val afterOffset = offsetFromCursor(environment.argument<String>("after"), -1)
         val begin = Math.max(afterOffset, -1) + 1
-        val beforeOffset = getOffsetFromCursor(environment.argument<String>("before"), edges.size)
+        val beforeOffset = offsetFromCursor(environment.argument<String>("before"), edges.size)
         val end = Math.min(beforeOffset, edges.size)
 
         edges = edges.subList(begin, end)
         if (edges.isEmpty()) {
             return emptyConnection()
         }
-
-
-        val first = environment.argument<Int>("first") ?: 0
-        val last = environment.argument<Int>("last") ?: edges.size
+        
+        val first = environment.argument<Int>("first")
+        val last = environment.argument<Int>("last")
 
         val firstPresliceCursor = edges[0].cursor
         val lastPresliceCursor = edges[edges.size - 1].cursor
 
-
-        edges = edges.subList(0, if (first <= edges.size) first else edges.size)
-        edges = edges.subList(edges.size - last, edges.size)
+        if (first != null) {
+            edges = edges.subList(0, if (first <= edges.size) first else edges.size)
+        }
+        if (last != null) {
+            edges = edges.subList(if (last > edges.size) 0 else edges.size - last, edges.size)
+        }
 
         if (edges.isEmpty()) {
             return emptyConnection()
@@ -50,45 +44,33 @@ class SimpleListConnection<T>(data: List<T>) {
         val firstEdge = edges[0]
         val lastEdge = edges[edges.size - 1]
 
-        val pageInfo = PageInfo().apply {
-            startCursor = firstEdge.cursor
-            endCursor = lastEdge.cursor
-            isHasPreviousPage = firstEdge.cursor != firstPresliceCursor
-            isHasNextPage = lastEdge.cursor != lastPresliceCursor
-        }
+        val pageInfo = DefaultPageInfo()
+        pageInfo.startCursor = firstEdge.cursor
+        pageInfo.endCursor = lastEdge.cursor
+        pageInfo.isHasPreviousPage = firstEdge.cursor != firstPresliceCursor
+        pageInfo.isHasNextPage = lastEdge.cursor != lastPresliceCursor
 
-        val connection = Connection<T>()
-        connection.edges = edges
-        connection.pageInfo = pageInfo
 
-        return connection
+        return DefaultConnection(edges, pageInfo)
     }
 
-    private fun emptyConnection(): Connection<T> {
-        val connection = Connection<T>()
-        connection.pageInfo = PageInfo()
-        return connection
-    }
+    private fun emptyConnection() = DefaultConnection<T>(emptyList(), DefaultPageInfo())
 
 
     fun cursorForObjectInConnection(obj: T): ConnectionCursor {
         val index = data.indexOf(obj)
         val cursor = createCursor(index)
-        return ConnectionCursor(cursor)
+        return DefaultConnectionCursor(cursor)
     }
 
-
-    private fun getOffsetFromCursor(cursor: String?, defaultValue: Int): Int {
+    private fun offsetFromCursor(cursor: String?, defaultValue: Int): Int {
         if (cursor == null) return defaultValue
         val string = Base64.fromBase64(cursor)
-        return Integer.parseInt(string.substring(DUMMY_CURSOR_PREFIX.length))
+        return Integer.parseInt(string.substring(DEFAULT_CURSOR_PREFIX.length))
     }
 
     private fun createCursor(offset: Int): String {
-        return Base64.toBase64(DUMMY_CURSOR_PREFIX + Integer.toString(offset))
-    }
-
-    companion object {
-        private val DUMMY_CURSOR_PREFIX = "simple-cursor"
+        val string = Base64.toBase64(DEFAULT_CURSOR_PREFIX + Integer.toString(offset))
+        return string
     }
 }

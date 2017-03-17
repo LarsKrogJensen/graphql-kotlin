@@ -1,9 +1,16 @@
 package graphql.relay
 
+/**
+ * represents a page in relay.
+ */
+interface PageInfo {
 
-class PageInfo {
-    var startCursor: ConnectionCursor? = null
-    var endCursor: ConnectionCursor? = null
-    var isHasPreviousPage: Boolean = false
-    var isHasNextPage: Boolean = false
+    val startCursor: ConnectionCursor?
+
+    val endCursor: ConnectionCursor?
+
+    val isHasPreviousPage: Boolean
+
+    val isHasNextPage: Boolean
+
 }

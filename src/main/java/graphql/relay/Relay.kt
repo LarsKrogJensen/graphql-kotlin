@@ -174,32 +174,3 @@ inline fun <reified T : Any> mutationWithClientMutationId(baseName: String,
         fetcher = dataFetcher
     }
 }
-
-//class ResolvedGlobalId(
-//        @Deprecated("use {@link #getType()}")
-//        var type: String,
-//        @Deprecated("use {@link #getId()}")
-//        var id: String)
-//
-//fun toGlobalId(type: String, id: String): String {
-//    return Base64.toBase64(type + ":" + id)
-//}
-//
-//fun fromGlobalId(globalId: String): ResolvedGlobalId {
-//    val split = Base64.fromBase64(globalId).split(":".toRegex(), 2).toTypedArray()
-//    return ResolvedGlobalId(split[0], split[1])
-//}
-
-//class ConnectionTypeBuilder(name: String) : BuilderBase(name) {
-//    var edgeType: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
-//    //var nodeInterface: GraphQLInterfaceType? = null
-//
-//    fun build() = Relay().connectionType(name, edgeType, listOf())
-//}
-//
-//class EdgeTypeBuilder(name: String) : TypeBuilderBase(name) {
-//    var nodeType: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
-//    var nodeInterface: GraphQLInterfaceType? = null
-//
-//    fun build() = Relay().edgeType(name, nodeType, nodeInterface, fields)
-//}
