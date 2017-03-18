@@ -89,7 +89,7 @@ class RelaySchemaTest extends Specification {
         def data = GraphQL.newGraphQL(RelaySchemaKt.Schema).build().execute(query).toCompletableFuture().get().data()
 
         then:
-        def fields = data["__type"]["fields"];
+        def fields = data["__type"]["fields"]
         fields == [[name: "node", type: [name: "Stuff", kind: "OBJECT", ofType: null]], [name: "cursor", type: [name: null, kind: "NON_NULL", ofType: [name: "String", kind: "SCALAR"]]]]
     }
 

@@ -88,8 +88,8 @@ open class GraphQLObjectType(override val name: String,
             return this
         }
 
-        inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
-            this.fields +=newField<T>(block)
+        inline fun <reified TOut : Any> field(block: GraphQLFieldDefinition.Builder<TOut>.() -> Unit) {
+            this.fields +=newField<TOut>(block)
         }
 
         fun withInterface(interfaceType: GraphQLInterfaceType): Builder {

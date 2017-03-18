@@ -79,6 +79,11 @@ class GraphQLFieldDefinition<T>(val name: String,
             return this
         }
 
+        var staticValue : T? = null
+            set (value){
+                fetcher = staticDataFetcher(value)
+            }
+
         fun staticValue(value: T): Builder<T> {
             this.fetcher = staticDataFetcher(value)
 

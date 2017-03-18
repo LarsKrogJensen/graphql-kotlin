@@ -8,6 +8,8 @@ import java.util.*
 import graphql.Assert.assertNotNull
 import graphql.schema.validation.InvalidSchemaException
 import graphql.schema.validation.Validator
+import java.math.BigDecimal
+import java.math.BigInteger
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
@@ -95,13 +97,17 @@ fun newSchema(block: GraphQLSchema.Builder.() -> Unit): GraphQLSchema {
 }
 
 
-fun <T : Any> typeResolve(type: KClass<T>) : GraphQLOutputType? = when (type) {
-    String::class -> GraphQLString
-    Date::class -> GraphQLDate
-    Int::class -> GraphQLInt
-    Long::class -> GraphQLLong
-    Float::class -> GraphQLFloat
-    Double::class -> GraphQLFloat
-    Boolean::class -> GraphQLBoolean
-    else -> null
+fun <T : Any> typeResolve(type: KClass<T>): GraphQLOutputType? = when (type) {
+    String::class     -> GraphQLString
+    Date::class       -> GraphQLDate
+    Int::class        -> GraphQLInt
+    Short::class      -> GraphQLShort
+    Byte::class       -> GraphQLByte
+    Long::class       -> GraphQLLong
+    Float::class      -> GraphQLFloat
+    Double::class     -> GraphQLFloat
+    Boolean::class    -> GraphQLBoolean
+    BigInteger::class -> GraphQLBigInteger
+    BigDecimal::class -> GraphQLBigDecimal
+    else              -> null
 }

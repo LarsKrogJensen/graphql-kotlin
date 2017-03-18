@@ -3,7 +3,9 @@ package graphql
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutionException
+
+import static graphql.ScalarsQuerySchemaKt.scalarsQuerySchema;
 
 class ScalarsQueryTest extends Specification {
 
@@ -25,7 +27,7 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build()
+        def result = GraphQL.newGraphQL(scalarsQuerySchema).build()
                 .execute(query).toCompletableFuture().get()
 
         then:
@@ -51,7 +53,7 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build()
+        def result = GraphQL.newGraphQL(scalarsQuerySchema).build()
                 .execute(query).toCompletableFuture().get()
 
         then:
@@ -71,9 +73,9 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema)
+        def result = GraphQL.newGraphQL(scalarsQuerySchema)
                 .build().execute(query).toCompletableFuture().get()
-        def resultBatched = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema)
+        def resultBatched = GraphQL.newGraphQL(scalarsQuerySchema)
                 //.queryExecutionStrategy(new BatchedExecutionStrategy())
                 .build().execute(query).toCompletableFuture().get()
 
@@ -96,7 +98,7 @@ class ScalarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
+        def result = GraphQL.newGraphQL(scalarsQuerySchema).build().execute(query)
                 .toCompletableFuture().get()
         then:
         result.data() == expected
@@ -109,7 +111,7 @@ class ScalarsQueryTest extends Specification {
         def query = "{ " + number + "String(input: \"foobar\") }"
         
         when:
-        def result = GraphQL.newGraphQL(ScalarsQuerySchema.scalarsQuerySchema).build().execute(query)
+        def result = GraphQL.newGraphQL(scalarsQuerySchema).build().execute(query)
                 .toCompletableFuture().get()
         
         then:
