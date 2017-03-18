@@ -1,11 +1,10 @@
 package graphql.validation.rules
 
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.language.FragmentDefinition
 import graphql.language.InlineFragment
 import graphql.language.TypeName
 import graphql.validation.IValidationContext
-import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
@@ -19,7 +18,7 @@ class FragmentsOnCompositeTypeTest extends Specification {
     def "inline fragment type condition must refer to a composite type"() {
         given:
         InlineFragment inlineFragment = new InlineFragment(new TypeName("String"))
-        validationContext.getSchema() >> StarWarsSchema.starWarsSchema
+        validationContext.getSchema() >> StarWarsSchemaKt.starWarsSchema
 
         when:
         fragmentsOnCompositeType.checkInlineFragment(inlineFragment)
@@ -32,7 +31,7 @@ class FragmentsOnCompositeTypeTest extends Specification {
 
     def "should results in no error"(InlineFragment inlineFragment) {
         given:
-        validationContext.getSchema() >> StarWarsSchema.starWarsSchema
+        validationContext.getSchema() >> StarWarsSchemaKt.starWarsSchema
 
         when:
         fragmentsOnCompositeType.checkInlineFragment(inlineFragment)
@@ -63,7 +62,7 @@ class FragmentsOnCompositeTypeTest extends Specification {
     def "fragment type condition must refer to a composite type"() {
         given:
         FragmentDefinition fragmentDefinition = new FragmentDefinition("fragment",new TypeName("String"))
-        validationContext.getSchema() >> StarWarsSchema.starWarsSchema
+        validationContext.getSchema() >> StarWarsSchemaKt.starWarsSchema
 
         when:
         fragmentsOnCompositeType.checkFragmentDefinition(fragmentDefinition)

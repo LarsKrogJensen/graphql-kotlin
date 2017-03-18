@@ -94,7 +94,7 @@ class ValidationUtilTest extends Specification {
 
     def "valid enum"() {
         given:
-        def enumType = GraphQLEnumType.newEnum().name("enumType").value("PLUTO").build()
+        def enumType = GraphQLEnumTypeKt.newEnum().name("enumType").value("PLUTO").build()
 
         expect:
         validationUtil.isValidLiteralValue(new EnumValue("PLUTO"), enumType)
@@ -102,14 +102,14 @@ class ValidationUtilTest extends Specification {
 
     def "invalid enum value"() {
         given:
-        def enumType = GraphQLEnumType.newEnum().name("enumType").value("PLUTO").build()
+        def enumType = GraphQLEnumTypeKt.newEnum().name("enumType").value("PLUTO").build()
         expect:
         !validationUtil.isValidLiteralValue(new StringValue("MARS"), enumType)
     }
 
     def "invalid enum name"() {
         given:
-        def enumType = GraphQLEnumType.newEnum().name("enumType").value("PLUTO").build()
+        def enumType = GraphQLEnumTypeKt.newEnum().name("enumType").value("PLUTO").build()
         expect:
         !validationUtil.isValidLiteralValue(new EnumValue("MARS"), enumType)
     }

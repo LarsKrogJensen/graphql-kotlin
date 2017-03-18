@@ -20,7 +20,7 @@ class StarWarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -59,7 +59,7 @@ class StarWarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -142,7 +142,7 @@ class StarWarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -166,7 +166,7 @@ class StarWarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -190,7 +190,7 @@ class StarWarsQueryTest extends Specification {
                 ]
         ]
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query, null, new Object(),params).toCompletableFuture().get().data()
 
         then:
@@ -213,7 +213,7 @@ class StarWarsQueryTest extends Specification {
                 human: null
         ]
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query, null,new Object(), params)
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query, null,new Object(), params)
                 .toCompletableFuture().get().data()
 
         then:
@@ -237,7 +237,7 @@ class StarWarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -270,7 +270,7 @@ class StarWarsQueryTest extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -303,7 +303,7 @@ class StarWarsQueryTest extends Specification {
         ];
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -337,7 +337,7 @@ class StarWarsQueryTest extends Specification {
                 ]
         ];
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected
@@ -360,7 +360,7 @@ class StarWarsQueryTest extends Specification {
                 ],
         ]
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build().execute(query).toCompletableFuture().get().data()
 
         then:
         result == expected

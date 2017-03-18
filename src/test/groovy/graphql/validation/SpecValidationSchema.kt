@@ -29,34 +29,47 @@ val catCommand = newEnum {
     value { name = "JUMP" }
 }
 
-val sentient: GraphQLInterfaceType = GraphQLInterfaceType.newInterface()
-        .name("Sentient")
-        .field(GraphQLFieldDefinition<String>(
-                "name", null, GraphQLNonNull(GraphQLString), fieldDataFetcher("name"), listOf(), null))
-        .typeResolver { obj: Any ->
-            if (obj is Human) human
-            else if (obj is Alien) alien
-            else null
+val sentient = newInterface {
+    name = "Sentient"
+    field<String> {
+        name = "name"
+        type = GraphQLStringNonNull
+        fetcher = fieldDataFetcher("name")
+    }
+    typeResolver = {
+        when (it) {
+            is Human -> human
+            is Alien -> alien
+            else     -> null
         }
-        .build()
+    }
+}
 
-val pet: GraphQLInterfaceType = newInterface()
-        .name("Pet")
-        .field(GraphQLFieldDefinition(
-                "name", null, GraphQLNonNull(GraphQLString), fieldDataFetcher<String>("name"), listOf(), null))
-        .typeResolver({
-                          if (it is Dog) dog
-                          else if (it is Cat) cat
-                          else null
-                      })
-        .build()
+val pet = newInterface {
+    name = "Pet"
+    field<String> {
+        name = "name"
+        type = GraphQLStringNonNull
+        fetcher = fieldDataFetcher("name")
+    }
+    typeResolver = {
+        when (it) {
+            is Dog -> dog
+            is Cat -> cat
+            else   -> null
+        }
+    }
+}
 
-val human: GraphQLObjectType = newObject()
-        .name("Human")
-        .field(GraphQLFieldDefinition(
-                "name", null, GraphQLNonNull(GraphQLString), fieldDataFetcher<String>("name"), listOf(), null))
-        .withInterface(sentient)
-        .build()
+val human: GraphQLObjectType = newObject {
+    name = "Human"
+    field<String> {
+        name = "name"
+        type = GraphQLStringNonNull
+        fetcher = fieldDataFetcher("name")
+    }
+    interfaces += interfaceRef("Sentient")
+}
 
 val alien = newObject {
     name = "Alien"
@@ -69,42 +82,50 @@ val alien = newObject {
         name = "homePlanet"
         fetcher = fieldDataFetcher("name")
     }
-    interfaces += sentient
+    interfaces += interfaceRef("Sentient")
 }
 
-val dogCommandArg = newArgument()
-        .name("dogCommand")
-        .type(GraphQLNonNull(dogCommand))
-        .build()
-
-val atOtherHomesArg = newArgument()
-        .name("atOtherHomes")
-        .type(GraphQLBoolean)
-        .build()
-
-val catCommandArg = newArgument()
-        .name("catCommand")
-        .type(GraphQLNonNull(catCommand))
-        .build()
-
-val dog = newObject()
-        .name("Dog")
-        .field(GraphQLFieldDefinition(
-                "name", null, GraphQLNonNull(GraphQLString), fieldDataFetcher<String>("name"), emptyList(), null))
-        .field(GraphQLFieldDefinition(
-                "nickname", null, GraphQLString, fieldDataFetcher<String>("nickname"), emptyList(), null))
-        .field(GraphQLFieldDefinition(
-                "barkVolume", null, GraphQLInt, fieldDataFetcher<Int>("barkVolume"), emptyList(), null))
-        .field(GraphQLFieldDefinition(
-                "doesKnowCommand", null, GraphQLNonNull(GraphQLBoolean), fieldDataFetcher<Boolean>("doesKnowCommand"),
-                listOf(dogCommandArg), null))
-        .field(GraphQLFieldDefinition<Boolean>(
-                "isHousetrained", null, GraphQLBoolean, fieldDataFetcher("isHousetrained"),
-                listOf(atOtherHomesArg), null))
-        .field(GraphQLFieldDefinition<Human>(
-                "owner", null, human, fieldDataFetcher("owner"), emptyList(), null))
-        .withInterface(pet)
-        .build()
+val dog = newObject {
+    name = "Dog"
+    field<String> {
+        name = "name"
+        type = GraphQLStringNonNull
+        fetcher = fieldDataFetcher<String>("name")
+    }
+    field<String> {
+        name = "nickname"
+        type = GraphQLStringNonNull
+        fetcher = fieldDataFetcher<String>("nickname")
+    }
+    field<Int> {
+        name = "barkVolume"
+        fetcher = fieldDataFetcher<Int>("barkVolume")
+    }
+    field<Boolean> {
+        name = "doesKnowCommand"
+        type = GraphQLNonNull(GraphQLBoolean)
+        fetcher = fieldDataFetcher<Boolean>("doesKnowCommand")
+        argument {
+            name = "dogCommand"
+            type = GraphQLNonNull(dogCommand)
+        }
+    }
+    field<Boolean> {
+        name = "isHousetrained"
+        type = GraphQLNonNull(GraphQLBoolean)
+        fetcher = fieldDataFetcher<Boolean>("isHousetrained")
+        argument {
+            name = "atOtherHomes"
+            type = GraphQLBoolean
+        }
+    }
+    field<Human> {
+        name = "owner"
+        type = human
+        fetcher = fieldDataFetcher("owner")
+    }
+    interfaces += interfaceRef("Pet")
+}
 
 val cat = newObject {
     name = "Cat"
@@ -124,10 +145,13 @@ val cat = newObject {
     }
     field<Boolean> {
         name = "doesKnowCommand"
-        arguments += catCommandArg
+        argument {
+            name = "catCommand"
+            type = GraphQLNonNull(catCommand)
+        }
         fetcher = fieldDataFetcher("meowVolume")
     }
-    interfaces += pet
+    interfaces += interfaceRef("Pet")
 }
 
 val catOrDog = newUnionType {

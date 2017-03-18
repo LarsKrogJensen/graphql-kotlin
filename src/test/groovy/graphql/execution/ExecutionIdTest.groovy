@@ -2,7 +2,7 @@ package graphql.execution
 
 import graphql.ExecutionResult
 import graphql.GraphQL
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.language.Field
 import graphql.schema.GraphQLObjectType
 import spock.lang.Specification
@@ -36,7 +36,7 @@ class ExecutionIdTest extends Specification {
 
         CaptureIdStrategy idStrategy = new CaptureIdStrategy()
 
-        GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).queryExecutionStrategy(idStrategy).build().execute(query)
+        GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).queryExecutionStrategy(idStrategy).build().execute(query)
 
         then:
 
@@ -58,7 +58,7 @@ class ExecutionIdTest extends Specification {
                 return new ExecutionId(count.toString())
             }
         }
-        def graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
+        def graphQL = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema)
                 .executionIdProvider(specificProvider)
                 .queryExecutionStrategy(idStrategy)
                 .build()

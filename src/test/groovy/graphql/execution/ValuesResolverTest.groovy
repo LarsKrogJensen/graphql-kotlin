@@ -11,6 +11,7 @@ import spock.lang.Unroll
 
 import static graphql.ScalarsKt.*
 import static graphql.schema.GraphQLEnumType.newEnum
+import static graphql.schema.GraphQLEnumTypeKt.newEnum
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField
 import static graphql.schema.GraphQLInputObjectType.newInputObject
 

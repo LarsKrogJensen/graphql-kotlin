@@ -19,7 +19,7 @@ val episodeEnum = newEnum {
     value {
         name = "EMPIRE"
         description = "Released in 1980."
-        value = 4
+        value = 5
     }
     value {
         name = "JEDI"

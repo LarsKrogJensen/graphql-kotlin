@@ -1,9 +1,8 @@
 package graphql.validation.rules
 
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.language.TypeName
 import graphql.validation.IValidationContext
-import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
@@ -16,7 +15,7 @@ class KnownTypeNamesTest extends Specification {
 
     def "unknown types is an error"() {
         given:
-        knownTypeNames.validationContext.getSchema() >> StarWarsSchema.starWarsSchema
+        knownTypeNames.validationContext.getSchema() >> StarWarsSchemaKt.starWarsSchema
 
         when:
         knownTypeNames.checkTypeName(new TypeName("Simpson"))

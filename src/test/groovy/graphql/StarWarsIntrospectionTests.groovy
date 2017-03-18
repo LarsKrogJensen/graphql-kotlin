@@ -39,7 +39,7 @@ class StarWarsIntrospectionTests extends Specification {
         ];
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -66,7 +66,7 @@ class StarWarsIntrospectionTests extends Specification {
                 ]
         ]
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -90,7 +90,7 @@ class StarWarsIntrospectionTests extends Specification {
         ]
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -114,7 +114,7 @@ class StarWarsIntrospectionTests extends Specification {
                 ]
         ];
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -138,7 +138,7 @@ class StarWarsIntrospectionTests extends Specification {
                 ]
         ];
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -205,7 +205,7 @@ class StarWarsIntrospectionTests extends Specification {
                 ]
         ];
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -289,7 +289,7 @@ class StarWarsIntrospectionTests extends Specification {
                 ]
         ]
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -387,7 +387,7 @@ class StarWarsIntrospectionTests extends Specification {
         ];
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -412,7 +412,7 @@ class StarWarsIntrospectionTests extends Specification {
         ];
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
                 .execute(query).toCompletableFuture().get().data()
 
         then:
@@ -424,11 +424,11 @@ class StarWarsIntrospectionTests extends Specification {
         def query = IntrospectionQueryKt.INTROSPECTION_QUERY
 
         when:
-        def result = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema).build()
-                .execute(query).toCompletableFuture().get().data()
+        def result = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema).build()
+                .execute(query).toCompletableFuture().get()
 
         then:
-        Map<String, Object> schema = (Map<String, Object>) result
+        Map<String, Object> schema = (Map<String, Object>) result.data()
         schema.size() == 1
         Map<String, Object> schemaParts = (Map<String, Map>) schema.get("__schema")
         schemaParts.size() == 5

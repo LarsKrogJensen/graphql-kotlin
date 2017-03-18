@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 import static TypeReferenceSchemaKt.SchemaWithReferences
 import static graphql.ScalarsKt.*
-import static graphql.StarWarsSchema.*
+import static graphql.StarWarsSchemaKt.*
 import static graphql.schema.GraphQLArgument.newArgument
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField

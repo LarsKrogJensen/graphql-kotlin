@@ -61,6 +61,11 @@ object Introspection {
             description = "Indicates this type is a list. `ofType` is a valid field."
             value = TypeKind.LIST
         }
+        value {
+            name = "NON_NULL"
+            description = "Indicates this type is a non-null. `ofType` is a valid field."
+            value = TypeKind.NON_NULL
+        }
     }
 
     private val kindDataFetcher: DataFetcher<TypeKind> = { environment ->
@@ -92,7 +97,6 @@ object Introspection {
         }
         field<String> {
             name = "defaultValue"
-            type = GraphQLTypeReference("defaultValue")
             fetcher = { environment ->
                 val promise = CompletableFuture<String>()
                 val source: Any = environment.source()
@@ -251,12 +255,20 @@ object Introspection {
             fetcher = kindDataFetcher
         }
         field<String> {
+            name = "name"
+        }
+        field<String> {
             name = "description"
         }
         field<List<GraphQLFieldDefinition<*>>> {
             name = "fields"
             type = GraphQLList(GraphQLNonNull(__Field))
             fetcher = fieldsFetcher
+            argument {
+                name = "includeDeprecated"
+                type = GraphQLBoolean
+                defaultValue = false
+            }
         }
         field<List<GraphQLInterfaceType>> {
             name = "interfaces"

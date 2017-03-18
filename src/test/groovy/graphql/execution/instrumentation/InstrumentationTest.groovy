@@ -2,7 +2,7 @@ package graphql.execution.instrumentation
 
 import graphql.ExecutionResult
 import graphql.GraphQL
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.execution.SimpleExecutionStrategy
 import graphql.execution.instrumentation.parameters.*
 import graphql.language.Document
@@ -122,7 +122,7 @@ class InstrumentationTest extends Specification {
 
         def strategy = new SimpleExecutionStrategy()
         def graphQL = GraphQL
-                .newGraphQL(StarWarsSchema.starWarsSchema)
+                .newGraphQL(StarWarsSchemaKt.starWarsSchema)
                 .queryExecutionStrategy(strategy)
                 .instrumentation(instrumentation)
                 .build()

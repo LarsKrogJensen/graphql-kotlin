@@ -1,7 +1,7 @@
 package graphql.execution
 
 import graphql.GraphQL
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import spock.lang.Specification
 
 import java.util.concurrent.BlockingQueue
@@ -63,7 +63,7 @@ class ExecutorServiceExecutionStrategyTest extends Specification {
                  */
                 new ThreadPoolExecutor.CallerRunsPolicy());
 
-        def graphQL = GraphQL.newGraphQL(StarWarsSchema.starWarsSchema)
+        def graphQL = GraphQL.newGraphQL(StarWarsSchemaKt.starWarsSchema)
                 .queryExecutionStrategy(new ExecutorServiceExecutionStrategy(threadPoolExecutor))
                 .build()
         def result = graphQL.execute(query).toCompletableFuture().get().data()

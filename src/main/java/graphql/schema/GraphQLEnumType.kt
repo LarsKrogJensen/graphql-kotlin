@@ -70,12 +70,21 @@ class GraphQLEnumType(override val name: String,
         }
     }
 
+    override fun toString(): String {
+        return "GraphQLEnumType(name='$name', description=$description, valueDefinitionMap=$valueDefinitionMap)"
+    }
+
+
     @GraphQLDslMarker
     class Builder {
         var name: String by Delegates.notNull<String>()
         var description: String? = null
         val values = ArrayList<GraphQLEnumValueDefinition>()
 
+        fun name(name: String): Builder {
+            this.name = name
+            return this
+        }
         fun value(block: GraphQLEnumValueDefinition.Builder.() -> Unit) {
             val builder = GraphQLEnumValueDefinition.Builder()
             builder.block()
@@ -97,6 +106,7 @@ class GraphQLEnumType(override val name: String,
         }
     }
 }
+fun newEnum() = GraphQLEnumType.Builder()
 
 fun newEnum(block: GraphQLEnumType.Builder.() -> Unit): GraphQLEnumType {
     val builder = GraphQLEnumType.Builder()

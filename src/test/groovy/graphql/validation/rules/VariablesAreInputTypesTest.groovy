@@ -1,6 +1,6 @@
 package graphql.validation.rules
 
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.language.ListType
 import graphql.language.NonNullType
 import graphql.language.TypeName
@@ -20,9 +20,9 @@ class VariablesAreInputTypesTest extends Specification {
 
     def "the unmodified ast type is not a schema input type"() {
         given:
-        def astType = new NonNullType(new ListType(new TypeName(StarWarsSchema.droidType.getName())))
+        def astType = new NonNullType(new ListType(new TypeName(StarWarsSchemaKt.droidType.getName())))
         VariableDefinition variableDefinition = new VariableDefinition("var", astType)
-        validationContext.getSchema() >> StarWarsSchema.starWarsSchema
+        validationContext.getSchema() >> StarWarsSchemaKt.starWarsSchema
 
         when:
         variablesAreInputTypes.checkVariableDefinition(variableDefinition)

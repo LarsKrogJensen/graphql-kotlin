@@ -1,10 +1,9 @@
 package graphql.validation.rules
 
 import graphql.ScalarsKt
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.language.*
 import graphql.validation.IValidationContext
-import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
@@ -24,7 +23,7 @@ class VariableTypesMatchRuleTest extends Specification {
         def astType = new TypeName("String")
         def expectedType = ScalarsKt.GraphQLBoolean
 
-        validationContext.getSchema() >> StarWarsSchema.starWarsSchema
+        validationContext.getSchema() >> StarWarsSchemaKt.starWarsSchema
         validationContext.getInputType() >> expectedType
         variableTypesMatchRule.variablesTypesMatcher
                 .doesVariableTypesMatch(ScalarsKt.GraphQLString, defaultValue, expectedType) >> false

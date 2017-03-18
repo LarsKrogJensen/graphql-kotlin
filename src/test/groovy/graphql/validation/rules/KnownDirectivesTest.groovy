@@ -1,6 +1,6 @@
 package graphql.validation.rules
 
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.language.Document
 import graphql.parser.Parser
 import graphql.validation.*
@@ -14,7 +14,7 @@ class KnownDirectivesTest extends Specification {
 
     def setup() {
         def traversalContext = Mock(ITraversalContext)
-        validationContext.getSchema() >> StarWarsSchema.starWarsSchema
+        validationContext.getSchema() >> StarWarsSchemaKt.starWarsSchema
         validationContext.getTraversalContext() >> traversalContext
     }
 

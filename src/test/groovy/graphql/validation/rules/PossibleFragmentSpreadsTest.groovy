@@ -15,7 +15,7 @@ class PossibleFragmentSpreadsTest extends Specification {
 
     def traverse(String query) {
         Document document = new Parser().parseDocument(query)
-        ValidationContext validationContext = new ValidationContext(Harness.Schema, document)
+        ValidationContext validationContext = new ValidationContext(HarnessKt.Schema, document)
         PossibleFragmentSpreads possibleFragmentSpreads = new PossibleFragmentSpreads(validationContext, errorCollector)
         LanguageTraversal languageTraversal = new LanguageTraversal()
 

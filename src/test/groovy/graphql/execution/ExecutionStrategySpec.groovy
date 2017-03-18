@@ -2,7 +2,7 @@ package graphql.execution
 
 import graphql.ExecutionResult
 import graphql.ScalarsKt
-import graphql.StarWarsSchema
+import graphql.StarWarsSchemaKt
 import graphql.execution.instrumentation.NoOpInstrumentation
 import graphql.language.Field
 import graphql.language.FragmentDefinition
@@ -34,7 +34,7 @@ class ExecutionStrategySpec extends Specification {
         new ExecutionContext(
                 NoOpInstrumentation.INSTANCE,
                 new ExecutionId("1"),
-                StarWarsSchema.INSTANCE.starWarsSchema,
+                StarWarsSchemaKt.starWarsSchema,
                 executionStrategy,
                 executionStrategy,
                 new HashMap<String, FragmentDefinition>(),

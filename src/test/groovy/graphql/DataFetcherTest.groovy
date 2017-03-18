@@ -60,7 +60,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironmentImpl(dataHolder,
                 new HashMap<>(),
-                new Object(), [], GraphQLString, GraphQLString, StarWarsSchema.starWarsSchema)
+                new Object(), [], GraphQLString, GraphQLString, StarWarsSchemaKt.starWarsSchema)
 
         when:
         def result = FieldDataFetcherKt.fieldDataFetcher("publicField").invoke(environment)
@@ -73,7 +73,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironmentImpl(dataHolder,
                 new HashMap<>(),
-                new Object(), [], GraphQLString, GraphQLString, StarWarsSchema.starWarsSchema)
+                new Object(), [], GraphQLString, GraphQLString, StarWarsSchemaKt.starWarsSchema)
 
         when:
         def result = PropertyDataFetcherKt.propertyDataFetcher("property").invoke(environment)
@@ -85,7 +85,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironmentImpl(dataHolder,
                        new HashMap<>(),
-                       new Object(), [], GraphQLBoolean, GraphQLString, StarWarsSchema.starWarsSchema)
+                       new Object(), [], GraphQLBoolean, GraphQLString, StarWarsSchemaKt.starWarsSchema)
 
         when:
         def result = PropertyDataFetcherKt.propertyDataFetcher("booleanField").invoke(environment)
@@ -97,7 +97,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironmentImpl(dataHolder,
                                new HashMap<>(),
-                               new Object(), [], GraphQLBoolean, GraphQLString, StarWarsSchema.starWarsSchema)
+                               new Object(), [], GraphQLBoolean, GraphQLString, StarWarsSchemaKt.starWarsSchema)
         when:
         def result = PropertyDataFetcherKt.propertyDataFetcher("booleanFieldWithGet").invoke(environment)
         then:
@@ -108,7 +108,7 @@ class DataFetcherTest extends Specification {
         given:
         def environment = new DataFetchingEnvironmentImpl(dataHolder,
                       new HashMap<>(),
-                      new Object(), [], GraphQLString, GraphQLString, StarWarsSchema.starWarsSchema)
+                      new Object(), [], GraphQLString, GraphQLString, StarWarsSchemaKt.starWarsSchema)
 
         when:
         def result = PropertyDataFetcherKt.propertyDataFetcher("publicField").invoke(environment)

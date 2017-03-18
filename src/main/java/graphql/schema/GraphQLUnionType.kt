@@ -31,6 +31,11 @@ class GraphQLUnionType(override val name: String,
         return types
     }
 
+    override fun toString(): String {
+        return "GraphQLUnionType(name='$name', description=$description, types=$types)"
+    }
+
+
     @GraphQLDslMarker
     class Builder {
         var name: String by notNull<String>()

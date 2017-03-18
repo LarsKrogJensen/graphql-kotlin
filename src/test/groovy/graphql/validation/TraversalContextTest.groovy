@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 import static graphql.DirectivesKt.IncludeDirective
 import static graphql.ScalarsKt.GraphQLString
-import static graphql.StarWarsSchema.*
+import static graphql.StarWarsSchemaKt.*
 import static graphql.language.OperationDefinition.Operation.QUERY
 
 class TraversalContextTest extends Specification {
@@ -186,8 +186,8 @@ class TraversalContextTest extends Specification {
 
     def "array value saves input type"() {
         given:
-        GraphQLNonNull graphQLList = new GraphQLNonNull(new GraphQLList(GraphQLString));
-        traversalContext.inputTypeStack.add(graphQLList);
+        GraphQLNonNull graphQLList = new GraphQLNonNull(new GraphQLList(GraphQLString))
+        traversalContext.inputTypeStack.add(graphQLList)
         ArrayValue arrayValue = new ArrayValue([new StringValue("string")])
 
         when:
@@ -207,7 +207,7 @@ class TraversalContextTest extends Specification {
         given:
         def inputObjectField = GraphQLInputObjectField.newInputObjectField().name("field").type(GraphQLString)
         GraphQLInputObjectType inputObjectType = GraphQLInputObjectType.newInputObject().name("inputObjectType").field(inputObjectField).build()
-        traversalContext.inputTypeStack.add(inputObjectType);
+        traversalContext.inputTypeStack.add(inputObjectType)
         ObjectField objectField = new ObjectField("field", new StringValue("value"))
 
         when:

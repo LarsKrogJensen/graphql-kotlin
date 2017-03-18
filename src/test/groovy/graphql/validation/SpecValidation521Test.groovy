@@ -1,10 +1,5 @@
 package graphql.validation
 
-import graphql.validation.SpecValidationSchema
-import graphql.parser.Parser
-import graphql.validation.ValidationError
-import graphql.validation.Validator
-import spock.lang.Specification
 
 /**
  * validation examples used in the spec in given section

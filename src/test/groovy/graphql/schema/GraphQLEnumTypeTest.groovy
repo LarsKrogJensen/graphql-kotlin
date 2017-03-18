@@ -5,6 +5,7 @@ import spock.lang.Specification
 import graphql.AssertException
 
 import static graphql.schema.GraphQLEnumType.newEnum
+import static graphql.schema.GraphQLEnumTypeKt.newEnum
 
 
 class GraphQLEnumTypeTest extends Specification {
