@@ -77,13 +77,13 @@ fun getCharacter(id: String): Any? {
     return null
 }
 
-val humanDataFetcher: DataFetcher<Any?> = { environment ->
+val humanDataFetcher: DataFetcher<Any> = { environment ->
     val id = environment.arguments["id"]
     CompletableFuture.completedFuture(humanData[id])
 }
 
 
-val droidDataFetcher: DataFetcher<Any?> = { environment ->
+val droidDataFetcher: DataFetcher<Any> = { environment ->
     val id = environment.arguments["id"]
     CompletableFuture.completedFuture(droidData[id])
 }
@@ -101,7 +101,7 @@ val characterTypeResolver: TypeResolver = {
 }
 
 
-val friendsDataFetcher: DataFetcher<Any?> = { environment ->
+val friendsDataFetcher: DataFetcher<List<Any?>> = { environment ->
     val map = environment.source<Map<String, Any?>>()
     val friends = map["friends"] as List<String>;
 
