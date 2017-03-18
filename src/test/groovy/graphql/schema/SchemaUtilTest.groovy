@@ -1,6 +1,6 @@
 package graphql.schema
 
-import graphql.NestedInputSchema
+import graphql.NestedInputSchemaKt
 import graphql.TypeReferenceSchemaKt
 import graphql.introspection.Introspection
 import spock.lang.Specification
@@ -39,14 +39,13 @@ class SchemaUtilTest extends Specification {
     }
 
     def "collectAllTypesNestedInput"() {
-        def nestedInputSchema = NestedInputSchema.INSTANCE
         when:
-        Map<String, GraphQLType> types = new SchemaUtil().allTypes(nestedInputSchema.createSchema(), Collections.emptySet())
+        Map<String, GraphQLType> types = new SchemaUtil().allTypes(NestedInputSchemaKt.nestedSchema, Collections.emptySet())
         Map<String, GraphQLType> expected =
 
-                [(nestedInputSchema.rootType().name)     : nestedInputSchema.rootType(),
-                 (nestedInputSchema.filterType().name)   : nestedInputSchema.filterType(),
-                 (nestedInputSchema.rangeType().name)    : nestedInputSchema.rangeType(),
+                [(NestedInputSchemaKt.rootType.name)     : NestedInputSchemaKt.rootType,
+                 (NestedInputSchemaKt.filterType.name)   : NestedInputSchemaKt.filterType,
+                 (NestedInputSchemaKt.rangeType.name)    : NestedInputSchemaKt.rangeType,
                  (GraphQLInt.name)                       : GraphQLInt,
                  (GraphQLString.name)                    : GraphQLString,
                  (Introspection.__Schema.name)           : Introspection.__Schema,

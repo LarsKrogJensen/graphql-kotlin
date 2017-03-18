@@ -1,81 +1,69 @@
 package graphql
 
 import graphql.schema.*
-import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletableFuture.completedFuture
 
 
-object NestedInputSchema {
+val rangeType = newInputObject {
+    name = "Range"
+    field {
+        name = "lowerBound"
+        type = GraphQLInt
+    }
+    field {
+        name = "upperBound"
+        type = GraphQLInt
+    }
+}
 
-    fun createSchema(): GraphQLSchema {
-
-
-        val root = rootType()
-
-        return GraphQLSchema.newSchema()
-                .query(root)
-                .build()
+val filterType = newInputObject {
+    name = "Filter"
+    field {
+        name = "even"
+        type = GraphQLBoolean
+    }
+    field {
+        name = "range"
+        type = rangeType
     }
 
-    fun rootType(): GraphQLObjectType {
-        return GraphQLObjectType.newObject()
+}
 
-                .name("Root")
-                .field(GraphQLFieldDefinition.newFieldDefinition<Any>()
-                               .name("value")
-                               .type(GraphQLInt)
-                               .fetcher { environment ->
+val rootType = newObject {
+    name = "Root"
+    field<Int> {
+        name = "value"
+        argument {
+            name = "initialValue"
+            type = GraphQLInt
+            defaultValue = 5
+        }
+        argument {
+            name = "filter"
+            type = filterType
+        }
+        fetcher = { environment ->
+            val initialValue = environment.argument<Int>("initialValue")!!
+            val filter = environment.argument<Map<String, Any>>("filter")!!
 
-                                   val initialValue = environment.argument<Int>("initialValue")!!
-                                   val filter = environment.argument<Map<String, Any>>("filter")!!
+            if (filter.containsKey("even")) {
+                val even = filter["even"] as Boolean
+                if (even && initialValue % 2 != 0) {
+                    completedFuture<Int>(0)
+                } else if (!even && initialValue % 2 == 0) {
+                    completedFuture<Int>(0)
+                }
+            } else if (filter.containsKey("range")) {
+                val range = filter["range"] as Map<String, Int>
+                if (initialValue < range["lowerBound"]!! || initialValue > range["upperBound"]!!) {
+                    completedFuture<Int>(0)
+                }
+            }
 
-                                   if (filter.containsKey("even")) {
-                                       val even = filter["even"] as Boolean
-                                       if (even && initialValue % 2 != 0) {
-                                           CompletableFuture.completedFuture<Any>(0)
-                                       } else if (!even && initialValue % 2 == 0) {
-                                           CompletableFuture.completedFuture<Any>(0)
-                                       }
-                                   }
-                                   if (filter.containsKey("range")) {
-                                       val range = filter["range"] as Map<String, Int>
-                                       if (initialValue < range["lowerBound"]!! || initialValue > range["upperBound"]!!) {
-                                           CompletableFuture.completedFuture<Any>(0)
-                                       }
-                                   }
-
-                                   CompletableFuture.completedFuture<Any>(initialValue)
-                               }
-                               .argument(newArgument()
-                                                 .name("intialValue")
-                                                 .type(GraphQLInt)
-                                                 .defaultValue(5))
-                               .argument(newArgument()
-                                                 .name("filter")
-                                                 .type(filterType())))
-                .build()
+            completedFuture<Int>(initialValue)
+        }
     }
-
-    fun filterType(): GraphQLInputObjectType {
-        return GraphQLInputObjectType.newInputObject()
-                .name("Filter")
-                .field(GraphQLInputObjectField.newInputObjectField()
-                               .name("even")
-                               .type(GraphQLBoolean))
-                .field(GraphQLInputObjectField.newInputObjectField()
-                               .name("range")
-                               .type(rangeType()))
-                .build()
-    }
-
-    fun rangeType(): GraphQLInputObjectType {
-        return GraphQLInputObjectType.newInputObject()
-                .name("Range")
-                .field(GraphQLInputObjectField.newInputObjectField()
-                               .name("lowerBound")
-                               .type(GraphQLInt))
-                .field(GraphQLInputObjectField.newInputObjectField()
-                               .name("upperBound")
-                               .type(GraphQLInt))
-                .build()
-    }
+}
+val nestedSchema = newSchema {
+    query = rootType
 }
