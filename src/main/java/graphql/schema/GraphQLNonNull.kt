@@ -6,7 +6,7 @@ class GraphQLNonNull(wrappedType: GraphQLType) : GraphQLType, GraphQLInputType, 
     override val wrappedType: GraphQLType
         get() = _wrappedType!!
 
-    private var _wrappedType: GraphQLType? = null;
+    private var _wrappedType: GraphQLType? = null
 
     internal fun replaceTypeReferences(typeMap: Map<String, GraphQLType>) {
         _wrappedType = SchemaUtil().resolveTypeReference(wrappedType, typeMap)

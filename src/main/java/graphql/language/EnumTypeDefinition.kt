@@ -5,7 +5,7 @@ import java.util.ArrayList
 class EnumTypeDefinition (override val name: String,
                           directives: List<Directive>? = null) : AbstractNode(), TypeDefinition {
     val enumValueDefinitions: MutableList<EnumValueDefinition>
-    val directives: MutableList<Directive> = mutableListOf<Directive>()
+    val directives: MutableList<Directive> = mutableListOf()
 
     init {
         if (directives != null)

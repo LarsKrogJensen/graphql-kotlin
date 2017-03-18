@@ -18,10 +18,10 @@ class GraphQLDirective(val name: String,
 
     @GraphQLDslMarker
     class Builder {
-        private var name: String by notNull<String>()
-        private val locations = mutableSetOf<DirectiveLocation>()
-        private val arguments = mutableListOf<GraphQLArgument>()
-        private var description: String? = null
+        var name: String by notNull<String>()
+        val locations = mutableSetOf<DirectiveLocation>()
+        val arguments = mutableListOf<GraphQLArgument>()
+        var description: String? = null
 
         fun name(name: String): Builder {
             this.name = name
@@ -33,27 +33,18 @@ class GraphQLDirective(val name: String,
             return this
         }
 
-        fun validLocations(vararg validLocations: DirectiveLocation): Builder {
-            for (location in validLocations) {
-                locations.add(location)
-            }
-            return this
-        }
-
         fun argument(fieldArgument: GraphQLArgument): Builder {
             arguments.add(fieldArgument)
             return this
         }
 
-        fun argument(builderFunction: BuilderFunction<GraphQLArgument.Builder>): Builder {
-            var builder: GraphQLArgument.Builder = newArgument()
-            builder = builderFunction.apply(builder)
-            return argument(builder)
-        }
-
         fun argument(builder: GraphQLArgument.Builder): Builder {
             this.arguments.add(builder.build())
             return this
+        }
+
+        fun argument(block: GraphQLArgument.Builder.() -> Unit) {
+            arguments += newArgument(block)
         }
 
         fun build(): GraphQLDirective {
@@ -68,4 +59,10 @@ class GraphQLDirective(val name: String,
             return Builder()
         }
     }
+}
+
+fun newDirective(block: GraphQLDirective.Builder.() -> Unit ): GraphQLDirective {
+    val builder = GraphQLDirective.Builder()
+    builder.block()
+    return builder.build()
 }

@@ -7,8 +7,8 @@ class InvalidSchemaException(errors: Collection<ValidationError>)
 
 private fun buildMessage(errors: Collection<ValidationError>): String {
     val message = StringBuilder("invalid schema:")
-    for (error in errors) {
-        message.append("\n").append(error.description)
+    for ((_, description) in errors) {
+        message.append("\n").append(description)
     }
     return message.toString()
 }

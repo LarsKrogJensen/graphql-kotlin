@@ -1,8 +1,5 @@
 package graphql.language
 
-
-import java.util.ArrayList
-
 // This should probably be an enum... but the grammar
 // doesn't enforce the names. These are the current names:
 //    QUERY
@@ -13,8 +10,6 @@ import java.util.ArrayList
 //    INLINE_FRAGMENT
 class DirectiveLocation(private val name: String) : AbstractNode() {
 
-    override val children: List<Node>
-        get() = emptyList()
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true

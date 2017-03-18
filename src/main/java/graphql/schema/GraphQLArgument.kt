@@ -48,8 +48,6 @@ class GraphQLArgument(val name: String,
         fun build(): GraphQLArgument {
             return GraphQLArgument(name, description, type, defaultValue)
         }
-
-
     }
 
     companion object {

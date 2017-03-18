@@ -1,6 +1,5 @@
 package graphql.execution
 
-import graphql.MutationSchema
 import graphql.execution.instrumentation.NoOpInstrumentation
 import graphql.parser.Parser
 import spock.lang.Specification

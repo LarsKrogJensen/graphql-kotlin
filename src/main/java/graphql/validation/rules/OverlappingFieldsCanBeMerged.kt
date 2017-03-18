@@ -3,15 +3,16 @@ package graphql.validation.rules
 
 import graphql.execution.TypeFromAST
 import graphql.language.*
-import graphql.schema.*
+import graphql.schema.GraphQLFieldsContainer
+import graphql.schema.GraphQLObjectType
+import graphql.schema.GraphQLOutputType
+import graphql.schema.GraphQLType
 import graphql.validation.AbstractRule
 import graphql.validation.ErrorFactory
 import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
-
-import java.util.*
-
 import graphql.validation.ValidationErrorType.FieldsConflict
+import java.util.*
 
 class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validationErrorCollector: ValidationErrorCollector) : AbstractRule(validationContext, validationErrorCollector) {
 
@@ -33,7 +34,7 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
     private fun findConflicts(fieldMap: Map<String, List<FieldAndType>>): List<Conflict> {
         val result = ArrayList<Conflict>()
         for (name in fieldMap.keys) {
-            fieldMap.get(name)?.apply {
+            fieldMap[name]?.apply {
                 for (i in indices) {
                     for (j in i + 1..size - 1) {
                         val conflict = findConflict(name, get(i), get(j))
@@ -198,7 +199,7 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
                               visitedFragmentSpreads: MutableSet<String>) {
 
         if (selectionSet != null) {
-            for (selection in selectionSet.selections()) {
+            for (selection in selectionSet.selections) {
                 if (selection is Field) {
                     collectFieldsForField(fieldMap, parentType, selection)
                 } else if (selection is InlineFragment) {
@@ -249,9 +250,9 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
         if (parentType is GraphQLFieldsContainer) {
             val fieldsContainer = parentType
             val fieldDefinition = fieldsContainer.fieldDefinitions.find { it.name == field.name }
-            fieldType = if (fieldDefinition != null) fieldDefinition.type else null
+            fieldType = fieldDefinition?.type
         }
-        fieldMap.get(responseName)?.add(FieldAndType(field, fieldType, parentType))
+        fieldMap[responseName]?.add(FieldAndType(field, fieldType, parentType))
     }
 
     private class FieldPair(internal var field1: Field, internal var field2: Field)
@@ -259,7 +260,7 @@ class OverlappingFieldsCanBeMerged(validationContext: ValidationContext, validat
     private class Conflict {
         internal var responseName: String
         internal var reason: String
-        internal var fields: MutableList<Field> = ArrayList<Field>()
+        internal var fields: MutableList<Field> = mutableListOf()
 
         constructor(responseName: String, reason: String, field1: Field, field2: Field) {
             this.responseName = responseName

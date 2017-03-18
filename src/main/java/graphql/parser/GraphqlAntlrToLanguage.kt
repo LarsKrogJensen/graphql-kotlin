@@ -3,7 +3,6 @@ package graphql.parser
 
 import graphql.ShouldNotHappenException
 import graphql.language.*
-import graphql.parser.GraphqlAntlrToLanguage.*
 import graphql.parser.antlr.GraphqlBaseVisitor
 import graphql.parser.antlr.GraphqlParser
 import org.antlr.v4.runtime.ParserRuleContext
@@ -61,10 +60,13 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
         contextStack.removeFirst()
     }
 
-    private fun getFromContextStack(contextProperty: ContextProperty): Any? {
-        return contextStack
-                .filter { it.contextProperty == contextProperty }
-                .firstOrNull { return it.value }
+    private fun <T> fromContextStack(contextProperty: ContextProperty): T? {
+        for (contextEntry in contextStack) {
+            if (contextEntry.contextProperty == contextProperty) {
+                return contextEntry.value as T
+            }
+        }
+        return null
     }
 
     private fun newSelectionSet(selectionSet: SelectionSet) {
@@ -86,7 +88,7 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     }
 
     private fun newField(field: Field) {
-        (getFromContextStack(ContextProperty.SelectionSet) as SelectionSet).selections().add(field)
+        fromContextStack<SelectionSet>(ContextProperty.SelectionSet)?.selections?.add(field)
     }
 
 
@@ -128,7 +130,7 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     override fun visitFragmentSpread(ctx: GraphqlParser.FragmentSpreadContext): Void? {
         val fragmentSpread = FragmentSpread(ctx.fragmentName().text)
         newNode(fragmentSpread, ctx)
-        (getFromContextStack(ContextProperty.SelectionSet) as SelectionSet).selections().add(fragmentSpread)
+        fromContextStack<SelectionSet>(ContextProperty.SelectionSet)?.selections?.add(fragmentSpread)
         addContextProperty(ContextProperty.FragmentSpread, fragmentSpread)
         super.visitFragmentSpread(ctx)
         popContext()
@@ -142,8 +144,8 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
             val value = getValue(ctx.defaultValue().value())
             variableDefinition.defaultValue = value
         }
-        val operationDefinition = getFromContextStack(ContextProperty.OperationDefinition) as OperationDefinition
-        operationDefinition.add(variableDefinition)
+        val operationDefinition = fromContextStack<OperationDefinition>(ContextProperty.OperationDefinition)
+        operationDefinition?.add(variableDefinition)
 
         addContextProperty(ContextProperty.VariableDefinition, variableDefinition)
         super.visitVariableDefinition(ctx)
@@ -188,36 +190,37 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
         val typeName = TypeName(ctx.name().text)
         newNode(typeName, ctx)
         for (contextEntry in contextStack) {
-            if (contextEntry.value is ListType) {
-                (contextEntry.value as ListType).type = typeName
+            val value = contextEntry.value
+            if (value is ListType) {
+                value.type = typeName
                 break
             }
-            if (contextEntry.value is NonNullType) {
-                (contextEntry.value as NonNullType).type(typeName)
+            if (value is NonNullType) {
+                value.type = typeName
                 break
             }
-            if (contextEntry.value is VariableDefinition) {
-                (contextEntry.value as VariableDefinition).type = typeName
+            if (value is VariableDefinition) {
+                value.type = typeName
                 break
             }
-            if (contextEntry.value is FieldDefinition) {
-                (contextEntry.value as FieldDefinition).type = typeName
+            if (value is FieldDefinition) {
+                value.type = typeName
                 break
             }
-            if (contextEntry.value is InputValueDefinition) {
-                (contextEntry.value as InputValueDefinition).type = typeName
+            if (value is InputValueDefinition) {
+                value.type = typeName
                 break
             }
             if (contextEntry.contextProperty == ContextProperty.ObjectTypeDefinition) {
-                (contextEntry.value as ObjectTypeDefinition).implements.add(typeName)
+                (value as ObjectTypeDefinition).implements.add(typeName)
                 break
             }
             if (contextEntry.contextProperty == ContextProperty.UnionTypeDefinition) {
-                (contextEntry.value as UnionTypeDefinition).memberTypes.add(typeName)
+                (value as UnionTypeDefinition).memberTypes.add(typeName)
                 break
             }
             if (contextEntry.contextProperty == ContextProperty.OperationTypeDefinition) {
-                (contextEntry.value as OperationTypeDefinition).type = typeName
+                (value as OperationTypeDefinition).type = typeName
                 break
             }
         }
@@ -228,20 +231,21 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
         val nonNullType = NonNullType()
         newNode(nonNullType, ctx)
         for (contextEntry in contextStack) {
-            if (contextEntry.value is ListType) {
-                (contextEntry.value as ListType).type = nonNullType
+            val value = contextEntry.value
+            if (value is ListType) {
+                value.type = nonNullType
                 break
             }
-            if (contextEntry.value is VariableDefinition) {
-                (contextEntry.value as VariableDefinition).type = nonNullType
+            if (value is VariableDefinition) {
+                value.type = nonNullType
                 break
             }
-            if (contextEntry.value is FieldDefinition) {
-                (contextEntry.value as FieldDefinition).type = nonNullType
+            if (value is FieldDefinition) {
+                value.type = nonNullType
                 break
             }
-            if (contextEntry.value is InputValueDefinition) {
-                (contextEntry.value as InputValueDefinition).type = nonNullType
+            if (value is InputValueDefinition) {
+                value.type = nonNullType
                 break
             }
         }
@@ -255,24 +259,25 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
         val listType = ListType()
         newNode(listType, ctx)
         for (contextEntry in contextStack) {
-            if (contextEntry.value is ListType) {
-                (contextEntry.value as ListType).type = listType
+            val value = contextEntry.value
+            if (value is ListType) {
+                value.type = listType
                 break
             }
-            if (contextEntry.value is NonNullType) {
-                (contextEntry.value as NonNullType).type(listType)
+            if (value is NonNullType) {
+                value.type = listType
                 break
             }
-            if (contextEntry.value is VariableDefinition) {
-                (contextEntry.value as VariableDefinition).type = listType
+            if (value is VariableDefinition) {
+                value.type = listType
                 break
             }
-            if (contextEntry.value is FieldDefinition) {
-                (contextEntry.value as FieldDefinition).type = listType
+            if (value is FieldDefinition) {
+                value.type = listType
                 break
             }
-            if (contextEntry.value is InputValueDefinition) {
-                (contextEntry.value as InputValueDefinition).type = listType
+            if (value is InputValueDefinition) {
+                value.type = listType
                 break
             }
         }
@@ -285,11 +290,12 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     override fun visitArgument(ctx: GraphqlParser.ArgumentContext): Void? {
         val argument = Argument(ctx.name().text, getValue(ctx.valueWithVariable()))
         newNode(argument, ctx)
-        if (getFromContextStack(ContextProperty.Directive) != null) {
-            (getFromContextStack(ContextProperty.Directive) as Directive).add(argument)
+        val directive = fromContextStack<Directive>(ContextProperty.Directive)
+        if (directive != null) {
+            directive.arguments.add(argument)
         } else {
-            val field = getFromContextStack(ContextProperty.Field) as Field
-            field.add(argument)
+            val field = fromContextStack<Field>(ContextProperty.Field)
+            field?.arguments?.add(argument)
         }
         return super.visitArgument(ctx)
     }
@@ -298,7 +304,7 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
         val typeName = if (ctx.typeCondition() != null) TypeName(ctx.typeCondition().typeName().text) else null
         val inlineFragment = InlineFragment(typeName)
         newNode(inlineFragment, ctx)
-        (getFromContextStack(ContextProperty.SelectionSet) as SelectionSet).selections().add(inlineFragment)
+        fromContextStack<SelectionSet>(ContextProperty.SelectionSet)?.selections?.add(inlineFragment)
         addContextProperty(ContextProperty.InlineFragment, inlineFragment)
         super.visitInlineFragment(ctx)
         popContext()
@@ -583,7 +589,8 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
             val objectValue = ObjectValue()
             newNode(objectValue, ctx)
             for (objectFieldWithVariableContext in ctx.objectValueWithVariable().objectFieldWithVariable()) {
-                val objectField = ObjectField(objectFieldWithVariableContext.name().text, getValue(objectFieldWithVariableContext.valueWithVariable()))
+                val objectField = ObjectField(objectFieldWithVariableContext.name().text,
+                                              getValue(objectFieldWithVariableContext.valueWithVariable()))
                 objectValue.objectFields.add(objectField)
             }
             return objectValue
@@ -687,10 +694,10 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     }
 
     private fun newNode(abstractNode: AbstractNode, parserRuleContext: ParserRuleContext) {
-        abstractNode.sourceLocation = getSourceLocation(parserRuleContext)
+        abstractNode.sourceLocation = sourceLocation(parserRuleContext)
     }
 
-    private fun getSourceLocation(parserRuleContext: ParserRuleContext): SourceLocation {
+    private fun sourceLocation(parserRuleContext: ParserRuleContext): SourceLocation {
         return SourceLocation(parserRuleContext.getStart().line, parserRuleContext.getStart().charPositionInLine + 1)
     }
 

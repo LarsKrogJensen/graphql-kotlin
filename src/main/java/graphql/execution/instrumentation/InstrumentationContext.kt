@@ -7,7 +7,7 @@ package graphql.execution.instrumentation
  * This pattern of construction of an object then call back is intended to allow "timers" to be created that can instrument what has
  * just happened or "loggers" to be called to record what has happened.
  */
-interface InstrumentationContext<T> {
+interface InstrumentationContext<in T> {
 
     /**
      * This is invoked when the execution step is completed successfully

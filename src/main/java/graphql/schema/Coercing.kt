@@ -1,7 +1,7 @@
 package graphql.schema
 
 
-interface Coercing<I, O> {
+interface Coercing<out I, out O> {
 
 
     /**

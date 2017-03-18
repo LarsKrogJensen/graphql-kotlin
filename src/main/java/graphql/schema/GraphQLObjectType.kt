@@ -1,10 +1,8 @@
 package graphql.schema
 
-import graphql.AssertException
-
-import java.util.*
-
 import graphql.Assert.assertNotNull
+import graphql.AssertException
+import java.util.*
 import kotlin.properties.Delegates.notNull
 
 open class GraphQLObjectType(override val name: String,
@@ -89,20 +87,7 @@ open class GraphQLObjectType(override val name: String,
         }
 
         inline fun <reified TOut : Any> field(block: GraphQLFieldDefinition.Builder<TOut>.() -> Unit) {
-            this.fields +=newField<TOut>(block)
-        }
-
-        fun withInterface(interfaceType: GraphQLInterfaceType): Builder {
-            assertNotNull(interfaceType, "interfaceType can't be null")
-            this.interfaces.add(interfaceType)
-            return this
-        }
-
-        fun withInterfaces(vararg interfaceType: GraphQLInterfaceType): Builder {
-            for (type in interfaceType) {
-                withInterface(type)
-            }
-            return this
+            this.fields +=newField(block)
         }
 
         fun build(): GraphQLObjectType {

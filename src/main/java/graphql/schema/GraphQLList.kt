@@ -1,8 +1,5 @@
 package graphql.schema
 
-import kotlin.properties.Delegates
-
-
 class GraphQLList(wrapType: GraphQLType) : GraphQLType, GraphQLInputType, GraphQLOutputType, GraphQLModifiedType, GraphQLNullableType {
     private var _wrappedType: GraphQLType = wrapType
 

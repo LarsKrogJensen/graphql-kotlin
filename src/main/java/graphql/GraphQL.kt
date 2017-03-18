@@ -2,7 +2,6 @@ package graphql
 
 import graphql.execution.*
 import graphql.execution.instrumentation.Instrumentation
-import graphql.execution.instrumentation.InstrumentationContext
 import graphql.execution.instrumentation.NoOpInstrumentation
 import graphql.execution.instrumentation.parameters.ExecutionParameters
 import graphql.execution.instrumentation.parameters.ValidationParameters
@@ -10,14 +9,10 @@ import graphql.language.Document
 import graphql.language.SourceLocation
 import graphql.parser.Parser
 import graphql.schema.GraphQLSchema
-import graphql.validation.ValidationError
 import graphql.validation.Validator
 import org.antlr.v4.runtime.RecognitionException
 import org.antlr.v4.runtime.misc.ParseCancellationException
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import java.util.Collections
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
@@ -64,6 +59,7 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
     fun execute(requestString: String): CompletionStage<ExecutionResult> {
         return execute(requestString, null)
     }
+
     fun execute(requestString: String,
                 operationName: String? = null,
                 context: Any = Any(),
@@ -124,25 +120,13 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
             }
         }
 
-        /**
-         * Helps you build a GraphQL object ready to execute queries
-
-         * @param graphQLSchema the schema to use
-         * *
-         * @return a builder of GraphQL objects
-         */
-
         @JvmStatic
         fun newGraphQL(graphQLSchema: GraphQLSchema): GraphQL.Builder {
             return GraphQL.Builder(graphQLSchema)
         }
-
     }
 }
-
 
 fun newGraphQL(graphQLSchema: GraphQLSchema): GraphQL.Builder {
     return GraphQL.Builder(graphQLSchema)
 }
-
-//

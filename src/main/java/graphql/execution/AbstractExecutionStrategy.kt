@@ -15,17 +15,10 @@ import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 
-interface IExecutionStrategy {
-    fun execute(executionContext: ExecutionContext,
-                parentType: GraphQLObjectType,
-                source: Any,
-                fields: Map<String, List<Field>>): CompletionStage<ExecutionResult>
-}
-
 abstract class AbstractExecutionStrategy : IExecutionStrategy {
 
-    protected var valuesResolver = ValuesResolver()
-    protected var fieldCollector = FieldCollector()
+    protected val valuesResolver = ValuesResolver()
+    protected val fieldCollector = FieldCollector()
 
     internal fun resolveField(executionContext: ExecutionContext,
                               parentType: GraphQLObjectType,
@@ -34,7 +27,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         val fieldDef = fieldDef(executionContext.graphQLSchema, parentType, fields[0])
 
         val argumentValues = valuesResolver.argumentValues(fieldDef.arguments,
-                                                           fields.get(0).arguments,
+                                                           fields[0].arguments,
                                                            executionContext.variables)
 
         val environment = DataFetchingEnvironmentImpl(
@@ -52,10 +45,8 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         val fieldCtx = instrumentation.beginField(FieldParameters(executionContext, fieldDef))
         val fetchCtx = instrumentation.beginFieldFetch(FieldFetchParameters(executionContext, fieldDef, environment))
 
-        val completionStage = if (fieldDef.dataFetcher != null) (fieldDef.dataFetcher)(environment) else null
-        if (completionStage == null) {
-            return completeValue(executionContext, fieldDef.type, fields, null)
-        }
+        val completionStage = fieldDef.dataFetcher?.let { it(environment) }
+                ?: return completeValue(executionContext, fieldDef.type, fields, null)
 
         return completionStage.exceptionally { e ->
             executionContext.addError(ExceptionWhileDataFetching(e as Throwable))
@@ -63,8 +54,8 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         }.thenCompose { resolvedValue ->
             fetchCtx.onEnd(resolvedValue)
 
-            val result: CompletionStage<ExecutionResult> = completeValue(executionContext, fieldDef.type, fields, resolvedValue)
-            result.whenComplete { data, ex ->
+            val result = completeValue(executionContext, fieldDef.type, fields, resolvedValue)
+            result.whenComplete { data, _ ->
                 fieldCtx.onEnd(data)
             }
 
@@ -72,12 +63,14 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         }
     }
 
+
     fun completeValue(executionContext: ExecutionContext,
                       fieldType: GraphQLType,
                       fields: List<Field>,
                       result: Any?): CompletionStage<ExecutionResult> {
-        //println("completValue for " + fieldType)
         val promise = CompletableFuture<ExecutionResult>()
+
+        println("-----CompleteValue ${fieldType.name} fields ${fields.map { it.name }}")
 
         if (fieldType is GraphQLNonNull) {
             val graphQLNonNull = fieldType
@@ -135,14 +128,14 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
 
         val subFields = LinkedHashMap<String, MutableList<Field>>()
         val visitedFragments = ArrayList<String>()
-        for (field in fields) {
-            if (!field.selectionSet.isEmpty())
-                fieldCollector.collectFields(executionContext,
-                                             resolvedType,
-                                             field.selectionSet,
-                                             visitedFragments,
-                                             subFields)
-        }
+        fields.filterNot { it.selectionSet.isEmpty() }
+                .forEach {
+                    fieldCollector.collectFields(executionContext,
+                                                 resolvedType,
+                                                 it.selectionSet,
+                                                 visitedFragments,
+                                                 subFields)
+                }
 
         // Calling this from the executionContext so that you can shift from the simple execution strategy for mutations
         // back to the desired strategy.
@@ -155,7 +148,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
                                      fields: List<Field>,
                                      result: Any): CompletionStage<ExecutionResult> {
         var result1 = result
-        if (result1.javaClass.isArray()) {
+        if (result1.javaClass.isArray) {
             result1 = Arrays.asList<Any>(*(result1 as Array<Any>))
         }
 
@@ -179,7 +172,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
     protected fun completeValueForScalar(scalarType: GraphQLScalarType, result: Any): ExecutionResult {
         var serialized: Any? = scalarType.coercing.serialize(result)
         //6.6.1 http://facebook.github.io/graphql/#sec-Field-entries
-        if (serialized is Double && (serialized as Double).isNaN()) {
+        if (serialized is Double && serialized.isNaN()) {
             serialized = null
         }
         return ExecutionResultImpl(serialized, null)
@@ -213,11 +206,11 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
                 return SchemaMetaFieldDef
             }
             if (field.name == TypeMetaFieldDef.name) {
-                return TypeMetaFieldDef;
+                return TypeMetaFieldDef
             }
         }
         if (field.name == TypeNameMetaFieldDef.name) {
-            return TypeNameMetaFieldDef;
+            return TypeNameMetaFieldDef
         }
 
         return parentType.fieldDefinition(field.name) ?: throw GraphQLException("unknown field " + field.name)

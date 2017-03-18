@@ -122,9 +122,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : ITraversalContext {
         val objectType = schemaUtil.getUnmodifiedType(inputType)
         var inputType: GraphQLInputType? = null
         if (objectType is GraphQLInputObjectType) {
-            val inputField = objectType.field(objectField.name!!)
-            if (inputField != null)
-                inputType = inputField.type
+            inputType = objectType.field(objectField.name)?.type
         }
         addInputType(inputType)
     }

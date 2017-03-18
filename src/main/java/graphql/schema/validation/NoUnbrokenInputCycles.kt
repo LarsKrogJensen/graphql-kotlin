@@ -1,17 +1,7 @@
 package graphql.schema.validation
 
-import java.util.ArrayList
-import java.util.HashSet
-
-import graphql.schema.GraphQLArgument
-import graphql.schema.GraphQLFieldDefinition
-import graphql.schema.GraphQLInputObjectField
-import graphql.schema.GraphQLInputObjectType
-import graphql.schema.GraphQLInputType
-import graphql.schema.GraphQLList
-import graphql.schema.GraphQLModifiedType
-import graphql.schema.GraphQLNonNull
-import graphql.schema.GraphQLType
+import graphql.schema.*
+import java.util.*
 
 /**
  * Schema validation rule ensuring no input type forms an unbroken non-nullable recursion,
@@ -24,7 +14,7 @@ class NoUnbrokenInputCycles : ValidationRule {
         for (argument in fieldDef.arguments) {
             val argumentType = argument.type
             if (argumentType is GraphQLInputObjectType) {
-                val path = mutableListOf<String>(argumentType.name)
+                val path = mutableListOf(argumentType.name)
                 check(argumentType, HashSet<GraphQLType>(), path, validationErrorCollector)
             }
         }

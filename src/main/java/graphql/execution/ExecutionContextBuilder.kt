@@ -2,7 +2,6 @@ package graphql.execution
 
 import graphql.GraphQLException
 import graphql.execution.instrumentation.Instrumentation
-import graphql.language.Definition
 import graphql.language.Document
 import graphql.language.FragmentDefinition
 import graphql.language.OperationDefinition

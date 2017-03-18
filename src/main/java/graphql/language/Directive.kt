@@ -1,20 +1,14 @@
 package graphql.language
 
 
-import java.util.ArrayList
-
 data class Directive(var name: String) : AbstractNode() {
-    private val _arguments = mutableListOf<Argument>()
+    val arguments = mutableListOf<Argument>()
 
     constructor(name: String, arguments: List<Argument>) : this(name) {
-        this._arguments.addAll(arguments)
+        this.arguments.addAll(arguments)
     }
-
-    val arguments: List<Argument>
-        get() = _arguments
-
     override val children: List<Node>
-        get() = _arguments
+        get() = arguments
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true
@@ -25,8 +19,5 @@ data class Directive(var name: String) : AbstractNode() {
         return name == directive.name
     }
 
-    fun add(argument: Argument) {
-        _arguments += argument
-    }
 
 }

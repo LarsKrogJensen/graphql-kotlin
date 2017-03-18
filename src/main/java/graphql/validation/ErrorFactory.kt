@@ -8,11 +8,8 @@ class ErrorFactory {
     fun newError(validationErrorType: ValidationErrorType,
                  locations: List<Node>,
                  description: String): ValidationError {
-        val locationList = locations.map { it.sourceLocation }.filterNotNull()
+        val locationList = locations.map(Node::sourceLocation).filterNotNull()
         return ValidationError(validationErrorType, locationList, description)
     }
 
-    fun newError(validationErrorType: ValidationErrorType, description: String): ValidationError {
-        return ValidationError(validationErrorType, emptyList(), description)
-    }
 }

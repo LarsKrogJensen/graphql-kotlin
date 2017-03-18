@@ -32,7 +32,7 @@ private val pageInfoType = newObject {
     }
 }
 
-fun nodeInterface(resolver: TypeResolver) = newInterface {
+internal fun nodeInterface(resolver: TypeResolver) = newInterface {
     name = "Node"
     description = "An object with an ID"
     typeResolver = resolver
@@ -43,7 +43,7 @@ fun nodeInterface(resolver: TypeResolver) = newInterface {
     }
 }
 
-inline fun <reified T : Any> nodeField(nodeInterface: GraphQLInterfaceType, noinline nodeDataFetcher: DataFetcher<T>): GraphQLFieldDefinition<*> {
+internal inline fun <reified T : Any> nodeField(nodeInterface: GraphQLInterfaceType, noinline nodeDataFetcher: DataFetcher<T>): GraphQLFieldDefinition<*> {
     return newField<T> {
         name = "node"
         description = "Fetches an object given its ID"
@@ -84,7 +84,7 @@ class EdgeTypeBuilder {
     var nodeType: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
 
     inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
-        this.fields += newField<T>(block)
+        this.fields += newField(block)
     }
 }
 
@@ -116,7 +116,7 @@ class ConnectionTypeBuilder {
     val fields: MutableList<GraphQLFieldDefinition<*>> = mutableListOf()
 
     inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
-        this.fields += newField<T>(block)
+        this.fields += newField(block)
     }
 
 }
@@ -141,36 +141,36 @@ fun <T> connectionType(block: ConnectionTypeBuilder.() -> Unit): GraphQLObjectTy
 }
 
 
-inline fun <reified T : Any> mutationWithClientMutationId(baseName: String,
-                                                          fieldName: String,
-                                                          inputFields: List<GraphQLInputObjectField>,
-                                                          outputFields: List<GraphQLFieldDefinition<*>>,
-                                                          noinline dataFetcher: DataFetcher<T>): GraphQLFieldDefinition<*> {
-    val inputObjectType = newInputObject {
-        name = baseName + "Input"
-        field {
-            name = "clientMutationId"
-            type = GraphQLNonNull(GraphQLString)
-        }
-        fields += inputFields
-
-    }
-    val outputType = newObject {
-        name = baseName + "Payload"
-        field<String> {
-            name = "clientMutationId"
-            type = GraphQLNonNull(GraphQLString)
-        }
-        fields += outputFields
-    }
-
-    return newField <T> {
-        name = fieldName
-        type = outputType
-        argument {
-            name = "input"
-            type = GraphQLNonNull(inputObjectType)
-        }
-        fetcher = dataFetcher
-    }
-}
+//inline fun <reified T : Any> mutationWithClientMutationId(baseName: String,
+//                                                          fieldName: String,
+//                                                          inputFields: List<GraphQLInputObjectField>,
+//                                                          outputFields: List<GraphQLFieldDefinition<*>>,
+//                                                          noinline dataFetcher: DataFetcher<T>): GraphQLFieldDefinition<*> {
+//    val inputObjectType = newInputObject {
+//        name = baseName + "Input"
+//        field {
+//            name = "clientMutationId"
+//            type = GraphQLNonNull(GraphQLString)
+//        }
+//        fields += inputFields
+//
+//    }
+//    val outputType = newObject {
+//        name = baseName + "Payload"
+//        field<String> {
+//            name = "clientMutationId"
+//            type = GraphQLNonNull(GraphQLString)
+//        }
+//        fields += outputFields
+//    }
+//
+//    return newField <T> {
+//        name = fieldName
+//        type = outputType
+//        argument {
+//            name = "input"
+//            type = GraphQLNonNull(inputObjectType)
+//        }
+//        fetcher = dataFetcher
+//    }
+//}

@@ -5,7 +5,6 @@ import graphql.language.SourceLocation
 
 class ExceptionWhileDataFetching(val exception: Throwable) : GraphQLError {
 
-
     override fun message(): String {
         return "Exception while fetching data: " + exception.toString()
     }

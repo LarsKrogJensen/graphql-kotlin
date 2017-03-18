@@ -5,19 +5,10 @@ package graphql.language
 class NonNullType : AbstractNode, Type {
 
     var type: Type? = null
-        private set
 
     constructor()
 
     constructor(type: Type) {
-        this.type = type
-    }
-
-    fun type(type: ListType) {
-        this.type = type
-    }
-
-    fun type(type: TypeName) {
         this.type = type
     }
 

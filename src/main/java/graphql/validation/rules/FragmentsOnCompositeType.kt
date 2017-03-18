@@ -4,7 +4,6 @@ package graphql.validation.rules
 import graphql.language.FragmentDefinition
 import graphql.language.InlineFragment
 import graphql.schema.GraphQLCompositeType
-import graphql.schema.GraphQLType
 import graphql.validation.*
 
 class FragmentsOnCompositeType(validationContext: IValidationContext,
@@ -22,7 +21,7 @@ class FragmentsOnCompositeType(validationContext: IValidationContext,
     }
 
     override fun checkFragmentDefinition(fragmentDefinition: FragmentDefinition) {
-        val typeCondition = fragmentDefinition.typeCondition ?: return
+        val typeCondition = fragmentDefinition.typeCondition
 
         val type = validationContext.schema.type(typeCondition.name) ?: return
         if (type !is GraphQLCompositeType) {

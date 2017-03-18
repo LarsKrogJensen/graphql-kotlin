@@ -4,7 +4,7 @@ package graphql.language
 class Field : AbstractNode, Selection {
     val name: String
     var alias: String? = null
-    var arguments: List<Argument> = mutableListOf()
+    val arguments: MutableList<Argument> = mutableListOf()
     var directives: MutableList<Directive> = mutableListOf()
     var selectionSet: SelectionSet = SelectionSet()
 
@@ -17,7 +17,7 @@ class Field : AbstractNode, Selection {
     }
 
     constructor(name: String, arguments: List<Argument>) : this(name) {
-        this.arguments = arguments
+        this.arguments.addAll(arguments)
     }
 
     constructor(name: String, arguments: List<Argument>, directives: List<Directive>) : this(name, arguments) {
@@ -57,13 +57,5 @@ class Field : AbstractNode, Selection {
                 ", directives=" + directives +
                 ", selectionSet=" + selectionSet +
                 '}'
-    }
-
-    fun add(directive: Directive) {
-        directives.add(directive)
-    }
-
-    fun add(argument: Argument) {
-        arguments += argument
     }
 }

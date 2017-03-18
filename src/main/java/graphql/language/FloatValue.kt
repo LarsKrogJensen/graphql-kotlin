@@ -2,11 +2,8 @@ package graphql.language
 
 
 import java.math.BigDecimal
-import java.util.ArrayList
 
 data class FloatValue(var value: BigDecimal) : AbstractNode(), Value {
-    override val children: List<Node>
-        get() = emptyList()
 
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true

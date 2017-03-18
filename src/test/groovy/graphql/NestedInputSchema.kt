@@ -26,7 +26,6 @@ val filterType = newInputObject {
         name = "range"
         type = rangeType
     }
-
 }
 
 val rootType = newObject {

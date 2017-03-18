@@ -3,7 +3,6 @@ package graphql.schema
 import graphql.Assert.assertNotNull
 import graphql.AssertException
 import java.util.*
-import kotlin.coroutines.experimental.EmptyCoroutineContext.plus
 import kotlin.properties.Delegates.notNull
 
 open class GraphQLInterfaceType(override val name: String,
@@ -64,7 +63,7 @@ open class GraphQLInterfaceType(override val name: String,
         }
 
         inline fun <reified T : Any> field(block: GraphQLFieldDefinition.Builder<T>.() -> Unit) {
-            this.fields += newField<T>(block)
+            this.fields += newField(block)
         }
 
         fun field(fieldDefinition: GraphQLFieldDefinition<*>): Builder {

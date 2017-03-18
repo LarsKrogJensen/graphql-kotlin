@@ -2,7 +2,6 @@ package graphql.language
 
 
 import java.math.BigInteger
-import java.util.ArrayList
 
 class IntValue(var value: BigInteger) : AbstractNode(), Value {
 

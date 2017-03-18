@@ -7,7 +7,7 @@ class ListType : AbstractNode, Type {
 
     var type: Type? = null
 
-    constructor() {}
+    constructor()
 
     constructor(type: Type) {
         this.type = type

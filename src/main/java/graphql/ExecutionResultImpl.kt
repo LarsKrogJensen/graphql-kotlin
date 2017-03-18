@@ -9,7 +9,6 @@ class ExecutionResultImpl : ExecutionResult {
     override fun <T> data(): T = _data as T
 
     override val errors = ArrayList<GraphQLError>()
-//    override fun data(): Any? = null
 
     constructor(errors: List<GraphQLError>) {
         this.errors.addAll(errors)

@@ -35,7 +35,7 @@ private fun toNumber(input: Any?) = when (input) {
 }
 
 private fun verifyRange(input: IntValue, min: BigInteger, max: BigInteger): IntValue {
-    val value = input.value;
+    val value = input.value
     if (value.compareTo(min) == -1 || value.compareTo(max) == 1) {
         throw GraphQLException("Scalar literal is too big or too small")
     }
@@ -56,7 +56,6 @@ val GraphQLInt = GraphQLScalarType("Int", "Built-in Int", object : Coercing<Int?
 
     override fun parseLiteral(input: Any?): Int? =
             when (input) {
-//                is StringValue -> input.value.toInt()
                 is IntValue -> verifyRange(input, INT_MIN, INT_MAX).value.toInt()
                 else        -> null
             }
@@ -228,7 +227,7 @@ val GraphQLChar = GraphQLScalarType("Char", "Built-in Char as Character", object
     override fun serialize(input: Any?): Char? =
             when (input) {
                 is Char   -> input
-                is String -> if (input.length == 1) input.get(0) else null
+                is String -> if (input.length == 1) input[0] else null
                 else      -> null
             }
 
@@ -236,7 +235,7 @@ val GraphQLChar = GraphQLScalarType("Char", "Built-in Char as Character", object
 
     override fun parseLiteral(input: Any?): Char? =
             when (input) {
-                is StringValue -> if (input.value.length == 1) input.value.get(0) else null
+                is StringValue -> if (input.value.length == 1) input.value[0] else null
                 else           -> null
             }
 })
@@ -263,10 +262,6 @@ val GraphQLDate = GraphQLScalarType("DateTime", "DateTime type", object : Coerci
         if (input !is StringValue) return null
         return parse(input.value)
     }
-
-//    private fun format(input: Date?): String? {
-//        return inputsimpleDateFormat.format(input.time)
-//    }
 
     private fun parse(input: String?): Date {
         try {

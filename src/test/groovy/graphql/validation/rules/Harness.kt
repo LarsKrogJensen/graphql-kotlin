@@ -155,30 +155,6 @@ val HumanOrAlien = newUnionType {
     typeResolver = dummyTypeResolve
 }
 
-//    public static GraphQLInputObjectType ComplexInput = newInputObject()
-//            .field(newInputObjectField()
-//                    .name("requiredField")
-//                    .type(new GraphQLNonNull(GraphQLBoolean))
-//                    .build())
-//            .field(newInputObjectField()
-//                    .name("intField")
-//                    .type(GraphQLInt)
-//                    .build())
-//            .field(newInputObjectField()
-//                    .name("stringField")
-//                    .type(GraphQLString)
-//                    .build())
-//            .field(newInputObjectField()
-//                    .name("booleanField")
-//                    .type(GraphQLBoolean)
-//                    .build())
-//            .field(newInputObjectField()
-//                    .name("stringListField")
-//                    .type(new GraphQLList(GraphQLString))
-//                    .build())
-//            .build();
-
-
 val QueryRoot = newObject {
     name = "QueryRoot"
     field<Any> {

@@ -2,11 +2,7 @@ package graphql.language
 
 class SelectionSet : AbstractNode {
 
-    private val selections = mutableListOf<Selection>()
-
-    fun selections(): MutableList<Selection> {
-        return selections
-    }
+    val selections = mutableListOf<Selection>()
 
     constructor()
 

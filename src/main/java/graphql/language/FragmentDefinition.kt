@@ -14,7 +14,7 @@ class FragmentDefinition : AbstractNode, Definition {
 
     constructor(name: String, typeCondition: TypeName,
                 selectionSet: SelectionSet) : this(name, typeCondition) {
-        this.selectionSet.selections().addAll(selectionSet.selections())
+        this.selectionSet.selections.addAll(selectionSet.selections)
     }
 
     override val children: List<Node>

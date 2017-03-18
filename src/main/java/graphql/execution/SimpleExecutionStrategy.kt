@@ -2,10 +2,8 @@ package graphql.execution
 
 import graphql.ExecutionResult
 import graphql.ExecutionResultImpl
-import graphql.GraphQLError
 import graphql.language.Field
 import graphql.schema.GraphQLObjectType
-
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
@@ -16,6 +14,8 @@ open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
                          source: Any,
                          fields: Map<String, List<Field>>): CompletionStage<ExecutionResult> {
         val promise = CompletableFuture<ExecutionResult>()
+
+        println("**** Executing ${parentType.name} source ${source.javaClass.name} fields ${fields.keys.map { it }}")
 
         val results = LinkedHashMap<String, Any?>()
         val fieldPromises = fields.map { (fieldName, fieldList) ->

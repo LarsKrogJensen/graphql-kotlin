@@ -3,11 +3,9 @@ package graphql.validation
 
 import graphql.language.Node
 
-import java.util.ArrayList
-
 class LanguageTraversal() {
 
-    private val _path: MutableList<Node> = mutableListOf<Node>()
+    private val _path: MutableList<Node> = mutableListOf()
 
     constructor(basePath:List<Node>) : this() {
         _path.addAll(basePath)

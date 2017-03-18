@@ -3,9 +3,6 @@ package graphql.language
 
 data class StringValue(var value: String) : AbstractNode(), Value {
 
-    override val children: List<Node>
-        get() = emptyList()
-
     override fun isEqualTo(node: Node): Boolean {
         if (this === node) return true
         if (javaClass != node.javaClass) return false

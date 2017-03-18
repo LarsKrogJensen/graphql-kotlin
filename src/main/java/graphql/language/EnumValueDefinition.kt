@@ -1,8 +1,5 @@
 package graphql.language
 
-
-import java.util.ArrayList
-
 class EnumValueDefinition(val name: String,
                           directives: List<Directive>? = null) : AbstractNode() {
     val directives: MutableList<Directive> = mutableListOf()

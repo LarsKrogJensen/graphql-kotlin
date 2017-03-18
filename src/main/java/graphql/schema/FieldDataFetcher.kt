@@ -28,15 +28,6 @@ private class FieldDataFetcher<T>(private val fieldName: String) {
         return promise
     }
 
-    /**
-     * Uses introspection to get the field value.
-
-     * @param object     The object being acted on.
-     * *
-     * @param outputType The output type; ignored in this case.
-     * *
-     * @return An object, or null.
-     */
     private fun fieldValue(obj: Any): T? {
         try {
             val field = obj.javaClass.getField(fieldName)

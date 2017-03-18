@@ -1,12 +1,10 @@
 package graphql.execution
 
 
+import graphql.execution.TypeFromAST.getTypeFromAST
 import graphql.language.*
 import graphql.schema.*
-
-import java.util.ArrayList
-
-import graphql.execution.TypeFromAST.getTypeFromAST
+import java.util.*
 
 class FieldCollector {
 
@@ -14,14 +12,13 @@ class FieldCollector {
 
     private val _schemaUtil = SchemaUtil()
 
-
     fun collectFields(executionContext: ExecutionContext,
                       type: GraphQLObjectType,
                       selectionSet: SelectionSet,
                       visitedFragments: MutableList<String>,
                       fields: MutableMap<String, MutableList<Field>>) {
 
-        for (selection in selectionSet.selections()) {
+        for (selection in selectionSet.selections) {
             when (selection) {
                 is Field          -> collectField(executionContext, fields, selection)
                 is InlineFragment -> collectInlineFragment(executionContext, type, visitedFragments, fields, selection)

@@ -166,8 +166,4 @@ class SchemaUtil {
         }
         return type
     }
-
-    internal fun resolveTypeReferences(types: List<GraphQLType>, typeMap: Map<String, GraphQLType>): List<GraphQLType> {
-        return types.map { resolveTypeReference(it, typeMap) }
-    }
 }

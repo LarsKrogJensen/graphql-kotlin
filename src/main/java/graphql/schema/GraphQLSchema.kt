@@ -47,7 +47,7 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
     class Builder {
         var query: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
         var mutation: GraphQLObjectType? = null
-        var dictionary: Set<GraphQLType> = emptySet();
+        var dictionary: Set<GraphQLType> = emptySet()
 
         fun query(builder: GraphQLObjectType.Builder): Builder {
             return query(builder.build())

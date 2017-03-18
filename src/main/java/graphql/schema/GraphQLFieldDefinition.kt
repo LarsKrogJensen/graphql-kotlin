@@ -111,11 +111,6 @@ class GraphQLFieldDefinition<T>(val name: String,
             return this
         }
 
-        fun deprecate(deprecationReason: String): Builder<T> {
-            this.deprecationReason = deprecationReason
-            return this
-        }
-
         fun build(): GraphQLFieldDefinition<T> {
             val fetcher: DataFetcher<T> = fetcher ?:
                     if (isField) {
