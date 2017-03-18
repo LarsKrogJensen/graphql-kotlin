@@ -1,6 +1,7 @@
 package graphql.validation.rules
 
-import graphql.TestUtil
+import graphql.TestUtilKt
+import graphql.TestUtilKt.*
 import graphql.language.Document
 import graphql.parser.Parser
 import graphql.validation.*
@@ -14,11 +15,11 @@ class NoUnusedVariablesTest extends Specification {
 
     def traverse(String query) {
         Document document = new Parser().parseDocument(query)
-        ValidationContext validationContext = new ValidationContext(TestUtil.dummySchema, document)
+        ValidationContext validationContext = new ValidationContext(TestUtilKt.dummySchema, document)
         NoUnusedVariables noUnusedVariables = new NoUnusedVariables(validationContext, errorCollector)
-        LanguageTraversal languageTraversal = new LanguageTraversal();
+        LanguageTraversal languageTraversal = new LanguageTraversal()
 
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedVariables], false,));
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noUnusedVariables], false,))
     }
 
 

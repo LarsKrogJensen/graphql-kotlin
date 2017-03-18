@@ -1,6 +1,6 @@
 package graphql.validation.rules
 
-import graphql.TestUtil
+import graphql.TestUtilKt
 import graphql.language.Document
 import graphql.parser.Parser
 import graphql.validation.*
@@ -12,11 +12,11 @@ class NoFragmentCyclesTest extends Specification {
 
     def traverse(String query) {
         Document document = new Parser().parseDocument(query)
-        IValidationContext validationContext = new ValidationContext(TestUtil.dummySchema, document)
+        IValidationContext validationContext = new ValidationContext(TestUtilKt.dummySchema, document)
         NoFragmentCycles noFragmentCycles = new NoFragmentCycles(validationContext, errorCollector)
-        LanguageTraversal languageTraversal = new LanguageTraversal();
+        LanguageTraversal languageTraversal = new LanguageTraversal()
 
-        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noFragmentCycles], false));
+        languageTraversal.traverse(document, new RulesVisitor(validationContext, [noFragmentCycles], false))
     }
 
     def 'single reference is valid'() {

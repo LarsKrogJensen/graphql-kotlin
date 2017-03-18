@@ -1,7 +1,7 @@
 package graphql.execution
 
 import graphql.GraphQLException
-import graphql.TestUtil
+import graphql.TestUtilKt
 import graphql.language.*
 import graphql.schema.GraphQLArgument
 import graphql.schema.GraphQLList
@@ -10,7 +10,6 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import static graphql.ScalarsKt.*
-import static graphql.schema.GraphQLEnumType.newEnum
 import static graphql.schema.GraphQLEnumTypeKt.newEnum
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField
 import static graphql.schema.GraphQLInputObjectType.newInputObject
@@ -23,7 +22,7 @@ class ValuesResolverTest extends Specification {
     @Unroll
     def "getVariableValues: simple variable input #inputValue"() {
         given:
-        def schema = TestUtil.schemaWithInputType(inputType)
+        def schema = TestUtilKt.schemaWithInputType(inputType)
         VariableDefinition variableDefinition = new VariableDefinition("variable", variableType)
 
         when:
@@ -59,7 +58,7 @@ class ValuesResolverTest extends Specification {
                 .field(nameField)
                 .field(idField)
                 .build()
-        def schema = TestUtil.schemaWithInputType(inputType)
+        def schema = TestUtilKt.schemaWithInputType(inputType)
         VariableDefinition variableDefinition = new VariableDefinition("variable", new TypeName("Person"))
 
         when:
@@ -75,7 +74,7 @@ class ValuesResolverTest extends Specification {
 
     def "getVariableValues: simple value gets resolved to a list when the type is a List"() {
         given:
-        def schema = TestUtil.schemaWithInputType(new GraphQLList(GraphQLString))
+        def schema = TestUtilKt.schemaWithInputType(new GraphQLList(GraphQLString))
         VariableDefinition variableDefinition = new VariableDefinition("variable", new ListType(new TypeName("String")))
         String value = "world"
         when:
@@ -224,8 +223,8 @@ class ValuesResolverTest extends Specification {
 
     def "getArgumentValues: resolves enum literals"() {
         given: "the ast"
-        EnumValue enumValue1 = new EnumValue("PLUTO");
-        EnumValue enumValue2 = new EnumValue("MARS");
+        EnumValue enumValue1 = new EnumValue("PLUTO")
+        EnumValue enumValue2 = new EnumValue("MARS")
         def argument1 = new Argument("arg1", enumValue1)
         def argument2 = new Argument("arg2", enumValue2)
 
@@ -285,7 +284,7 @@ class ValuesResolverTest extends Specification {
                 .value("VALUE_TEST", 1)
                 .build()
 
-        def schema = TestUtil.schemaWithInputType(enumDef)
+        def schema = TestUtilKt.schemaWithInputType(enumDef)
         VariableDefinition variableDefinition = new VariableDefinition("variable", new TypeName("Test"))
 
         when:
@@ -313,7 +312,7 @@ class ValuesResolverTest extends Specification {
                 .defaultValue("defaultString"))
                 .build()
 
-        def schema = TestUtil.schemaWithInputType(inputObjectType)
+        def schema = TestUtilKt.schemaWithInputType(inputObjectType)
         VariableDefinition variableDefinition = new VariableDefinition("variable", new TypeName("InputObject"))
 
         when:
@@ -342,7 +341,7 @@ class ValuesResolverTest extends Specification {
                 .type(new GraphQLNonNull(GraphQLString)))
                 .build()
 
-        def schema = TestUtil.schemaWithInputType(inputObjectType)
+        def schema = TestUtilKt.schemaWithInputType(inputObjectType)
         VariableDefinition variableDefinition = new VariableDefinition("variable", new TypeName("InputObject"))
 
         when:
