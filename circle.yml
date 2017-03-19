@@ -1,0 +1,4 @@
+test:
+  post:
+    - mkdir -p $CIRCLE_ARTIFACTS/graphql-kotlin
+    - mv target/site  $CIRCLE_ARTIFACTS/graphql-kotlin/coverage-report
