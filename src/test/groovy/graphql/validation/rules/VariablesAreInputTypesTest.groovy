@@ -6,7 +6,6 @@ import graphql.language.NonNullType
 import graphql.language.TypeName
 import graphql.language.VariableDefinition
 import graphql.validation.IValidationContext
-import graphql.validation.ValidationContext
 import graphql.validation.ValidationErrorCollector
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification

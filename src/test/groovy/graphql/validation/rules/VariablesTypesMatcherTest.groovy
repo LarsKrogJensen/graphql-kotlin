@@ -9,7 +9,6 @@ import spock.lang.Unroll
 import static graphql.ScalarsKt.GraphQLBoolean
 import static graphql.ScalarsKt.GraphQLString
 
-
 class VariablesTypesMatcherTest extends Specification {
 
     VariablesTypesMatcher typesMatcher = new VariablesTypesMatcher()

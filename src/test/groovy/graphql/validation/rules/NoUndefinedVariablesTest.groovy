@@ -1,7 +1,6 @@
 package graphql.validation.rules
 
 import graphql.TestUtilKt
-import graphql.TestUtilKt.*
 import graphql.language.Document
 import graphql.parser.Parser
 import graphql.validation.*

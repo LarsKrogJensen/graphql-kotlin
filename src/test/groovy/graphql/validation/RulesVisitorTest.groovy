@@ -1,10 +1,8 @@
 package graphql.validation
 
 import graphql.TestUtilKt
-import graphql.TestUtilKt.*
 import graphql.language.Document
 import graphql.parser.Parser
-import graphql.validation.rules.NoFragmentCycles
 import graphql.validation.rules.NoUnusedVariables
 import spock.lang.Specification
 

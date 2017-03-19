@@ -1,11 +1,10 @@
 package graphql
 
 
-import graphql.schema.*
-import graphql.schema.GraphQLFieldDefinition.Companion.newFieldDefinition
-import graphql.schema.GraphQLInterfaceType.Companion.newInterface
-import graphql.schema.GraphQLObjectType.Companion.newObject
-import graphql.schema.GraphQLUnionType.Companion.newUnionType
+import graphql.schema.GraphQLList
+import graphql.schema.GraphQLTypeReference
+import graphql.schema.interfaceRef
+import graphql.schema.newSchema
 import java.util.*
 
 object GarfieldSchema {
@@ -37,7 +36,7 @@ object GarfieldSchema {
     val liz = Person("Liz")
     val john = Person("John", Arrays.asList(garfield), Arrays.asList(odie), Arrays.asList(liz, odie))
 
-    val NamedType = newInterface {
+    val NamedType = graphql.schema.newInterface {
         name = "Named"
         field<String> {
             name = "name"
@@ -52,7 +51,7 @@ object GarfieldSchema {
         }
     }
 
-    val DogType = newObject {
+    val DogType = graphql.schema.newObject {
         name = "Dog"
         field<String> {
             name = "name"
@@ -63,7 +62,7 @@ object GarfieldSchema {
         interfaces += interfaceRef("Named")
     }
 
-    val CatType = newObject {
+    val CatType = graphql.schema.newObject {
         name = "Cat"
         field<String> {
             name = "name"
@@ -74,7 +73,7 @@ object GarfieldSchema {
         interfaces += interfaceRef("Named")
     }
 
-    val PetType = newUnionType {
+    val PetType = graphql.schema.newUnionType {
         name = "Pet"
         types += CatType
         types += DogType
@@ -87,7 +86,7 @@ object GarfieldSchema {
         }
     }
 
-    val PersonType = newObject {
+    val PersonType = graphql.schema.newObject {
         name = "Person"
         field<String> {
             name = "name"

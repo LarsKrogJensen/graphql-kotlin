@@ -1,13 +1,9 @@
 package graphql.schema
 
+import graphql.AssertException
 import spock.lang.Specification
 
-import graphql.AssertException
-
 import static graphql.schema.GraphQLUnionType.newUnionType
-
-import static graphql.ScalarsKt.GraphQLString
-
 
 class GraphQLUnionTypeTest extends Specification {
 

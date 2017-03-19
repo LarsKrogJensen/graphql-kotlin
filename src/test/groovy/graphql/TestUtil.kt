@@ -1,6 +1,9 @@
 package graphql
 
-import graphql.schema.*
+import graphql.schema.GraphQLInputType
+import graphql.schema.GraphQLSchema
+import graphql.schema.newObject
+import graphql.schema.newSchema
 
 fun schemaWithInputType(inputType: GraphQLInputType) : GraphQLSchema {
       return newSchema {

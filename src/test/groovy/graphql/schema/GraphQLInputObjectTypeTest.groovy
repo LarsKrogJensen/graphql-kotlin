@@ -1,14 +1,11 @@
 package graphql.schema
 
+import graphql.AssertException
 import graphql.ScalarsKt
 import spock.lang.Specification
 
-import graphql.AssertException
-
-import static graphql.schema.GraphQLInputObjectType.newInputObject
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField
-
-
+import static graphql.schema.GraphQLInputObjectType.newInputObject
 
 class GraphQLInputObjectTypeTest extends Specification {
 

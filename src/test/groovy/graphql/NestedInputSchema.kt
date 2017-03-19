@@ -1,6 +1,8 @@
 package graphql
 
-import graphql.schema.*
+import graphql.schema.newInputObject
+import graphql.schema.newObject
+import graphql.schema.newSchema
 import java.util.concurrent.CompletableFuture.completedFuture
 
 

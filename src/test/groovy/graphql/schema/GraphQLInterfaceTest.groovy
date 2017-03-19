@@ -1,14 +1,11 @@
 package graphql.schema
 
+import graphql.AssertException
 import spock.lang.Specification
 
-import graphql.AssertException
-
-import static graphql.schema.GraphQLInterfaceType.newInterface
-import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
-
 import static graphql.ScalarsKt.GraphQLString
-
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
+import static graphql.schema.GraphQLInterfaceType.newInterface
 
 class GraphQLInterfaceTest extends Specification {
 

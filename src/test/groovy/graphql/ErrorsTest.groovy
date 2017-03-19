@@ -5,7 +5,6 @@ import graphql.validation.ValidationError
 import graphql.validation.ValidationErrorType
 import spock.lang.Specification
 
-
 @SuppressWarnings("ChangeToOperator")
 class ErrorsTest extends Specification {
 
@@ -40,7 +39,7 @@ class ErrorsTest extends Specification {
     def "ValidationError equals and hashcode works"() {
         expect:
 
-        def same1 = new ValidationError(ValidationErrorType.BadValueForDefaultArg,[src(15,34),src(23,567)],"bad ju ju")
+        def same1 = new ValidationError(ValidationErrorType.BadValueForDefaultArg,[src(15,34), src(23,567)],"bad ju ju")
         def same2 = new ValidationError(ValidationErrorType.BadValueForDefaultArg,[src(15,34),src(23,567)],"bad ju ju")
         def different1 = new ValidationError(ValidationErrorType.FieldsConflict,[src(15,34),src(23,567)],"bad ju ju")
 

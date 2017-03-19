@@ -1,16 +1,9 @@
 package graphql.validation
 
 import graphql.GraphQLBoolean
-import graphql.GraphQLInt
-import graphql.GraphQLString
 import graphql.GraphQLStringNonNull
 import graphql.schema.*
-import graphql.schema.GraphQLInterfaceType.Companion.newInterface
-import graphql.schema.GraphQLObjectType.Companion.newObject
-import graphql.schema.GraphQLSchema.Companion.newSchema
-import graphql.schema.GraphQLUnionType.Companion.newUnionType
 import graphql.validation.SpecValidationSchemaPojos.*
-import java.util.*
 
 /**
  * Sample schema used in the spec for validation examples

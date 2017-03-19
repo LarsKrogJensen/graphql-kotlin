@@ -1,10 +1,7 @@
 package graphql
 
 import graphql.schema.DataFetchingEnvironmentImpl
-import graphql.schema.FieldDataFetcher
 import graphql.schema.FieldDataFetcherKt
-import graphql.schema.GraphQLList
-import graphql.schema.PropertyDataFetcher
 import graphql.schema.PropertyDataFetcherKt
 import spock.lang.Specification
 

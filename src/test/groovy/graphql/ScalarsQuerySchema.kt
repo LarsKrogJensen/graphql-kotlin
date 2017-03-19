@@ -1,8 +1,10 @@
 package graphql
 
 
-import graphql.schema.*
-
+import graphql.schema.DataFetcher
+import graphql.schema.GraphQLNonNull
+import graphql.schema.newObject
+import graphql.schema.newSchema
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.concurrent.CompletableFuture.completedFuture
