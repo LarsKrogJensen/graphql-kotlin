@@ -9,7 +9,6 @@ import graphql.execution.instrumentation.parameters.FieldParameters
 import graphql.introspection.Introspection.SchemaMetaFieldDef
 import graphql.introspection.Introspection.TypeMetaFieldDef
 import graphql.introspection.Introspection.TypeNameMetaFieldDef
-import graphql.schema.*
 import graphql.language.Field
 import graphql.schema.*
 import java.util.*
@@ -71,7 +70,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
                       result: Any?): CompletionStage<ExecutionResult> {
         val promise = CompletableFuture<ExecutionResult>()
 
-        println("-----CompleteValue ${fieldType.name} fields ${fields.map { it.name }}")
+        //println("-----CompleteValue ${fieldType.name} fields ${fields.map { it.name }}")
 
         if (fieldType is GraphQLNonNull) {
             val graphQLNonNull = fieldType

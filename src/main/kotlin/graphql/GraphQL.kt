@@ -5,7 +5,6 @@ import graphql.execution.instrumentation.Instrumentation
 import graphql.execution.instrumentation.NoOpInstrumentation
 import graphql.execution.instrumentation.parameters.ExecutionParameters
 import graphql.execution.instrumentation.parameters.ValidationParameters
-import graphql.execution.Execution
 import graphql.language.Document
 import graphql.language.SourceLocation
 import graphql.parser.Parser
@@ -16,6 +15,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
+import kotlin.properties.Delegates
 
 
 class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
@@ -25,11 +25,12 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
                                   private val instrumentation: Instrumentation) {
 
 
-    class Builder(private val graphQLSchema: GraphQLSchema) {
-        private var queryExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
-        private var mutationExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
-        private var idProvider = DEFAULT_EXECUTION_ID_PROVIDER
-        private var instrumentation: Instrumentation = NoOpInstrumentation.INSTANCE
+    class Builder {
+        var schema: GraphQLSchema by Delegates.notNull<GraphQLSchema>()
+        var queryExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
+        var mutationExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
+        var idProvider = DEFAULT_EXECUTION_ID_PROVIDER
+        var instrumentation: Instrumentation = NoOpInstrumentation.INSTANCE
 
 
         fun queryExecutionStrategy(executionStrategy: IExecutionStrategy): Builder {
@@ -53,7 +54,7 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         }
 
         fun build(): GraphQL {
-            return GraphQL(graphQLSchema, queryExecutionStrategy, mutationExecutionStrategy, idProvider, instrumentation)
+            return GraphQL(schema, queryExecutionStrategy, mutationExecutionStrategy, idProvider, instrumentation)
         }
     }
 
@@ -122,12 +123,16 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         }
 
         @JvmStatic
-        fun newGraphQL(graphQLSchema: GraphQLSchema): Builder {
-            return Builder(graphQLSchema)
+        fun newGraphQL(schema: GraphQLSchema): Builder {
+            val builder = Builder()
+            builder.schema = schema
+            return builder
         }
     }
 }
 
-fun newGraphQL(graphQLSchema: GraphQLSchema): GraphQL.Builder {
-    return GraphQL.Builder(graphQLSchema)
+fun newGraphQL(block: GraphQL.Builder.() -> Unit): GraphQL {
+    val builder = GraphQL.Builder()
+    builder.block()
+    return builder.build()
 }

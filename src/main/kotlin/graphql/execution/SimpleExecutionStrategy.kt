@@ -15,7 +15,7 @@ open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
                          fields: Map<String, List<Field>>): CompletionStage<ExecutionResult> {
         val promise = CompletableFuture<ExecutionResult>()
 
-        println("**** Executing ${parentType.name} source ${source.javaClass.name} fields ${fields.keys.map { it }}")
+        //println("**** Executing ${parentType.name} source ${source.javaClass.name} fields ${fields.keys.map { it }}")
 
         val results = LinkedHashMap<String, Any?>()
         val fieldPromises = fields.map { (fieldName, fieldList) ->

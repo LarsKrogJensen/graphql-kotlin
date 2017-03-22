@@ -23,7 +23,6 @@ class Parser {
 
         val document = parser.document()
 
-
         val antlrToLanguage = GraphqlAntlrToLanguage()
         antlrToLanguage.visitDocument(document)
         return antlrToLanguage.result

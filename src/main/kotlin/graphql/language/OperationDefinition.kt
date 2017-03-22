@@ -1,12 +1,12 @@
 package graphql.language
 
 
-import java.util.ArrayList
+import java.util.*
 
 class OperationDefinition : AbstractNode, Definition {
 
     enum class Operation {
-        QUERY, MUTATION
+        QUERY, MUTATION, SUBSCRIPTIO
     }
 
     var name: String? = null

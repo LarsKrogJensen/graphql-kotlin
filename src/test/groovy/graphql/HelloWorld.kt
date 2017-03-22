@@ -1,9 +1,8 @@
 package graphql
 
 
-import graphql.schema.GraphQLFieldDefinition.Companion.newFieldDefinition
-import graphql.schema.GraphQLObjectType.Companion.newObject
-import graphql.schema.GraphQLSchema
+import graphql.schema.newObject
+import graphql.schema.newSchema
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -11,50 +10,47 @@ class HelloWorld {
 
     @Test
     fun helloWorldTest() {
-        val queryType = newObject()
-                .name("helloWorldQuery")
-                .field(newFieldDefinition<String>()
-                               .type(GraphQLString)
-                               .name("hello")
-                               .staticValue("world"))
-                .build()
+        val queryType = newObject {
+            name = "helloWorldQuery"
+            field<String> {
+                name = "hello"
+                staticValue = "world"
+            }
+        }
 
-        val schema = GraphQLSchema.newSchema()
-                .query(queryType)
-                .build()
-        val graphQL = newGraphQL(schema).build()
+        val graphQL = newGraphQL {
+            schema = newSchema {
+                query = queryType
+            }
+        }
         val result = graphQL.execute("{hello}").toCompletableFuture().get().data<Map<String, Any?>>()
 
         assertEquals("world", result["hello"])
     }
 
-    companion object {
+}
 
-        @JvmStatic fun main(args: Array<String>) {
-            val queryType = newObject()
-                    .name("helloWorldQuery")
-                    .field(newFieldDefinition<String>()
-                                   .type(GraphQLString)
-                                   .name("hello")
-                                   .staticValue("world"))
-                    .build()
-
-            val schema = GraphQLSchema.newSchema()
-                    .query(queryType)
-                    .build()
-
-            val graphQL = newGraphQL(schema).build()
-
-            val result = graphQL.execute("{hello}").handle { result, ex ->
-                ex?.printStackTrace()
-                if (result.errors.isEmpty())
-                    println(result.data<Any>())
-                else
-                    println(result.errors)
-            }
-
-            println(result)
-            // Prints: {hello=world}
+fun main(args: Array<String>) {
+    val queryType = newObject {
+        name = "helloWorldQuery"
+        field<String> {
+            name = "hello"
+            staticValue = "world"
         }
     }
+
+    val graphQL = newGraphQL {
+        this.schema = newSchema { query = queryType }
+    }
+
+    val result = graphQL.execute("{hello}").handle { result, ex ->
+        ex?.printStackTrace()
+        if (result.errors.isEmpty())
+            println(result.data<Any>())
+        else
+            println(result.errors)
+    }
+
+    println(result)
+    // Prints: {hello=world}
 }

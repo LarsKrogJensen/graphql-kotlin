@@ -2,14 +2,12 @@ package graphql.schema
 
 
 import graphql.*
-
-import java.util.*
-
 import graphql.Assert.assertNotNull
 import graphql.schema.validation.InvalidSchemaException
 import graphql.schema.validation.Validator
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.*
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 

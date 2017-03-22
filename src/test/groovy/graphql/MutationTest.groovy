@@ -2,7 +2,7 @@ package graphql
 
 import spock.lang.Specification
 
-import static graphql.GraphQLKt.newGraphQL
+import static graphql.GraphQL.newGraphQL
 
 
 class MutationTest extends Specification {
