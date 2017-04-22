@@ -99,14 +99,14 @@ class SchemaUtil {
     }
 
 
-    fun allTypes(schema: GraphQLSchema, dictionary: Set<GraphQLType>?): Map<String, GraphQLType> {
+    fun allTypes(schema: GraphQLSchema, additionalTypes: Set<GraphQLType>?): Map<String, GraphQLType> {
         val typesByName = LinkedHashMap<String, GraphQLType>()
         collectTypes(schema.queryType, typesByName)
         if (schema.isSupportingMutations) {
             collectTypes(schema.mutationType!!, typesByName)
         }
-        if (dictionary != null) {
-            for (type in dictionary) {
+        if (additionalTypes != null) {
+            for (type in additionalTypes) {
                 collectTypes(type, typesByName)
             }
         }
@@ -115,7 +115,7 @@ class SchemaUtil {
     }
 
     fun findImplementations(schema: GraphQLSchema, interfaceType: GraphQLInterfaceType): List<GraphQLObjectType> {
-        return allTypes(schema, schema.dictionary).values
+        return allTypes(schema, schema.addtionalTypes).values
                 .filterIsInstance<GraphQLObjectType>()
                 .map { it }
                 .filter { it.interfaces.contains(interfaceType) }
@@ -123,7 +123,7 @@ class SchemaUtil {
 
 
     fun replaceTypeReferences(schema: GraphQLSchema) {
-        val typeMap = allTypes(schema, schema.dictionary)
+        val typeMap = allTypes(schema, schema.addtionalTypes)
         for (type in typeMap.values) {
             if (type is GraphQLObjectType)
                 type.replaceTypeReferences(typeMap)
@@ -133,6 +133,9 @@ class SchemaUtil {
             }
             if (type is GraphQLInputFieldsContainer) {
                 resolveTypeReferencesForInputFieldsContainer(type, typeMap)
+            }
+            if (type is GraphQLUnionType) {
+                type.replaceTypeReferences(typeMap)
             }
         }
     }

@@ -1,15 +1,13 @@
 package graphql.execution
 
+import graphql.Assert.assertNotNull
 import graphql.GraphQLException
 import graphql.execution.instrumentation.Instrumentation
 import graphql.language.Document
 import graphql.language.FragmentDefinition
 import graphql.language.OperationDefinition
 import graphql.schema.GraphQLSchema
-
-import java.util.LinkedHashMap
-
-import graphql.Assert.assertNotNull
+import java.util.*
 
 class ExecutionContextBuilder(private val valuesResolver: ValuesResolver,
                               private val instrumentation: Instrumentation) {
@@ -49,13 +47,13 @@ class ExecutionContextBuilder(private val valuesResolver: ValuesResolver,
         }
         val operation: OperationDefinition?
 
-        if (operationName == null) {
+        if (operationName == null || operationName.isEmpty()) {
             operation = operationsByName.values.iterator().next()
         } else {
             operation = operationsByName[operationName]
         }
         if (operation == null) {
-            throw GraphQLException()
+            throw GraphQLException("Missing operation by name '" + operationName + "'")
         }
         val variableValues = valuesResolver.getVariableValues(graphQLSchema, operation.variableDefinitions, args)
 

@@ -407,6 +407,41 @@ class ParserTest extends Specification {
         'directive'  | _
     }
 
+    def "#352 - incorrect parentheses are detected"() {
+        given:
+        def input = "{profile(id:117) {firstNames, lastNames, frontDegree}}}"
+
+        when:
+        new Parser().parseDocument(input)
+
+        then:
+        def exception = thrown(ParseCancellationException)
+        exception != null
+    }
+
+    def "#352 - lots of incorrect parentheses are detected"() {
+        given:
+        def input = "{profile(id:117) {firstNames, lastNames, frontDegree}}}}}}}}"
+
+        when:
+        new Parser().parseDocument(input)
+
+        then:
+        def exception = thrown(ParseCancellationException)
+        exception != null
+    }
+
+    def "#352 - comments don't count as unused"() {
+        given:
+        def input = "{profile(id:117) {firstNames, lastNames, frontDegree}} #trailing comments don't count"
+
+        when:
+        new Parser().parseDocument(input)
+
+        then:
+        noExceptionThrown()
+    }
+
     def "StarWars schema"() {
         given:
         def input = """
@@ -437,10 +472,10 @@ type Droid implements Character {
 """
 
         and: "expected schema"
-        def episode = new EnumTypeDefinition("Episode",null)
-        episode.getEnumValueDefinitions().add(new EnumValueDefinition("NEWHOPE",null))
-        episode.getEnumValueDefinitions().add(new EnumValueDefinition("EMPIRE",null))
-        episode.getEnumValueDefinitions().add(new EnumValueDefinition("JEDI",null))
+        def episode = new EnumTypeDefinition("Episode", null)
+        episode.getEnumValueDefinitions().add(new EnumValueDefinition("NEWHOPE", null))
+        episode.getEnumValueDefinitions().add(new EnumValueDefinition("EMPIRE", null))
+        episode.getEnumValueDefinitions().add(new EnumValueDefinition("JEDI", null))
         def character = new InterfaceTypeDefinition("Character")
         character.getFieldDefinitions()
                 .add(new FieldDefinition("id", new NonNullType(new TypeName("String"))))
@@ -534,7 +569,7 @@ TWO @second,
 """
 
         and: "expected schema"
-        def enumSchema = new EnumTypeDefinition("EnumName",null)
+        def enumSchema = new EnumTypeDefinition("EnumName", null)
         enumSchema.getDirectives()
                 .add(new Directive("enumDirective", [new Argument("a1", new VariableReference("v1"))]))
         enumSchema.getEnumValueDefinitions()

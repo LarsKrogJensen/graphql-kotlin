@@ -1,13 +1,12 @@
 package graphql.schema
 
 import graphql.NestedInputSchemaKt
-import graphql.TypeReferenceSchemaKt
 import graphql.introspection.Introspection
 import spock.lang.Specification
 
-import static TypeReferenceSchemaKt.SchemaWithReferences
 import static graphql.ScalarsKt.*
 import static graphql.StarWarsSchemaKt.*
+import static graphql.TypeReferenceSchemaKt.SchemaWithReferences
 import static graphql.schema.GraphQLArgument.newArgument
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition
 import static graphql.schema.GraphQLInputObjectField.newInputObjectField
@@ -95,4 +94,18 @@ class SchemaUtilTest extends Specification {
         then:
         SchemaWithReferences.allTypesAsList.findIndexOf { it instanceof TypeReference } == -1
     }
+
+//    def "all references are replaced more"() {
+//        given:
+//        GraphQLUnionType pet = ((GraphQLUnionType) SchemaWithReferences.type("Pet"));
+//        GraphQLObjectType person = ((GraphQLObjectType) SchemaWithReferences.type("Person"));
+//        when:
+//        new SchemaUtil().replaceTypeReferences(SchemaWithReferences)
+//        then:
+//        SchemaWithReferences.allTypesAsList.findIndexOf {
+//            it instanceof TypeReference
+//        } == -1 + SchemaWithReferences.allTypesAsList.findIndexOf { it instanceof TypeReference } == -1;
+//        pet.types.findIndexOf { it instanceof TypeReference } == -1;
+//        person.interfaces.findIndexOf { it instanceof TypeReference } == -1;
+//    }
 }

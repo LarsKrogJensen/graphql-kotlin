@@ -104,6 +104,6 @@ object GarfieldSchema {
 
     val GarfieldSchema = newSchema {
         query = PersonType
-        dictionary += NamedType
+        additionalTypes += NamedType
     }
 }

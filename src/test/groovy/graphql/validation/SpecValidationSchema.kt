@@ -210,6 +210,6 @@ val specValidationDictionary = setOf(
 
 
 val specValidationSchema = newSchema {
-    dictionary = specValidationDictionary
+    additionalTypes = specValidationDictionary
     query = queryRoot
 }

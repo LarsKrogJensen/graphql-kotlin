@@ -16,13 +16,13 @@ annotation class GraphQLDslMarker
 
 class GraphQLSchema(val queryType: GraphQLObjectType,
                     val mutationType: GraphQLObjectType? = null,
-                    val dictionary: Set<GraphQLType> = emptySet<GraphQLType>()) {
+                    val addtionalTypes: Set<GraphQLType> = emptySet<GraphQLType>()) {
     private val _typeMap: Map<String, GraphQLType>
 
     init {
-        assertNotNull(dictionary, "dictionary can't be null")
+        assertNotNull(addtionalTypes, "addtitionalTypes can't be null")
         assertNotNull(queryType, "queryType can't be null")
-        _typeMap = SchemaUtil().allTypes(this, dictionary)
+        _typeMap = SchemaUtil().allTypes(this, addtionalTypes)
     }
 
     fun type(typeName: String): GraphQLType? {
@@ -45,7 +45,7 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
     class Builder {
         var query: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
         var mutation: GraphQLObjectType? = null
-        var dictionary: Set<GraphQLType> = emptySet()
+        var additionalTypes: Set<GraphQLType> = emptySet()
 
         fun query(builder: GraphQLObjectType.Builder): Builder {
             return query(builder.build())
@@ -66,9 +66,9 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
             return this
         }
 
-        fun build(dictionary: Set<GraphQLType> = emptySet<GraphQLType>()): GraphQLSchema {
-            assertNotNull(dictionary, "dictionary can't be null")
-            val graphQLSchema = GraphQLSchema(query, mutation, dictionary)
+        fun build(additionalTypes: Set<GraphQLType> = emptySet<GraphQLType>()): GraphQLSchema {
+            assertNotNull(additionalTypes, "dictionary can't be null")
+            val graphQLSchema = GraphQLSchema(query, mutation, additionalTypes)
             SchemaUtil().replaceTypeReferences(graphQLSchema)
             val errors = Validator().validateSchema(graphQLSchema)
             if (errors.isNotEmpty()) {
@@ -91,7 +91,7 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
 fun newSchema(block: GraphQLSchema.Builder.() -> Unit): GraphQLSchema {
     val builder = GraphQLSchema.Builder()
     builder.block()
-    return builder.build(builder.dictionary)
+    return builder.build(builder.additionalTypes)
 }
 
 

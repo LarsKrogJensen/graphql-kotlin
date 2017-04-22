@@ -57,5 +57,5 @@ val PersonService = newObject {
 
 val SchemaWithReferences = newSchema {
     query = PersonService
-    dictionary = setOf(PersonType, PersonInputType, PetType, CatType, DogType, NamedType)
+    additionalTypes = setOf(PersonType, PersonInputType, PetType, CatType, DogType, NamedType)
 }
