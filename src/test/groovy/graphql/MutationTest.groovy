@@ -96,7 +96,7 @@ class MutationTest extends Specification {
         ]
 
         when:
-        def executionResult = GraphQL.newGraphQL(MutationSchemaKt.schema).build()
+        def executionResult = newGraphQL(MutationSchemaKt.schema).build()
                 .execute(query, null, new Root(6), new HashMap<>()).toCompletableFuture().get()
 
 

@@ -81,7 +81,7 @@ class SchemaUtilTest extends Specification {
                 .name("PersonService")
                 .field(field)
                 .build()
-        def schema = new GraphQLSchema(PersonService, null, Collections.singleton(PersonInputType))
+        def schema = new GraphQLSchema(PersonService, null, null, Collections.singleton(PersonInputType))
         when:
         new SchemaUtil().replaceTypeReferences(schema)
         then:

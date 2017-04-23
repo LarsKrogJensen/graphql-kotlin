@@ -4,10 +4,6 @@ package graphql.introspection
 import graphql.GraphQLBoolean
 import graphql.GraphQLString
 import graphql.GraphQLStringNonNull
-import graphql.GraphQLBoolean
-import graphql.GraphQLString
-import graphql.GraphQLStringNonNull
-import graphql.schema.*
 import graphql.schema.*
 import graphql.util.succeeded
 import java.util.concurrent.CompletableFuture
@@ -16,7 +12,8 @@ import java.util.concurrent.CompletableFuture.completedFuture
 
 object Introspection {
 
-    enum class TypeKind {
+    enum class
+    TypeKind {
         SCALAR,
         OBJECT,
         INTERFACE,
@@ -409,7 +406,7 @@ object Introspection {
         }
         field<List<GraphQLDirective>> {
             name = "directives"
-            description = "'A list of all directives supported by this server."
+            description = "A list of all directives supported by this server."
             type = GraphQLNonNull(GraphQLList(GraphQLNonNull(__Directive)))
             fetcher = { environment ->
                 completedFuture(environment.graphQLSchema.directives)
@@ -417,9 +414,11 @@ object Introspection {
         }
         field<Any> {
             name = "subscriptionType"
-            description = "'If this server support subscription, the type that subscription operations will be rooted at."
+            description = "If this server support subscription, the type that subscription operations will be rooted at."
             type = __Type
-            fetcher { completedFuture(null) }
+            fetcher { environment ->
+                completedFuture(environment.source<GraphQLSchema>().subscriptionType)
+            }
         }
     }
     val SchemaMetaFieldDef = newField<GraphQLSchema> {

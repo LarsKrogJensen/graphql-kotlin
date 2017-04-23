@@ -15,11 +15,13 @@ import java.util.concurrent.CompletionStage
 
 class Execution(queryStrategy: IExecutionStrategy?,
                 mutationStrategy: IExecutionStrategy?,
+                subscriptionStrategy: IExecutionStrategy?,
                 private val instrumentation: Instrumentation) {
 
     private val fieldCollector = FieldCollector()
     private val queryStrategy: IExecutionStrategy = queryStrategy ?: SimpleExecutionStrategy()
     private val mutationStrategy: IExecutionStrategy = mutationStrategy ?: SimpleExecutionStrategy()
+    private val subscriptionStrategy: IExecutionStrategy = subscriptionStrategy ?: SimpleExecutionStrategy()
 
     fun execute(executionId: ExecutionId,
                 graphQLSchema: GraphQLSchema,
@@ -31,7 +33,7 @@ class Execution(queryStrategy: IExecutionStrategy?,
         val executionContextBuilder = ExecutionContextBuilder(ValuesResolver(), instrumentation)
         val executionContext = executionContextBuilder
                 .executionId(executionId)
-                .build(graphQLSchema, queryStrategy, mutationStrategy, root, document, operationName, args)
+                .build(graphQLSchema, queryStrategy, mutationStrategy, subscriptionStrategy, root, document, operationName, args)
         return executeOperation(executionContext, root, executionContext.operationDefinition)
     }
 
@@ -42,6 +44,9 @@ class Execution(queryStrategy: IExecutionStrategy?,
 
         } else if (operationDefinition.operation === OperationDefinition.Operation.QUERY) {
             return graphQLSchema.queryType
+
+        } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION) {
+            return graphQLSchema.subscriptionType!!
 
         } else {
             throw GraphQLException()
@@ -65,8 +70,10 @@ class Execution(queryStrategy: IExecutionStrategy?,
 
         val promise = if (operationDefinition.operation === OperationDefinition.Operation.MUTATION) {
             mutationStrategy.execute(executionContext, operationRootType, root, fields)
-        } else {
+        } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION) {
             queryStrategy.execute(executionContext, operationRootType, root, fields)
+        }  else {
+            subscriptionStrategy.execute(executionContext, operationRootType, root, fields);
         }
 
         promise.whenComplete { executionResult, ex ->

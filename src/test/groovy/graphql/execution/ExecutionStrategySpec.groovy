@@ -37,6 +37,7 @@ class ExecutionStrategySpec extends Specification {
                 StarWarsSchemaKt.starWarsSchema,
                 executionStrategy,
                 executionStrategy,
+                executionStrategy,
                 new HashMap<String, FragmentDefinition>(),
                 new OperationDefinition(OperationDefinition.Operation.QUERY),
                 new HashMap(),

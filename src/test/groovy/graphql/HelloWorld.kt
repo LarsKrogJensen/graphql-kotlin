@@ -20,7 +20,7 @@ class HelloWorld {
 
         val graphQL = newGraphQL {
             schema = newSchema {
-                query = queryType
+                this.query = queryType
             }
         }
         val result = graphQL.execute("{hello}").toCompletableFuture().get().data<Map<String, Any?>>()
@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
     }
 
     val graphQL = newGraphQL {
-        this.schema = newSchema { query = queryType }
+        this.schema = newSchema { this.query = queryType }
     }
 
     val result = graphQL.execute("{hello}").handle { result, ex ->

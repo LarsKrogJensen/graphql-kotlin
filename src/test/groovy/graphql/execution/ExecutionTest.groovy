@@ -21,9 +21,10 @@ class ExecutionTest extends Specification {
             CompletableFuture.completedFuture(null)
         }
     }
+    def subscriptionStrategy = Mock(IExecutionStrategy)
 
 
-    def execution = new Execution(queryStrategy, mutationStrategy, NoOpInstrumentation.INSTANCE)
+    def execution = new Execution(queryStrategy, mutationStrategy, subscriptionStrategy, NoOpInstrumentation.INSTANCE)
 
 
 //    def "query strategy is used for query requests"() {

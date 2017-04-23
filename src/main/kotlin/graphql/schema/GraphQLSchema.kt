@@ -16,6 +16,7 @@ annotation class GraphQLDslMarker
 
 class GraphQLSchema(val queryType: GraphQLObjectType,
                     val mutationType: GraphQLObjectType? = null,
+                    val subscriptionType: GraphQLObjectType? = null,
                     val addtionalTypes: Set<GraphQLType> = emptySet<GraphQLType>()) {
     private val _typeMap: Map<String, GraphQLType>
 
@@ -45,6 +46,7 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
     class Builder {
         var query: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
         var mutation: GraphQLObjectType? = null
+        var subscription: GraphQLObjectType? = null
         var additionalTypes: Set<GraphQLType> = emptySet()
 
         fun query(builder: GraphQLObjectType.Builder): Builder {
@@ -56,7 +58,6 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
             return this
         }
 
-
         fun mutation(builder: GraphQLObjectType.Builder): Builder {
             return mutation(builder.build())
         }
@@ -66,9 +67,18 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
             return this
         }
 
+        fun subscription(builder: GraphQLObjectType.Builder): Builder {
+            return subscription(builder.build())
+        }
+
+        fun subscription(subscriptionType: GraphQLObjectType): Builder {
+            this.subscription = subscriptionType
+            return this
+        }
+
         fun build(additionalTypes: Set<GraphQLType> = emptySet<GraphQLType>()): GraphQLSchema {
-            assertNotNull(additionalTypes, "dictionary can't be null")
-            val graphQLSchema = GraphQLSchema(query, mutation, additionalTypes)
+            assertNotNull(additionalTypes, "additionalTypes can't be null")
+            val graphQLSchema = GraphQLSchema(query, mutation, subscription, additionalTypes)
             SchemaUtil().replaceTypeReferences(graphQLSchema)
             val errors = Validator().validateSchema(graphQLSchema)
             if (errors.isNotEmpty()) {

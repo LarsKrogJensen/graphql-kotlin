@@ -6,10 +6,6 @@ import graphql.execution.TypeFromAST
 import graphql.introspection.Introspection.SchemaMetaFieldDef
 import graphql.introspection.Introspection.TypeMetaFieldDef
 import graphql.introspection.Introspection.TypeNameMetaFieldDef
-import graphql.language.Argument
-import graphql.language.Directive
-import graphql.language.VariableDefinition
-import graphql.schema.*
 import graphql.language.*
 import graphql.schema.*
 
@@ -71,6 +67,8 @@ class TraversalContext(internal var schema: GraphQLSchema) : ITraversalContext {
             addType(schema.mutationType!!)
         } else if (operationDefinition.operation === OperationDefinition.Operation.QUERY) {
             addType(schema.queryType)
+        } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION) {
+            addType(schema.subscriptionType)
         } else {
             throw ShouldNotHappenException()
         }

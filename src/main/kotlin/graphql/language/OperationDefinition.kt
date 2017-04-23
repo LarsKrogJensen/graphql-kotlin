@@ -6,7 +6,7 @@ import java.util.*
 class OperationDefinition : AbstractNode, Definition {
 
     enum class Operation {
-        QUERY, MUTATION, SUBSCRIPTIO
+        QUERY, MUTATION, SUBSCRIPTION
     }
 
     var name: String? = null

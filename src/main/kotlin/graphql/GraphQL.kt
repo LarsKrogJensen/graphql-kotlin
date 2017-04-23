@@ -21,6 +21,7 @@ import kotlin.properties.Delegates
 class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
                                   private val queryStrategy: IExecutionStrategy,
                                   private val mutationStrategy: IExecutionStrategy,
+                                  private val subscriptionStrategy: IExecutionStrategy,
                                   private val idProvider: ExecutionIdProvider,
                                   private val instrumentation: Instrumentation) {
 
@@ -29,6 +30,7 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         var schema: GraphQLSchema by Delegates.notNull<GraphQLSchema>()
         var queryExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
         var mutationExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
+        var subscriptionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
         var idProvider = DEFAULT_EXECUTION_ID_PROVIDER
         var instrumentation: Instrumentation = NoOpInstrumentation.INSTANCE
 
@@ -43,6 +45,11 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
             return this
         }
 
+        fun subscriptionExecutionStrategy(executionStrategy: IExecutionStrategy): Builder {
+            this.subscriptionStrategy = executionStrategy
+            return this
+        }
+
         fun instrumentation(instrumentation: Instrumentation): Builder {
             this.instrumentation = instrumentation
             return this
@@ -54,7 +61,12 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         }
 
         fun build(): GraphQL {
-            return GraphQL(schema, queryExecutionStrategy, mutationExecutionStrategy, idProvider, instrumentation)
+            return GraphQL(schema,
+                           queryExecutionStrategy,
+                           mutationExecutionStrategy,
+                           subscriptionStrategy,
+                           idProvider,
+                           instrumentation)
         }
     }
 
@@ -99,7 +111,7 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         }
         val executionId = idProvider.provide(requestString, operationName, context)
 
-        val execution = Execution(queryStrategy, mutationStrategy, instrumentation)
+        val execution = Execution(queryStrategy, mutationStrategy, subscriptionStrategy, instrumentation)
         val result = execution.execute(executionId, graphQLSchema, context, document, operationName, arguments)
 
         result.whenComplete { exeResult, ex ->

@@ -3,7 +3,6 @@ package graphql.parser
 
 import graphql.ShouldNotHappenException
 import graphql.language.*
-import graphql.language.*
 import graphql.parser.antlr.GraphqlBaseVisitor
 import graphql.parser.antlr.GraphqlParser
 import org.antlr.v4.runtime.ParserRuleContext
@@ -12,6 +11,9 @@ import java.lang.Boolean
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
+import kotlin.Any
+import kotlin.RuntimeException
+import kotlin.String
 
 class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
 
@@ -120,12 +122,12 @@ class GraphqlAntlrToLanguage : GraphqlBaseVisitor<Void>() {
     }
 
     private fun parseOperation(operationTypeContext: GraphqlParser.OperationTypeContext): OperationDefinition.Operation {
-        if (operationTypeContext.text == "query") {
-            return OperationDefinition.Operation.QUERY
-        } else if (operationTypeContext.text == "mutation") {
-            return OperationDefinition.Operation.MUTATION
-        } else {
-            throw RuntimeException("InternalError: unknown operationTypeContext=" + operationTypeContext.text)
+
+        when (operationTypeContext.text) {
+            "query"        -> return OperationDefinition.Operation.QUERY
+            "mutation"     -> return OperationDefinition.Operation.MUTATION
+            "subscription" -> return OperationDefinition.Operation.SUBSCRIPTION
+            else           -> throw RuntimeException("InternalError: unknown operationTypeContext=" + operationTypeContext.text)
         }
     }
 
