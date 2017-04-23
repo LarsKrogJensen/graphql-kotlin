@@ -67,7 +67,7 @@ class TraversalContext(internal var schema: GraphQLSchema) : ITraversalContext {
             addType(schema.mutationType!!)
         } else if (operationDefinition.operation === OperationDefinition.Operation.QUERY) {
             addType(schema.queryType)
-        } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION) {
+        } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION && schema.isSupportingSubscriptions) {
             addType(schema.subscriptionType)
         } else {
             throw ShouldNotHappenException()

@@ -105,6 +105,9 @@ class SchemaUtil {
         if (schema.isSupportingMutations) {
             collectTypes(schema.mutationType!!, typesByName)
         }
+        if (schema.isSupportingSubscriptions) {
+            collectTypes(schema.subscriptionType!!, typesByName)
+        }
         if (additionalTypes != null) {
             for (type in additionalTypes) {
                 collectTypes(type, typesByName)

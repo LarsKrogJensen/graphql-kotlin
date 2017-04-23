@@ -18,13 +18,7 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
                     val mutationType: GraphQLObjectType? = null,
                     val subscriptionType: GraphQLObjectType? = null,
                     val addtionalTypes: Set<GraphQLType> = emptySet<GraphQLType>()) {
-    private val _typeMap: Map<String, GraphQLType>
-
-    init {
-        assertNotNull(addtionalTypes, "addtitionalTypes can't be null")
-        assertNotNull(queryType, "queryType can't be null")
-        _typeMap = SchemaUtil().allTypes(this, addtionalTypes)
-    }
+    private val _typeMap: Map<String, GraphQLType> = SchemaUtil().allTypes(this, addtionalTypes)
 
     fun type(typeName: String): GraphQLType? {
         return _typeMap[typeName]
@@ -42,6 +36,9 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
 
     val isSupportingMutations: Boolean
         get() = mutationType != null
+
+    val isSupportingSubscriptions: Boolean
+            get() = subscriptionType != null
 
     class Builder {
         var query: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()

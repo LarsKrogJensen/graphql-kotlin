@@ -16,6 +16,9 @@ class Validator {
         if (schema.isSupportingMutations) {
             traverse(schema.mutationType!!, rules, validationErrorCollector)
         }
+        if (schema.isSupportingSubscriptions) {
+            traverse(schema.subscriptionType!!, rules, validationErrorCollector)
+        }
         return validationErrorCollector.errors()
     }
 
