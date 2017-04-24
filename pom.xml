@@ -9,12 +9,12 @@
     <version>1.0-SNAPSHOT</version>
 
     <distributionManagement>
-      <repository>
-          <id>graphql-kotlin</id>
-          <url>https://api.bintray.com/maven/larskrogjensen/graphql-kotlin/graphql-kotlin;publish=1</url>
-      </repository>
+        <repository>
+            <id>graphql-kotlin</id>
+            <url>https://api.bintray.com/maven/larskrogjensen/graphql-kotlin/graphql-kotlin;publish=1</url>
+        </repository>
     </distributionManagement>
-    
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -121,7 +121,7 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
-                
+
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -190,6 +190,26 @@
                             <goal>compile</goal>
                             <goal>testCompile</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- add kotlin sources so that the maven-source-plugin includes them -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/main/kotlin</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
