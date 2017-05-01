@@ -71,9 +71,9 @@ class Execution(queryStrategy: IExecutionStrategy?,
         val promise = if (operationDefinition.operation === OperationDefinition.Operation.MUTATION) {
             mutationStrategy.execute(executionContext, operationRootType, root, fields)
         } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION) {
-            queryStrategy.execute(executionContext, operationRootType, root, fields)
+            subscriptionStrategy.execute(executionContext, operationRootType, root, fields)
         }  else {
-            subscriptionStrategy.execute(executionContext, operationRootType, root, fields);
+            queryStrategy.execute(executionContext, operationRootType, root, fields);
         }
 
         promise.whenComplete { executionResult, ex ->

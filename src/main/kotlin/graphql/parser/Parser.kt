@@ -3,8 +3,8 @@ package graphql.parser
 import graphql.language.Document
 import graphql.parser.antlr.GraphqlLexer
 import graphql.parser.antlr.GraphqlParser
-import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.BailErrorStrategy
+import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.atn.PredictionMode
@@ -15,7 +15,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException
 class Parser {
     fun parseDocument(input: String): Document {
 
-        val lexer = GraphqlLexer(ANTLRInputStream(input))
+        val lexer = GraphqlLexer(CharStreams.fromString(input))
 
         val tokens = CommonTokenStream(lexer)
 
