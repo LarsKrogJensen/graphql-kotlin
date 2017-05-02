@@ -2,13 +2,12 @@ package graphql.execution
 
 
 import graphql.ExecutionResult
-import graphql.GraphQLException
 import graphql.execution.instrumentation.Instrumentation
 import graphql.execution.instrumentation.parameters.DataFetchParameters
 import graphql.language.Document
 import graphql.language.Field
 import graphql.language.OperationDefinition
-import graphql.schema.GraphQLObjectType
+import graphql.language.OperationDefinition.Operation.*
 import graphql.schema.GraphQLSchema
 import java.util.*
 import java.util.concurrent.CompletionStage
@@ -23,39 +22,35 @@ class Execution(queryStrategy: IExecutionStrategy?,
     private val mutationStrategy: IExecutionStrategy = mutationStrategy ?: SimpleExecutionStrategy()
     private val subscriptionStrategy: IExecutionStrategy = subscriptionStrategy ?: SimpleExecutionStrategy()
 
-    fun execute(executionId: ExecutionId,
-                graphQLSchema: GraphQLSchema,
-                root: Any,
-                document: Document,
-                operationName: String?,
-                args: Map<String, Any>): CompletionStage<ExecutionResult> {
+    fun execute(
+            executionId: ExecutionId,
+            graphQLSchema: GraphQLSchema,
+            root: Any,
+            document: Document,
+            operationName: String?,
+            args: Map<String, Any>
+    ): CompletionStage<ExecutionResult> {
 
         val executionContextBuilder = ExecutionContextBuilder(ValuesResolver(), instrumentation)
-        val executionContext = executionContextBuilder
-                .executionId(executionId)
+        val executionContext = executionContextBuilder.executionId(executionId)
                 .build(graphQLSchema, queryStrategy, mutationStrategy, subscriptionStrategy, root, document, operationName, args)
         return executeOperation(executionContext, root, executionContext.operationDefinition)
     }
 
-    private fun operationRootType(graphQLSchema: GraphQLSchema,
-                                  operationDefinition: OperationDefinition): GraphQLObjectType {
-        if (operationDefinition.operation === OperationDefinition.Operation.MUTATION) {
-            return graphQLSchema.mutationType!!
-
-        } else if (operationDefinition.operation === OperationDefinition.Operation.QUERY) {
-            return graphQLSchema.queryType
-
-        } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION) {
-            return graphQLSchema.subscriptionType!!
-
-        } else {
-            throw GraphQLException()
-        }
+    private fun operationRootType(
+            graphQLSchema: GraphQLSchema,
+            operationDefinition: OperationDefinition
+    ) = when (operationDefinition.operation) {
+        MUTATION     -> graphQLSchema.mutationType!!
+        QUERY        -> graphQLSchema.queryType
+        SUBSCRIPTION -> graphQLSchema.subscriptionType!!
     }
 
-    private fun executeOperation(executionContext: ExecutionContext,
-                                 root: Any,
-                                 operationDefinition: OperationDefinition): CompletionStage<ExecutionResult> {
+    private fun executeOperation(
+            executionContext: ExecutionContext,
+            root: Any,
+            operationDefinition: OperationDefinition
+    ): CompletionStage<ExecutionResult> {
 
         val dataFetchCtx = instrumentation.beginDataFetch(DataFetchParameters(executionContext))
 
@@ -68,20 +63,19 @@ class Execution(queryStrategy: IExecutionStrategy?,
                                      mutableListOf(),
                                      fields)
 
-        val promise = if (operationDefinition.operation === OperationDefinition.Operation.MUTATION) {
-            mutationStrategy.execute(executionContext, operationRootType, root, fields)
-        } else if (operationDefinition.operation === OperationDefinition.Operation.SUBSCRIPTION) {
-            subscriptionStrategy.execute(executionContext, operationRootType, root, fields)
-        }  else {
-            queryStrategy.execute(executionContext, operationRootType, root, fields);
-        }
+        return executionStrategy(operationDefinition)
+                .execute(executionContext, operationRootType, root, fields)
+                .whenComplete { executionResult, ex ->
+                    if (ex != null)
+                        dataFetchCtx.onEnd(ex as Exception)
+                    else
+                        dataFetchCtx.onEnd(executionResult)
+                }
+    }
 
-        promise.whenComplete { executionResult, ex ->
-            if (ex != null)
-                dataFetchCtx.onEnd(ex as Exception)
-            else
-                dataFetchCtx.onEnd(executionResult)
-        }
-        return promise
+    private fun executionStrategy(operationDefinition: OperationDefinition) = when (operationDefinition.operation) {
+        MUTATION     -> mutationStrategy
+        SUBSCRIPTION -> subscriptionStrategy
+        QUERY        -> queryStrategy
     }
 }

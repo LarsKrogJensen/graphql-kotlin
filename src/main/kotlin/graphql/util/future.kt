@@ -9,3 +9,7 @@ fun <T> failed(ex: Exception) : CompletableFuture<T> {
     promise.completeExceptionally(ex)
     return promise
 }
+
+fun List<CompletableFuture<*>>.awaitAll(): CompletableFuture<Void> {
+    return CompletableFuture.allOf(*this.toTypedArray())
+}

@@ -4,6 +4,7 @@ import graphql.ExecutionResult
 import graphql.ExecutionResultImpl
 import graphql.language.Field
 import graphql.schema.GraphQLObjectType
+import graphql.util.awaitAll
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
@@ -18,7 +19,7 @@ open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
         //println("**** Executing ${parentType.name} source ${source.javaClass.name} fields ${fields.keys.map { it }}")
 
         val results = LinkedHashMap<String, Any?>()
-        val fieldPromises = fields.map { (fieldName, fieldList) ->
+        fields.map { (fieldName, fieldList) ->
             resolveField(executionContext, parentType, source, fieldList)
                     .whenComplete { resolvedResult, ex ->
                         if (ex == null) {
@@ -27,14 +28,11 @@ open class SimpleExecutionStrategy : AbstractExecutionStrategy() {
                             promise.completeExceptionally(ex)
                     }.toCompletableFuture()
 
+        }.awaitAll().thenAccept {
+            promise.complete(ExecutionResultImpl(results, executionContext.errors()))
         }
-
-        val toTypedArray = fieldPromises.toTypedArray() as Array<CompletableFuture<*>>
-        CompletableFuture.allOf(*toTypedArray)
-                .thenAccept {
-                    promise.complete(ExecutionResultImpl(results, executionContext.errors()))
-                }
 
         return promise
     }
 }
+

@@ -1,12 +1,7 @@
 package graphql.validation
 
 
-import graphql.language.Argument
-import graphql.language.Directive
-import graphql.language.VariableDefinition
-import graphql.language.VariableReference
 import graphql.language.*
-
 import java.util.*
 
 class RulesVisitor(private val validationContext: IValidationContext,
@@ -91,15 +86,15 @@ class RulesVisitor(private val validationContext: IValidationContext,
 
     private fun checkFragmentSpread(fragmentSpread: FragmentSpread,
                                     rules: List<AbstractRule>,
-                                    path: List<Node>) {
+                                    ancestors: List<Node>) {
         for (rule in rules) {
             rule.checkFragmentSpread(fragmentSpread)
         }
         val rulesVisitingFragmentSpreads = getRulesVisitingFragmentSpreads(rules)
         if (rulesVisitingFragmentSpreads.isNotEmpty()) {
             val fragment = validationContext.fragment(fragmentSpread.name)
-            if (!path.contains(fragment as Node)) {
-                LanguageTraversal(path).traverse(fragment, RulesVisitor(validationContext, rulesVisitingFragmentSpreads, true))
+            if (fragment != null && !ancestors.contains(fragment as Node)) {
+                LanguageTraversal(ancestors).traverse(fragment, RulesVisitor(validationContext, rulesVisitingFragmentSpreads, true))
             }
         }
     }

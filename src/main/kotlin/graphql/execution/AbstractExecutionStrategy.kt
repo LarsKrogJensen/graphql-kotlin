@@ -148,10 +148,9 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
                                      fields: List<Field>,
                                      result: Any): CompletionStage<ExecutionResult> {
         var result1 = result
-        if (result1.javaClass.isArray) {
-            result1 = Arrays.asList<Any>(*(result1 as Array<Any>))
+        if (result.javaClass.isArray) {
+            result1 = (result as Array<*>).asIterable()
         }
-
 
         return completeValueForList(executionContext, fieldType, fields, result1 as Iterable<Any>)
     }
@@ -166,7 +165,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
 
 
     protected fun completeValueForEnum(enumType: GraphQLEnumType, result: Any): ExecutionResult {
-        return ExecutionResultImpl(enumType.coercing.serialize(result), null)
+        return ExecutionResultImpl(enumType.coercing.serialize(result))
     }
 
     protected fun completeValueForScalar(scalarType: GraphQLScalarType, result: Any): ExecutionResult {
@@ -175,7 +174,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         if (serialized is Double && serialized.isNaN()) {
             serialized = null
         }
-        return ExecutionResultImpl(serialized, null)
+        return ExecutionResultImpl(serialized)
     }
 
     protected fun completeValueForList(executionContext: ExecutionContext,
@@ -183,10 +182,10 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
                                        fields: List<Field>,
                                        result: Iterable<Any>): CompletionStage<ExecutionResult> {
 
-        val completionPromises = ArrayList<CompletableFuture<*>>()
+        val completionPromises = mutableListOf<CompletableFuture<*>>()
 
 
-        val completedResults = ArrayList<Any?>()
+        val completedResults = mutableListOf<Any?>()
         for (item in result) {
             val completeValue = completeValue(executionContext, fieldType.wrappedType, fields, item)
             val element = completeValue.thenAccept { completedValue ->
@@ -196,7 +195,7 @@ abstract class AbstractExecutionStrategy : IExecutionStrategy {
         }
 
         return CompletableFuture.allOf(*completionPromises.toTypedArray()).thenApply<ExecutionResult> {
-            ExecutionResultImpl(completedResults, null)
+            ExecutionResultImpl(completedResults)
         }
     }
 
