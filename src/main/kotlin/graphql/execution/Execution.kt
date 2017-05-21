@@ -21,7 +21,7 @@ class Execution(queryStrategy: IExecutionStrategy?,
     private val fieldCollector = FieldCollector()
     private val queryStrategy: IExecutionStrategy = queryStrategy ?: SimpleExecutionStrategy()
     private val mutationStrategy: IExecutionStrategy = mutationStrategy ?: SimpleExecutionStrategy()
-    private val subscriptionStrategy: IExecutionStrategy = subscriptionStrategy ?: SubscriptionExecutionStrategy(SimpleExecutionStrategy())
+    private val subscriptionStrategy: IExecutionStrategy = subscriptionStrategy ?: SubscriptionExecutionStrategy()
 
     fun execute(executionId: ExecutionId,
                 graphQLSchema: GraphQLSchema,
