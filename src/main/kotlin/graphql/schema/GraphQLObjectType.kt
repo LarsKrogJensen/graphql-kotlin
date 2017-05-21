@@ -5,10 +5,13 @@ import graphql.AssertException
 import java.util.*
 import kotlin.properties.Delegates.notNull
 
-open class GraphQLObjectType(override val name: String,
-                             val description: String?,
-                             fieldDefinitions: List<GraphQLFieldDefinition<*>>,
-                             interfaces: List<GraphQLInterfaceType>) : GraphQLType, GraphQLOutputType, GraphQLFieldsContainer, GraphQLCompositeType, GraphQLUnmodifiedType, GraphQLNullableType {
+open class GraphQLObjectType(
+    override val name: String,
+    val description: String?,
+    fieldDefinitions: List<GraphQLFieldDefinition<*>>,
+    interfaces: List<GraphQLInterfaceType>
+) : GraphQLType, GraphQLOutputType, GraphQLFieldsContainer, GraphQLCompositeType, GraphQLUnmodifiedType, GraphQLNullableType {
+
     private val _fieldDefinitionsByName = linkedMapOf<String, GraphQLFieldDefinition<*>>()
     private val _interfaces = mutableListOf<GraphQLInterfaceType>()
 
@@ -51,11 +54,11 @@ open class GraphQLObjectType(override val name: String,
 
     override fun toString(): String {
         return "GraphQLObjectType{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", fieldDefinitionsByName=" + _fieldDefinitionsByName +
-                ", interfaces=" + _interfaces +
-                '}'
+            "name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", fieldDefinitionsByName=" + _fieldDefinitionsByName +
+            ", interfaces=" + _interfaces +
+            '}'
     }
 
     @GraphQLDslMarker
@@ -87,7 +90,7 @@ open class GraphQLObjectType(override val name: String,
         }
 
         inline fun <reified TOut : Any> field(block: GraphQLFieldDefinition.Builder<TOut>.() -> Unit) {
-            this.fields +=newField(block)
+            this.fields += newField(block)
         }
 
         fun build(): GraphQLObjectType {
@@ -96,10 +99,10 @@ open class GraphQLObjectType(override val name: String,
     }
 
     class Reference constructor(name: String) :
-            GraphQLObjectType(name,
-                              "",
-                              emptyList<GraphQLFieldDefinition<*>>(),
-                              emptyList<GraphQLInterfaceType>()), TypeReference
+        GraphQLObjectType(name,
+                          "",
+                          emptyList<GraphQLFieldDefinition<*>>(),
+                          emptyList<GraphQLInterfaceType>()), TypeReference
 
 
     companion object {

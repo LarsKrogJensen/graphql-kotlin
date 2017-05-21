@@ -3,6 +3,7 @@ package graphql.execution
 
 import graphql.ExecutionResult
 import graphql.execution.instrumentation.Instrumentation
+import graphql.execution.instrumentation.onEnd
 import graphql.execution.instrumentation.parameters.DataFetchParameters
 import graphql.language.Document
 import graphql.language.Field
@@ -20,26 +21,25 @@ class Execution(queryStrategy: IExecutionStrategy?,
     private val fieldCollector = FieldCollector()
     private val queryStrategy: IExecutionStrategy = queryStrategy ?: SimpleExecutionStrategy()
     private val mutationStrategy: IExecutionStrategy = mutationStrategy ?: SimpleExecutionStrategy()
-    private val subscriptionStrategy: IExecutionStrategy = subscriptionStrategy ?: SimpleExecutionStrategy()
+    private val subscriptionStrategy: IExecutionStrategy = subscriptionStrategy ?: SubscriptionExecutionStrategy(SimpleExecutionStrategy())
 
-    fun execute(
-            executionId: ExecutionId,
-            graphQLSchema: GraphQLSchema,
-            root: Any,
-            document: Document,
-            operationName: String?,
-            args: Map<String, Any>
+    fun execute(executionId: ExecutionId,
+                graphQLSchema: GraphQLSchema,
+                root: Any,
+                document: Document,
+                operationName: String?,
+                args: Map<String, Any>
     ): CompletionStage<ExecutionResult> {
 
         val executionContextBuilder = ExecutionContextBuilder(ValuesResolver(), instrumentation)
         val executionContext = executionContextBuilder.executionId(executionId)
-                .build(graphQLSchema, queryStrategy, mutationStrategy, subscriptionStrategy, root, document, operationName, args)
+            .build(graphQLSchema, queryStrategy, mutationStrategy, subscriptionStrategy, root, document, operationName, args)
         return executeOperation(executionContext, root, executionContext.operationDefinition)
     }
 
     private fun operationRootType(
-            graphQLSchema: GraphQLSchema,
-            operationDefinition: OperationDefinition
+        graphQLSchema: GraphQLSchema,
+        operationDefinition: OperationDefinition
     ) = when (operationDefinition.operation) {
         MUTATION     -> graphQLSchema.mutationType!!
         QUERY        -> graphQLSchema.queryType
@@ -47,9 +47,9 @@ class Execution(queryStrategy: IExecutionStrategy?,
     }
 
     private fun executeOperation(
-            executionContext: ExecutionContext,
-            root: Any,
-            operationDefinition: OperationDefinition
+        executionContext: ExecutionContext,
+        root: Any,
+        operationDefinition: OperationDefinition
     ): CompletionStage<ExecutionResult> {
 
         val dataFetchCtx = instrumentation.beginDataFetch(DataFetchParameters(executionContext))
@@ -64,18 +64,14 @@ class Execution(queryStrategy: IExecutionStrategy?,
                                      fields)
 
         return executionStrategy(operationDefinition)
-                .execute(executionContext, operationRootType, root, fields)
-                .whenComplete { executionResult, ex ->
-                    if (ex != null)
-                        dataFetchCtx.onEnd(ex as Exception)
-                    else
-                        dataFetchCtx.onEnd(executionResult)
-                }
+            .execute(executionContext, operationRootType, root, fields)
+            .whenComplete(dataFetchCtx::onEnd)
     }
 
-    private fun executionStrategy(operationDefinition: OperationDefinition) = when (operationDefinition.operation) {
-        MUTATION     -> mutationStrategy
-        SUBSCRIPTION -> subscriptionStrategy
-        QUERY        -> queryStrategy
-    }
+    private fun executionStrategy(operationDefinition: OperationDefinition) =
+        when (operationDefinition.operation) {
+            MUTATION     -> mutationStrategy
+            SUBSCRIPTION -> subscriptionStrategy
+            QUERY        -> queryStrategy
+        }
 }

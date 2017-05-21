@@ -16,7 +16,7 @@ annotation class GraphQLDslMarker
 
 class GraphQLSchema(val queryType: GraphQLObjectType,
                     val mutationType: GraphQLObjectType? = null,
-                    val subscriptionType: GraphQLObjectType? = null,
+                    val subscriptionType: GraphQLSubscriptionObjectType? = null,
                     val addtionalTypes: Set<GraphQLType> = emptySet<GraphQLType>()) {
     private val _typeMap: Map<String, GraphQLType> = SchemaUtil().allTypes(this, addtionalTypes)
 
@@ -43,7 +43,7 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
     class Builder {
         var query: GraphQLObjectType by Delegates.notNull<GraphQLObjectType>()
         var mutation: GraphQLObjectType? = null
-        var subscription: GraphQLObjectType? = null
+        var subscription: GraphQLSubscriptionObjectType? = null
         var additionalTypes: Set<GraphQLType> = emptySet()
 
         fun query(builder: GraphQLObjectType.Builder): Builder {
@@ -64,11 +64,11 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
             return this
         }
 
-        fun subscription(builder: GraphQLObjectType.Builder): Builder {
-            return subscription(builder.build())
-        }
+//        fun subscription(builder: GraphQLSubscriptionObjectType.Builder): Builder {
+//            return subscription(builder.build())
+//        }
 
-        fun subscription(subscriptionType: GraphQLObjectType): Builder {
+        fun subscription(subscriptionType: GraphQLSubscriptionObjectType): Builder {
             this.subscription = subscriptionType
             return this
         }
@@ -90,8 +90,6 @@ class GraphQLSchema(val queryType: GraphQLObjectType,
         fun newSchema(): Builder {
             return Builder()
         }
-
-
     }
 }
 

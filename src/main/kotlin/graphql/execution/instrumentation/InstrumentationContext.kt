@@ -21,3 +21,10 @@ interface InstrumentationContext<in T> {
      */
     fun onEnd(e: Exception)
 }
+
+fun <T> InstrumentationContext<T>.onEnd(result: T?, ex: Throwable?) {
+    if (ex != null)
+        this.onEnd(ex as Exception)
+    else
+        this.onEnd(result)
+}

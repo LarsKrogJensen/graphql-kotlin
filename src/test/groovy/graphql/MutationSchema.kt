@@ -3,8 +3,10 @@ package graphql
 
 import graphql.schema.newObject
 import graphql.schema.newSchema
+import graphql.schema.newSubscriptionObject
 import graphql.util.failed
 import graphql.util.succeeded
+import reactor.core.publisher.Flux
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -104,20 +106,24 @@ private val numberMutationType = newObject {
     }
 }
 
-private val numberSubscriptionType = newObject {
+private val numberSubscriptionType = newSubscriptionObject {
     name = "subscriptionType"
-    field<Any> {
+    field<NumberHolder> {
         name = "changeNumberSubscribe"
         type = numberHolderType
         argument {
             name = "clientId"
             type = GraphQLInt
         }
-        fetcher { environment ->
-            val clientId = environment.argument<Int>("clientId")!!
-            val subscriptionRoot = environment.source<SubscriptionRoot>()
-            subscriptionRoot.changeNumberSubscribe(clientId)
-            CompletableFuture.completedFuture<Any>(subscriptionRoot.root.numberHolder)
+
+        publisher { environment ->
+            val flux: Flux<NumberHolder> = Flux.create<NumberHolder> {
+                val subscriptionRoot = environment.source<SubscriptionRoot>()
+                it.next(subscriptionRoot.root.numberHolder)
+                it.complete()
+            }
+
+            flux
         }
     }
 

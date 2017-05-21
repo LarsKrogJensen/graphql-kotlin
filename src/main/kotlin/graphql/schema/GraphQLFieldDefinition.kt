@@ -9,6 +9,7 @@ class GraphQLFieldDefinition<T>(val name: String,
                                 val description: String?,
                                 type: GraphQLOutputType,
                                 val dataFetcher: DataFetcher<T>?,
+                                val publisher: PublisherFetcher<T>?,
                                 val arguments: List<GraphQLArgument>,
                                 val deprecationReason: String?) {
     var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
@@ -42,6 +43,7 @@ class GraphQLFieldDefinition<T>(val name: String,
         var description: String? = null
         var type: GraphQLOutputType by Delegates.notNull<GraphQLOutputType>()
         var fetcher: DataFetcher<T>? = null
+        var publisher: PublisherFetcher<T>? = null
         val arguments = ArrayList<GraphQLArgument>()
         var deprecationReason: String? = null
         var isField: Boolean = false
@@ -79,8 +81,13 @@ class GraphQLFieldDefinition<T>(val name: String,
             return this
         }
 
-        var staticValue : T? = null
-            set (value){
+        fun publisher(publisher: PublisherFetcher<T>): Builder<T> {
+            this.publisher = publisher
+            return this
+        }
+
+        var staticValue: T? = null
+            set (value) {
                 fetcher = staticDataFetcher(value)
             }
 
@@ -113,13 +120,19 @@ class GraphQLFieldDefinition<T>(val name: String,
 
         fun build(): GraphQLFieldDefinition<T> {
             val fetcher: DataFetcher<T> = fetcher ?:
-                    if (isField) {
-                        fieldDataFetcher<T>(name)
-                    } else {
-                        propertyDataFetcher<T>(name)
-                    }
+                if (isField) {
+                    fieldDataFetcher<T>(name)
+                } else {
+                    propertyDataFetcher<T>(name)
+                }
 
-            return GraphQLFieldDefinition(name, description, type, fetcher, arguments, deprecationReason)
+            return GraphQLFieldDefinition(name,
+                                          description,
+                                          type,
+                                          fetcher,
+                                          publisher,
+                                          arguments,
+                                          deprecationReason)
         }
     }
 
@@ -137,3 +150,4 @@ inline fun <reified T : Any> newField(block: GraphQLFieldDefinition.Builder<T>.(
     builder.block()
     return builder.build()
 }
+

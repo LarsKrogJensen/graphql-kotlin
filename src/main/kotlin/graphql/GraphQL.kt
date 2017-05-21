@@ -30,7 +30,7 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         var schema: GraphQLSchema by Delegates.notNull<GraphQLSchema>()
         var queryExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
         var mutationExecutionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
-        var subscriptionStrategy: IExecutionStrategy = SimpleExecutionStrategy()
+        var subscriptionStrategy: IExecutionStrategy = SubscriptionExecutionStrategy(SimpleExecutionStrategy())
         var idProvider = DEFAULT_EXECUTION_ID_PROVIDER
         var instrumentation: Instrumentation = NoOpInstrumentation.INSTANCE
 

@@ -97,7 +97,7 @@ val GraphQLShort = GraphQLScalarType("Short", "Built-in Short as Int", object : 
             }
 })
 
-var GraphQLByte = GraphQLScalarType("Byte", "Built-in Byte as Int", object : Coercing<Byte?, Byte?> {
+val GraphQLByte = GraphQLScalarType("Byte", "Built-in Byte as Int", object : Coercing<Byte?, Byte?> {
     override fun serialize(input: Any?): Byte? =
             when {
                 input is Byte      -> input
