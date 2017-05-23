@@ -50,7 +50,7 @@ class MutationTest extends Specification {
 
         when:
         def executionResult = newGraphQL(MutationSchemaKt.schema).build()
-                .execute(query, null, new Root(6), new HashMap<>()).toCompletableFuture().get()
+                .execute(query, null, new NumberStore(6), new HashMap<>()).toCompletableFuture().get()
 
 
         then:
@@ -97,7 +97,7 @@ class MutationTest extends Specification {
 
         when:
         def executionResult = newGraphQL(MutationSchemaKt.schema).build()
-                .execute(query, null, new Root(6), new HashMap<>()).toCompletableFuture().get()
+                .execute(query, null, new NumberStore(6), new HashMap<>()).toCompletableFuture().get()
 
 
         then:

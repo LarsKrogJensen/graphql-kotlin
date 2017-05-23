@@ -6,12 +6,11 @@ import graphql.language.Field
 import graphql.schema.DataFetchingEnvironmentImpl
 import graphql.schema.GraphQLObjectType
 import reactor.core.publisher.Flux
-import java.util.concurrent.CompletableFuture
+import reactor.core.publisher.Mono
 import java.util.concurrent.CompletableFuture.completedFuture
 import java.util.concurrent.CompletionStage
 
 class SubscriptionExecutionStrategy : AbstractExecutionStrategy() {
-
 
     override fun execute(executionContext: ExecutionContext,
                          parentType: GraphQLObjectType,
@@ -50,22 +49,9 @@ class SubscriptionExecutionStrategy : AbstractExecutionStrategy() {
         )
 
         val dataPublisher = fieldDef.publisher ?: throw NullPointerException("Publisher cannot be null")
-
-
-        return Flux.create<ExecutionResult> { emitter ->
-            dataPublisher(environment).subscribe(
-                { result ->
-                    completeValue(executionContext, fieldDef.type, fields, result)
-                        .whenComplete { data, ex ->
-                            if (ex != null)
-                                emitter.error(ex)
-                            else
-                                emitter.next(data)
-                        }
-                },
-                emitter::error,
-                emitter::complete
-            )
+        
+        return dataPublisher(environment).flatMap { result ->
+            Mono.fromCompletionStage(completeValue(executionContext, fieldDef.type, fields, result))
         }
     }
 }

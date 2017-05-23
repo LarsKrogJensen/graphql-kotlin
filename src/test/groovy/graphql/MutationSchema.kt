@@ -6,54 +6,30 @@ import graphql.schema.newSchema
 import graphql.schema.newSubscriptionObject
 import graphql.util.failed
 import graphql.util.succeeded
-import reactor.core.publisher.Flux
-import java.util.*
+import reactor.core.publisher.EmitterProcessor
 import java.util.concurrent.CompletableFuture
 
 
 class NumberHolder(var theNumber: Int)
 
-class Root(number: Int) {
-    internal var numberHolder: NumberHolder
+class NumberStore(number: Int) {
+    val changeFeed: EmitterProcessor<String> = EmitterProcessor.create<String>()
 
-    init {
-        this.numberHolder = NumberHolder(number)
+
+    internal var numberHolder: NumberHolder = NumberHolder(number)
+
+    fun closeFeed() {
+        changeFeed.onComplete()
     }
-
+    
     fun changeNumber(newNumber: Int): NumberHolder {
         this.numberHolder.theNumber = newNumber
-        SubscriptionRoot.numberChanged(newNumber)
+        changeFeed.onNext("Alert client that number is now [$newNumber]")
         return this.numberHolder
     }
 
-
     fun failToChangeTheNumber(newNumber: Int): NumberHolder {
         throw RuntimeException("Cannot change the number")
-    }
-
-}
-
-class SubscriptionRoot(val root: Root) {
-
-    fun changeNumberSubscribe(clientId: Int) {
-        subscribers.add(clientId)
-    }
-
-    companion object {
-        internal var result: MutableList<String> = ArrayList()
-        internal var subscribers: MutableList<Int> = ArrayList()
-
-        fun numberChanged(newNumber: Int) {
-            for (subscriber in subscribers) {
-                // for test purposes only, a true implementation of a subscription mechanism needs to consider
-                // the format in which subscribers have requested their response and tailor it accordingly
-                result.add("Alert client [$subscriber] that number is now [$newNumber]")
-            }
-        }
-
-        fun getResult(): List<String> {
-            return result
-        }
     }
 }
 
@@ -83,7 +59,7 @@ private val numberMutationType = newObject {
         }
         fetcher = { environment ->
             val newNumber = environment.argument<Int>("newNumber")!!
-            val root = environment.source<Any>() as Root
+            val root = environment.source<Any>() as NumberStore
             CompletableFuture.completedFuture<Any>(root.changeNumber(newNumber))
         }
     }
@@ -96,7 +72,7 @@ private val numberMutationType = newObject {
         }
         fetcher = { environment ->
             val newNumber = environment.argument<Int>("newNumber")!!
-            val root = environment.source<Root>()
+            val root = environment.source<NumberStore>()
             try {
                 succeeded(root.failToChangeTheNumber(newNumber))
             } catch (e: Exception) {
@@ -108,7 +84,7 @@ private val numberMutationType = newObject {
 
 private val numberSubscriptionType = newSubscriptionObject {
     name = "subscriptionType"
-    field<NumberHolder> {
+    field<String> {
         name = "changeNumberSubscribe"
         type = numberHolderType
         argument {
@@ -117,13 +93,7 @@ private val numberSubscriptionType = newSubscriptionObject {
         }
 
         publisher { environment ->
-            val flux: Flux<NumberHolder> = Flux.create<NumberHolder> {
-                val subscriptionRoot = environment.source<SubscriptionRoot>()
-                it.next(subscriptionRoot.root.numberHolder)
-                it.complete()
-            }
-
-            flux
+            environment.source<NumberStore>().changeFeed
         }
     }
 

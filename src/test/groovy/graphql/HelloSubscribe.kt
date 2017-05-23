@@ -6,43 +6,14 @@ import graphql.schema.newSchema
 import graphql.schema.newSubscriptionObject
 import graphql.util.succeeded
 import reactor.core.publisher.Flux
-import reactor.core.scheduler.Schedulers
+import java.time.Duration
 import java.time.LocalDateTime
-import java.util.concurrent.ForkJoinPool
 
-//class TimeDemo {
-//
-//    @Test
-//    fun helloWorldTest() {
-//        val queryType = newObject {
-//            name = "helloWorldQuery"
-//            field<String> {
-//                name = "hello"
-//                staticValue = "world"
-//            }
-//        }
-//
-//        val graphQL = newGraphQL {
-//            schema = newSchema {
-//                this.query = queryType
-//            }
-//        }
-//        val result = graphQL.execute("{hello}").toCompletableFuture().get().data<Map<String, Any?>>()
-//
-//        assertEquals("world", result["hello"])
-//    }
-//
-//}
+
 
 fun main(args: Array<String>) {
 
-    val timeSource = Flux.create<LocalDateTime> { emitter ->
-        while (true) {
-            Thread.sleep(1000)
-            emitter.next(LocalDateTime.now())
-        }
-    }
-
+    val timeSource = Flux.interval(Duration.ofMillis(1000)).map { LocalDateTime.now() }
 
     val instantType = newObject {
         name = "Instant"
@@ -75,7 +46,6 @@ fun main(args: Array<String>) {
                 timeSource
             }
         }
-
     }
 
     val queryRoot = newObject {
@@ -87,7 +57,6 @@ fun main(args: Array<String>) {
                 succeeded(LocalDateTime.now())
             }
         }
-
     }
 
     val graphQL = newGraphQL {
@@ -99,24 +68,21 @@ fun main(args: Array<String>) {
 
     graphQL.execute("subscription S {ts1:timeSub { hour min sec } ts2:timeSub { hour min sec } }")
         .handle { result, ex ->
-            ex?.printStackTrace()
             if (result.errors.isEmpty()) {
                 val data = result.data<Map<String, Flux<ExecutionResult>>>()
 
                 val disposables = data.map { (field: String, flux: Flux<ExecutionResult>) ->
-                    flux.subscribeOn(Schedulers.fromExecutor(ForkJoinPool.commonPool()))
-                        .subscribe(
+                        flux.subscribe(
                             { next -> println("${Thread.currentThread().name} $field: ${next.data<Any>()}") },
                             { ex -> println("Field $field error $ex") },
                             { println("Field $field completed") }
                         )
                 }
                 disposables
-            } else
+            } else {
                 println(result.errors)
+            }
         }
 
-    //println(result)
-    // Prints: {hello=world}
     readLine()
 }

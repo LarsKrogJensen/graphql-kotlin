@@ -21,7 +21,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <kotlin.version>1.1.2-2</kotlin.version>
+        <kotlin.version>1.1.2-3</kotlin.version>
         <antlr.version>4.7
         </antlr.version>
         <slf4j.version>1.7.25</slf4j.version>
@@ -59,11 +59,6 @@
             <version>${antlr.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>org.reactivestreams</groupId>-->
-            <!--<artifactId>reactive-streams</artifactId>-->
-            <!--<version>1.0.0</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
@@ -82,7 +77,14 @@
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
-            <version>1.1-groovy-2.4-rc-4</version>
+            <version>1.1-groovy-2.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor.addons</groupId>
+            <artifactId>reactor-test</artifactId>
+            <version>3.0.7.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
