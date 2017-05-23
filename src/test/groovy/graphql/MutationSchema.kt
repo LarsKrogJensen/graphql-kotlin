@@ -6,14 +6,13 @@ import graphql.schema.newSchema
 import graphql.schema.newSubscriptionObject
 import graphql.util.failed
 import graphql.util.succeeded
-import reactor.core.publisher.EmitterProcessor
+import reactor.core.publisher.ReplayProcessor
 import java.util.concurrent.CompletableFuture
-
 
 class NumberHolder(var theNumber: Int)
 
 class NumberStore(number: Int) {
-    val changeFeed: EmitterProcessor<String> = EmitterProcessor.create<String>()
+    val changeFeed: ReplayProcessor<NumberHolder> = ReplayProcessor.create<NumberHolder>()
 
 
     internal var numberHolder: NumberHolder = NumberHolder(number)
@@ -24,7 +23,7 @@ class NumberStore(number: Int) {
     
     fun changeNumber(newNumber: Int): NumberHolder {
         this.numberHolder.theNumber = newNumber
-        changeFeed.onNext("Alert client that number is now [$newNumber]")
+        changeFeed.onNext(NumberHolder(newNumber))
         return this.numberHolder
     }
 
@@ -37,6 +36,7 @@ private val numberHolderType = newObject {
     name = "NumberHolder"
     field<Int> {
         name = "theNumber"
+        //fetcher { succeeded(it.source<NumberHolder>().theNumber) }
     }
 }
 
@@ -84,7 +84,7 @@ private val numberMutationType = newObject {
 
 private val numberSubscriptionType = newSubscriptionObject {
     name = "subscriptionType"
-    field<String> {
+    field<NumberHolder> {
         name = "changeNumberSubscribe"
         type = numberHolderType
         argument {

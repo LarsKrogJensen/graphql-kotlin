@@ -24,20 +24,21 @@ class SubscriptionTest extends Specification {
         then:
         def fieldObservables = execute.toCompletableFuture().get().data()
 
-        Flux<String> subscription = (fieldObservables["first"] as Flux<ExecutionResult>).map { exeRes -> exeRes.data().toString() }
+        Flux<Integer> subscription = (fieldObservables["first"] as Flux<ExecutionResult>).map { exeRes ->
+            exeRes.<Map<String,Integer>>data().get("theNumber")
+        }
 
         def verifier = StepVerifier.create(subscription)
-                .expectNext("Alert client that number is now [1]")
-                .expectNext("Alert client that number is now [2]")
-                .expectNext("Alert client that number is now [4]")
-        .v
-//                .expectComplete()
-        
+                .expectNext(1)
+                .expectNext(2)
+                .expectNext(3)
+                .expectComplete()
+
 
         root.changeNumber(1)
         root.changeNumber(2)
         root.changeNumber(3)
-//        root.closeFeed()
+        root.closeFeed()
 
         verifier.verify()
 //        execute2.toCompletableFuture().get().data() == executionResult2
