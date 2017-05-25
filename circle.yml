@@ -1,7 +1,9 @@
 machine:
   java:
     version: oraclejdk8
-test:
+dependencies:
+  pre:
+    - curl -fL https://getcli.jfrog.io | shtest:
   post:
     - mkdir -p $CIRCLE_ARTIFACTS/graphql-kotlin
     - mv target/site  $CIRCLE_ARTIFACTS/graphql-kotlin/coverage-report

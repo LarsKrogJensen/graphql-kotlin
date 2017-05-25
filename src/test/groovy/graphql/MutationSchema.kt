@@ -84,8 +84,9 @@ private val numberMutationType = newObject {
 
 private val numberSubscriptionType = newSubscriptionObject {
     name = "subscriptionType"
-    field<NumberHolder> {
+    subscription<NumberHolder> {
         name = "changeNumberSubscribe"
+        description = "Description of subscription"
         type = numberHolderType
         argument {
             name = "clientId"
@@ -96,6 +97,7 @@ private val numberSubscriptionType = newSubscriptionObject {
             environment.source<NumberStore>().changeFeed
         }
     }
+
 
 }
 

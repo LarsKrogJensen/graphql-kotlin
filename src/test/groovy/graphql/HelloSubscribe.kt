@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
 
     val subscriptionRoot = newSubscriptionObject {
         name = "timeSubscription"
-        field<LocalDateTime> {
+        subscription<LocalDateTime> {
             name = "timeSub"
             type = instantType
             publisher {
