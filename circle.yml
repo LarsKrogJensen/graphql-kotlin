@@ -8,4 +8,7 @@ test:
   post:
     - mkdir -p $CIRCLE_ARTIFACTS/graphql-kotlin
     - mv target/site  $CIRCLE_ARTIFACTS/graphql-kotlin/coverage-report
+    - cp target/graphql-kotlin-1.0-SNAPSHOT.jar target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar
     - bash <(curl -s https://codecov.io/bash)
+    - ./jfrog bt config --url $ARTIFACTORY_URL --user $ARTIFACTORY_USER --apikey $ARTIFACTORY_APIKEY --interactive false
+    - ./jfrog bt upload target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar --publish true
