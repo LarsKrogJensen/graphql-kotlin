@@ -6,10 +6,11 @@ dependencies:
     - curl -fL https://getcli.jfrog.io | sh
 test:
   post:
+    - mvn source:jar
     - mkdir -p $CIRCLE_ARTIFACTS/graphql-kotlin
     - mv target/site  $CIRCLE_ARTIFACTS/graphql-kotlin/coverage-report
     - cp target/graphql-kotlin-1.0-SNAPSHOT.jar target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar
-    - cp pom.xml graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.pom
+    - sed 's/-SNAPSHOT/.$CIRCLE_BUILD_NUM/g' pom.xml > graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.pom
     - bash <(curl -s https://codecov.io/bash)
     - ./jfrog bt config --user $ARTIFACTORY_USER --key $ARTIFACTORY_APIKEY --interactive false
     - ./jfrog bt upload target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar $ARTIFACTORY_URL --publish true

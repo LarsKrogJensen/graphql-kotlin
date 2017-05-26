@@ -11,12 +11,12 @@
     <prerequisites>
         <maven>3.1</maven>
     </prerequisites>
-    <distributionManagement>
-        <repository>
-            <id>graphql-kotlin</id>
-            <url>https://api.bintray.com/maven/larskrogjensen/graphql-kotlin/graphql-kotlin;publish=1</url>
-        </repository>
-    </distributionManagement>
+    <!--<distributionManagement>-->
+        <!--<repository>-->
+            <!--<id>graphql-kotlin</id>-->
+            <!--<url>https://api.bintray.com/maven/larskrogjensen/graphql-kotlin/graphql-kotlin;publish=1</url>-->
+        <!--</repository>-->
+    <!--</distributionManagement>-->
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
