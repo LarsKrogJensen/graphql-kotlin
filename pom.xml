@@ -11,12 +11,14 @@
     <prerequisites>
         <maven>3.1</maven>
     </prerequisites>
-    <!--<distributionManagement>-->
-        <!--<repository>-->
-            <!--<id>graphql-kotlin</id>-->
-            <!--<url>https://api.bintray.com/maven/larskrogjensen/graphql-kotlin/graphql-kotlin;publish=1</url>-->
-        <!--</repository>-->
-    <!--</distributionManagement>-->
+    <distributionManagement>
+        <repository>
+            <id>graphql-kotlin</id>
+            <url>https://api.bintray.com/maven/larskrogjensen/graphql-kotlin/graphql-kotlin;publish=1</url>
+        </repository>
+
+    </distributionManagement>
+
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -122,18 +124,18 @@
                 <artifactId>versioneye-maven-plugin</artifactId>
                 <version>3.11.2</version>
             </plugin>
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>1.4.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.owasp</groupId>-->
+                <!--<artifactId>dependency-check-maven</artifactId>-->
+                <!--<version>1.4.5</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>check</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>

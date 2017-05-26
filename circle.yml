@@ -6,14 +6,20 @@ dependencies:
     - curl -fL https://getcli.jfrog.io | sh
 test:
   post:
-    - mvn source:jar
+#    - mvn source:jar
     - mkdir -p $CIRCLE_ARTIFACTS/graphql-kotlin
     - mv target/site  $CIRCLE_ARTIFACTS/graphql-kotlin/coverage-report
-    - cp target/graphql-kotlin-1.0-SNAPSHOT.jar target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar
-    - cp target/graphql-kotlin-1.0-SNAPSHOT-sources.jar target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM-sources.jar
-    - sed 's/-SNAPSHOT/.'$CIRCLE_BUILD_NUM'/g' pom.xml > graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.pom
+#    - cp target/graphql-kotlin-1.0-SNAPSHOT.jar target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar
+#    - cp target/graphql-kotlin-1.0-SNAPSHOT-sources.jar target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM-sources.jar
+#    - sed 's/-SNAPSHOT/.'$CIRCLE_BUILD_NUM'/g' pom.xml > graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.pom
     - bash <(curl -s https://codecov.io/bash)
-    - ./jfrog bt config --user $ARTIFACTORY_USER --key $ARTIFACTORY_APIKEY --interactive false
-    - ./jfrog bt upload target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar larskrogjensen/graphql-kotlin/graphql-kotlin/1.0.$CIRCLE_BUILD_NUM --publish true
-    - ./jfrog bt upload graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.pom larskrogjensen/graphql-kotlin/graphql-kotlin/1.0.$CIRCLE_BUILD_NUM --publish true
-    - ./jfrog bt upload target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM-sources.jar larskrogjensen/graphql-kotlin/graphql-kotlin/1.0.$CIRCLE_BUILD_NUM --publish true
+#    - ./jfrog bt config --user $ARTIFACTORY_USER --key $ARTIFACTORY_APIKEY --interactive false
+#    - ./jfrog bt upload target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.jar larskrogjensen/graphql-kotlin/graphql-kotlin/1.0.$CIRCLE_BUILD_NUM --publish true
+#    - ./jfrog bt upload graphql-kotlin-1.0.$CIRCLE_BUILD_NUM.pom larskrogjensen/graphql-kotlin/graphql-kotlin/1.0.$CIRCLE_BUILD_NUM --publish true
+#    - ./jfrog bt upload target/graphql-kotlin-1.0.$CIRCLE_BUILD_NUM-sources.jar larskrogjensen/graphql-kotlin/graphql-kotlin/1.0.$CIRCLE_BUILD_NUM --publish true
+deployment:
+  main:
+    branch: master
+    commands:
+      - sed -ie 's/-SNAPSHOT/.'$CIRCLE_BUILD_NUMER'/g' pom.xml
+      - mvn -s .circleci.settings.xml -DskipTests deploy
