@@ -16,7 +16,6 @@
             <id>graphql-kotlin</id>
             <url>https://api.bintray.com/maven/larskrogjensen/graphql-kotlin/graphql-kotlin;publish=1</url>
         </repository>
-
     </distributionManagement>
 
 

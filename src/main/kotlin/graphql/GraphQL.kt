@@ -3,12 +3,14 @@ package graphql
 import graphql.execution.*
 import graphql.execution.instrumentation.Instrumentation
 import graphql.execution.instrumentation.NoOpInstrumentation
+import graphql.execution.instrumentation.onEnd
 import graphql.execution.instrumentation.parameters.ExecutionParameters
 import graphql.execution.instrumentation.parameters.ValidationParameters
 import graphql.language.Document
 import graphql.language.SourceLocation
 import graphql.parser.Parser
 import graphql.schema.GraphQLSchema
+import graphql.util.*
 import graphql.validation.Validator
 import org.antlr.v4.runtime.RecognitionException
 import org.antlr.v4.runtime.misc.ParseCancellationException
@@ -23,7 +25,8 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
                                   private val mutationStrategy: IExecutionStrategy,
                                   private val subscriptionStrategy: IExecutionStrategy,
                                   private val idProvider: ExecutionIdProvider,
-                                  private val instrumentation: Instrumentation) {
+                                  private val instrumentation: Instrumentation,
+                                  private val docCache: IDocumentCache) {
 
 
     class Builder {
@@ -33,6 +36,7 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         var subscriptionStrategy: IExecutionStrategy = SubscriptionExecutionStrategy()
         var idProvider = DEFAULT_EXECUTION_ID_PROVIDER
         var instrumentation: Instrumentation = NoOpInstrumentation.INSTANCE
+        var documentCache: IDocumentCache = NoOpDocumentCache.INSTANCE
 
 
         fun queryExecutionStrategy(executionStrategy: IExecutionStrategy): Builder {
@@ -66,7 +70,8 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
                            mutationExecutionStrategy,
                            subscriptionStrategy,
                            idProvider,
-                           instrumentation)
+                           instrumentation,
+                           documentCache)
         }
     }
 
@@ -79,13 +84,47 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
                 context: Any = Any(),
                 arguments: Map<String, Any> = emptyMap<String, Any>()): CompletionStage<ExecutionResult> {
 
-        val executionCtx = instrumentation.beginExecution(ExecutionParameters(requestString,
-                                                                              operationName,
-                                                                              context,
-                                                                              arguments))
+        val future = CompletableFuture<ExecutionResult>()
 
-        log.debug("Executing request. operation name: {}. Request: {} ", operationName, requestString)
+        val parameters = ExecutionParameters(requestString,
+                                             operationName,
+                                             context,
+                                             arguments)
+        val executionCtx = instrumentation.beginExecution(parameters)
 
+        docCache.get(requestString).thenApply { (cacheHit, document, errors) ->
+            if (cacheHit)
+                eitherOf(errors, document)
+            else
+                parseAndValidate(requestString, operationName, context, arguments)
+        }.thenApply { either ->
+            try {
+                either.fold(
+                    left = { errors -> future.complete(ExecutionResultImpl(null, errors)) },
+                    right = { document ->
+                        val executionId = idProvider.provide(requestString, operationName, context)
+
+                        val execution = Execution(queryStrategy, mutationStrategy, subscriptionStrategy, instrumentation)
+                        execution.execute(executionId, graphQLSchema, context, document, operationName, arguments)
+                            .whenComplete { exeResult, ex ->
+                                executionCtx.onEnd(exeResult, ex)
+                                if (ex != null)
+                                    future.completeExceptionally(ex)
+                                else
+                                    future.complete(exeResult)
+                            }
+                    }
+                )
+            } catch(e: Exception) {
+                future.completeExceptionally(e)
+            }
+        }
+
+        return future
+    }
+
+    private fun parseAndValidate(requestString: String, operationName: String?, context: Any, arguments: Map<String, Any>): Either<List<GraphQLError>, Document> {
+        val start = System.currentTimeMillis()
         val parseCtx = instrumentation.beginParse(ExecutionParameters(requestString, operationName, context, arguments))
         val parser = Parser()
         val document: Document
@@ -96,7 +135,7 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
             val recognitionException = e.cause as RecognitionException
             val sourceLocation = SourceLocation(recognitionException.offendingToken.line, recognitionException.offendingToken.charPositionInLine)
             val invalidSyntaxError = InvalidSyntaxError(sourceLocation)
-            return CompletableFuture.completedFuture(ExecutionResultImpl(listOf(invalidSyntaxError)))
+            return Left(listOf(invalidSyntaxError))
         }
 
         val validationCtx = instrumentation.beginValidation(ValidationParameters(requestString, operationName, context, arguments, document))
@@ -107,21 +146,12 @@ class GraphQL private constructor(private val graphQLSchema: GraphQLSchema,
         validationCtx.onEnd(validationErrors)
 
         if (validationErrors.isNotEmpty()) {
-            return CompletableFuture.completedFuture(ExecutionResultImpl(validationErrors))
+            return Left(validationErrors)
         }
-        val executionId = idProvider.provide(requestString, operationName, context)
+        val end = System.currentTimeMillis()
+        log.debug("Parse and validate took ${end - start} ms")
 
-        val execution = Execution(queryStrategy, mutationStrategy, subscriptionStrategy, instrumentation)
-        val result = execution.execute(executionId, graphQLSchema, context, document, operationName, arguments)
-
-        result.whenComplete { exeResult, ex ->
-            if (ex != null)
-                executionCtx.onEnd(ex as Exception)
-            else
-                executionCtx.onEnd(exeResult)
-        }
-
-        return result
+        return Right(document)
     }
 
     companion object {

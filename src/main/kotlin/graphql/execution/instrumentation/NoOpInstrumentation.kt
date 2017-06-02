@@ -1,11 +1,7 @@
 package graphql.execution.instrumentation
 
 import graphql.ExecutionResult
-import graphql.execution.instrumentation.parameters.DataFetchParameters
-import graphql.execution.instrumentation.parameters.ExecutionParameters
-import graphql.execution.instrumentation.parameters.FieldFetchParameters
-import graphql.execution.instrumentation.parameters.FieldParameters
-import graphql.execution.instrumentation.parameters.ValidationParameters
+import graphql.execution.instrumentation.parameters.*
 import graphql.language.Document
 import graphql.validation.ValidationError
 
@@ -63,7 +59,6 @@ class NoOpInstrumentation private constructor() : Instrumentation {
     }
 
     companion object {
-
         var INSTANCE = NoOpInstrumentation()
     }
 }

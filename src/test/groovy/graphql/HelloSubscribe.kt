@@ -5,15 +5,24 @@ import graphql.schema.newObject
 import graphql.schema.newSchema
 import graphql.schema.newSubscriptionObject
 import graphql.util.succeeded
+import reactor.core.Disposable
+import reactor.core.publisher.ConnectableFlux
 import reactor.core.publisher.Flux
 import java.time.Duration
 import java.time.LocalDateTime
 
 
-
 fun main(args: Array<String>) {
 
-    val timeSource = Flux.interval(Duration.ofMillis(1000)).map { LocalDateTime.now() }
+    val timeSource = Flux.interval(Duration.ofMillis(1000)).map { LocalDateTime.now() }.doOnSubscribe {
+        println("onSubscribe")
+    }.doOnCancel {
+        println("onCancel")
+    }
+
+    val ts = ConnectableFlux.create<LocalDateTime> {
+
+    }
 
     val instantType = newObject {
         name = "Instant"
@@ -72,17 +81,26 @@ fun main(args: Array<String>) {
                 val data = result.data<Map<String, Flux<ExecutionResult>>>()
 
                 val disposables = data.map { (field: String, flux: Flux<ExecutionResult>) ->
-                        flux.subscribe(
-                            { next -> println("${Thread.currentThread().name} $field: ${next.data<Any>()}") },
-                            { ex -> println("Field $field error $ex") },
-                            { println("Field $field completed") }
-                        )
+                    flux.subscribe(
+                        { next -> println("${Thread.currentThread().name} $field: ${next.data<Any>()}") },
+                        { ex -> println("Field $field error $ex") },
+                        { println("Field $field completed") }
+                    )
                 }
                 disposables
             } else {
                 println(result.errors)
+                emptyList()
             }
+        }.thenAccept { disposables: List<Disposable> ->
+
+        Thread.sleep(10_000)
+
+        disposables.forEach {
+            it.dispose()
+            Thread.sleep(2_000)
         }
+    }
 
     readLine()
 }

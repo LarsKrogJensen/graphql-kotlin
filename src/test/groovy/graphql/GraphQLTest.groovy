@@ -214,7 +214,7 @@ class GraphQLTest extends Specification {
         """
 
         when:
-        GraphQL.newGraphQL(schema).build().execute(query)
+        GraphQL.newGraphQL(schema).build().execute(query).toCompletableFuture().get()
 
         then:
         thrown(GraphQLException)
