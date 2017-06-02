@@ -6,6 +6,7 @@ import graphql.validation.ValidationErrorType
 import spock.lang.Specification
 
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutionException
 
 import static graphql.ScalarsKt.GraphQLString
 import static graphql.schema.GraphQLArgument.newArgument
@@ -217,6 +218,6 @@ class GraphQLTest extends Specification {
         GraphQL.newGraphQL(schema).build().execute(query).toCompletableFuture().get()
 
         then:
-        thrown(GraphQLException)
+        thrown(ExecutionException)
     }
 }
